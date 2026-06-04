@@ -1,0 +1,1481 @@
+
+
+=== PAGE 1 ===
+AIO PSLAB: A H OLISTIC FRAMEWORK TO EVALUATE AI A GENTS FOR
+ENABLING AUTONOMOUS CLOUDS
+Yinfang Chen 1 Manish Shetty 2 Gagan Somashekar 3 Minghua Ma 3 Yogesh Simmhan4 Jonathan Mace 3
+Chetan Bansal 3 Rujia Wang 3 Saravan Rajmohan 3
+ABSTRACT
+AI for IT Operations (AIOps) aims to automate complex operational tasks, such as fault localization and root
+cause analysis, to reduce human workload and minimize customer impact. While traditional DevOps tools
+and AIOps algorithms often focus on addressing isolated operational tasks, recent advances in Large Language
+Models (LLMs) and AI agents are revolutionizing AIOps by enabling end-to-end and multitask automation.
+This paper envisions a future where AI agents autonomously manage operational tasks throughout the entire
+incident lifecycle, leading to self-healing cloud systems, a paradigm we term AgentOps. Realizing this vision
+requires a comprehensive framework to guide the design, development, and evaluation of these agents. To this
+end, we present AIO PSLAB, a framework that not only deploys microservice cloud environments, injects faults,
+generates workloads, and exports telemetry data but also orchestrates these components and provides interfaces
+for interacting with and evaluating agents. We discuss the key requirements for such a holistic framework and
+demonstrate how AIO PSLAB can facilitate the evaluation of next-generation AIOps agents. Through evaluations
+of state-of-the-art LLM agents within the benchmark created by AIO PSLAB, we provide insights into their
+capabilities and limitations in handling complex operational tasks in cloud environments.
+1 I NTRODUCTION
+The rapid evolution of IT applications and services has led
+enterprises to increasingly depend on hyper-scale, cloud-
+based systems. These systems are often distributed, em-
+ploying architectures such as microservices and serverless
+computing, enabling scalability but also adding complexity
+and introducing new operational challenges. In such cloud
+environments, issues can cascade into large-scale outages.
+For instance, an Amazon outage can result in losses of $100
+million in just one hour (Wolfe, 2018).
+To address the challenges of managing incidents in such
+complex infrastructures, there is a movement towards the
+adoption of AIOps (Artificial Intelligence for IT Opera-
+tions), within the context of DevOps (Development and
+Operations). The ultimate goal of AIOps is to create au-
+tonomous self-healing clouds, where AI-driven approaches
+can detect, localize, and mitigate faults with minimal hu-
+man intervention. Although such a concept has existed for
+over a decade (Li et al., 2012; Dai et al., 2009), the recent
+advancements of AIOps and Large Language Model (LLM)
+agents have brought this vision closer to reality (Zhao et al.,
+1UIUC, Champaign, USA 2UC Berkeley, Berkeley, USA
+3Microsoft, Redmond, USA 4IISc, Bengaluru, India. Correspon-
+dence to: Minghua Ma <minghuama@microsoft.com>.
+2023; He et al., 2022; Ma et al., 2018; Zhang et al., 2018;
+Ganatra et al., 2023; Somashekar et al., 2024; Zhang et al.,
+2024a; Chen et al., 2024). Large Language Model (LLM)
+agents (Mialon et al., 2023; Schick et al ., 2024) integrate
+external tools to dynamically interact with their environ-
+ment (Wei et al., 2022a), enabling them to autonomously
+manage the entire incident lifecycle, as shown in Figure 1.
+To realize this autonomous self-healing cloud vision, we
+propose a new paradigm called AgentOps (Agent for Opera-
+tions). In this paradigm, agentic approaches are not limited
+to isolated operational tasks but are capable of seamlessly
+managing multiple, cross-layer tasks across the entire op-
+erational stack. AgentOps represents an evolution where
+autonomous agents can make real-time decisions and end-
+to-end actions to ensure system reliability. This aligns with
+recent advancements in AI, as highlighted by a post:
+“State-of-the-art AI results are increasingly ob-
+tained by compound systems with multiple com-
+ponents, not just monolithic models ... compound
+AI systems will likely be the best way to maximize
+AI results in the future” – The Shift from Models
+to Compound AI Systems (Zaharia et al., 2024)
+AI-driven tools and benchmarks like WebArena (Zhou
+et al., 2023), R2E (Jain et al ., 2024b), HumanEval (Chen
+et al., 2021), LiveCodeBench (Jain et al., 2024a), and SWE-
+bench (Jimenez et al., 2024) have significantly advanced the
+arXiv:2501.06706v1  [cs.AI]  12 Jan 2025
+
+
+=== PAGE 2 ===
+AIOpsLab: A Holistic Framework to Evaluate AI Agents for Enabling Autonomous Clouds
+‘Dev’ side of DevOps by accelerating software development.
+However, progress in AI for ‘Ops’, particularly AgentOps,
+remains limited, due to the lack of high-quality benchmarks
+for diverse, realistic scenarios. Addressing this gap requires
+a framework that aids the design, development, and evalua-
+tion of AIOps agents within an interactive environment, a
+key contribution of this paper.
+Challenges and contributions. Building a holistic bench-
+mark framework that can allow agents to interact dynam-
+ically with the cloud poses several challenges. The first
+challenge is to manage an evaluation flow that is generally
+applicable to diverse agents and clouds, powerful enough to
+evaluate agents by complex and realistic operational tasks,
+and valuable enough to provide different feedback or ob-
+servability, together with extensibility that make it possible
+to accommodate new tasks and agents by the users. While
+existing tools address individual components of the AIOps
+evaluation, such as observability (He et al., 2023; Simonsson
+et al., 2021), application suites (Gan et al., 2019; Zhou et al.,
+2021; Sriraman and Wenisch, 2018) and chaos engineer-
+ing (Netflix, 2011; ChaosBlade Team, 2019; ChaosMesh
+Authors, 2022), they lack the integration necessary to sup-
+port a unified AIOps evaluation.
+We present AIO PSLAB, a holistic framework that can au-
+tomatically manage the entire end-to-end evaluation pro-
+cess for AIOps solutions. This involves deploying services,
+fault injection, workload generation, orchestrating the agent-
+cloud interaction, and analyzing results. Specifically, AIO P-
+SLAB features the Agent-Cloud Interface (ACI), a unified
+interface that enables agents to interact with the cloud. ACI
+allows agents to communicate, take action, and receive feed-
+back, orchestrating these interactions to detect and resolve
+issues in dynamic and interactive environments.
+Moreover, a common challenge in operation benchmarks
+is the lack of realistic evaluation scenarios, as existing ap-
+proaches often rely on static datasets, such as system met-
+rics (Han et al., 2022; Jacob et al., 2020) that are typically
+time series data, or on fixed question-answer format (Liu
+et al., 2023). Such setups do not capture the dynamic, unpre-
+dictable, and evolving nature of real-world cloud environ-
+ments, where workloads and incidents fluctuate over time.
+To make matters worse, recent efforts on AgentOps (Wang
+et al., 2023; Zhang et al ., 2024a) use proprietary services
+and datasets. Furthermore, existing AIOps approaches and
+their benchmarks often focus only on isolated aspects of
+the incident lifecycle, such as anomaly detection (Yu et al.,
+2024b) or fault localization (Sun et al., 2024). This lacks a
+cohesive framework to evaluate AIOps agents comprehen-
+sively. Moreover, it limits support for decision-making that
+could assist in chaining algorithms or selecting the most
+suitable agent for a given operation scenario.
+To address these limitations, we designed a set of evaluation
+scenarios, referred to as problems, which replicates realistic
+incidents within the microservice system. AIO PSLAB’s
+problem pool is structured around a task-level taxonomy that
+categorizes tasks of different problems across the incident
+management lifecycle. Our approach ensures that evaluation
+scenarios go beyond simple performance or crash failures
+(that cannot be further analyzed or mitigated by the agents),
+incorporating fine-grained root causes to fully assess the
+diagnostic and mitigation abilities of AIOps agents.
+Implementation. We developed AIO PSLAB, an inno-
+vative framework for building AgentOps benchmarks to
+evaluate LLM-based AIOps agents. AIO PSLAB utilizes
+two microservice applications from DeathStarBench (Gan
+et al., 2019) as testbeds, along with their workload gen-
+erators. An extensible fault library, integrated with
+ChaosMesh (ChaosMesh Authors, 2022), enables diverse
+fault injections into the system. A telemetry observer, in-
+corporating Prometheus (Prometheus Authors, 2024) for
+metrics, Jaeger (Jaeger Authors, 2024) for tracing, and File-
+beat (Elasticsearch, 2024b) and Logstash (Elasticsearch,
+2024a) for logging, supports on-disk storage of telemetry
+data, facilitating evaluations of both traditional AIOps al-
+gorithms and agentic solutions. We also integrate Helm
+and Kubernetes APIs into the AIO PSLAB’s orchestrator
+implementation.
+To demonstrate the application of our framework in evalu-
+ating LLM-based agents as the benchmark, we use AIO P-
+SLAB to create 48 problems as evaluation scenarios covering
+different types of AIOps tasks, and register four agents from
+different types on those problems. The agent registration is
+lightweight, with less than a hundred lines of code to im-
+plement. Our evaluation process reveals distinct challenges
+agents face across tasks.
+Summary. This paper makes the following contributions:
+• We unravel the requirements and challenges of achieving
+a holistic framework that supports the design, develop-
+ment, and evaluation of autonomous AIOps agents;
+• We develop a framework,AIO PSLAB, which can not only
+deploy microservice cloud environments, inject faults,
+generate workloads, and export telemetry data but also
+orchestrate these components and provide agent-cloud
+interfaces for interacting with and evaluating agents.
+• We leverage the AIO PSLAB framework to construct a
+benchmark suite with 48 problems across different AIOps
+tasks in an interactive environment and evaluate four
+LLM-based agents.
+• We provide a detailed analysis of the agents’ performance
+and limitations by evaluating them on AIO PSLAB.
+• We will make AIO PSLAB publicly available.1
+1The link will be provided.
+
+
+=== PAGE 3 ===
+AIOpsLab: A Holistic Framework to Evaluate AI Agents for Enabling Autonomous Clouds
+Microservice
+FrontendService
+StorageService
+Slow connection
+Incident Detection
+Triage after Localization
+Root Cause Diagnosis
+Mitigation/Resolution
+Incident ManagementAgentsorHumanOperators
+Figure 1. Microservice incident and its management lifecycle.
+2 AIO PSLAB
+In this section, we discuss the design and implementation of
+AIO PSLAB and its components, as illustrated in Figure 2.
+2.1 Problem Definition
+To support a wide range of evaluation scenarios (referred to
+as problems), which replicate realistic incidents within the
+microservice system, we first formalize an AIOps problem
+P as a tuple: P = ⟨T, C, S⟩, where T represents a task, C
+represents a context, and S represents the expected solution
+(oracle). The task T defines the specific AIOps operation
+to be performed, categorized into four types: detection,
+localization, (root cause) analysis, and mitigation. We define
+these tasks in Table 1. Each task type is associated with
+success criteria and evaluation metrics. For instance, the
+detection task employs Time-to-Detect (TTD) to measure
+the time taken to detect a fault.
+The context C can be further formalized as a tuple: C =
+⟨E, I ⟩, where E is the operational environment in which
+the problem occurs, and I is the problem information used
+to describe the problem to the agent. The operational en-
+vironment includes the cloud service, the fault model, and
+the workload model used to generate the problem, which
+is not shared with the agent. The problem information
+comprises of information such as service descriptions, task
+descriptions, and documentation about available APIs that
+is directly shared with the agent. It also subsumes indirect
+information (including logs, metrics, and traces observed in
+the operational environment) that is queryable by the agent
+at runtime. Finally, S is the expected outcome of the task,
+which is used to evaluate the agent’s performance. The so-
+lution is typically problem and task-specific and is carefully
+designed for evaluation. Note that some problems, e.g., mit-
+igation tasks, can be solved in multiple ways. In such cases,
+AIO PSLAB evaluates the general state of the entire system,
+e.g., check whether all of the services are up and running,
+after the problem is resolved, rather than solely on the tar-
+geted resource where the fault was injected, because other
+services or resources may have been inadvertently affected
+during the mitigation process.
+Example 2.1. Consider the problem of localizing a Ku-
+bernetes target port misconfiguration in a social network
+application. AIO PSLAB makes it easy to define this prob-
+lem in just a few lines by extending the LocalizationTask
+interface.
+1 from aiopslab import LocalizationTask ,
+SocialNetwork
+2 from aiopslab import Wrk , VirtFaultInjector
+3 class K8STargetPortMisconf ( LocalizationTask ):
+4 def __init__ ( self ):
+5 self .app = SocialNetwork ()
+6 self .ans = "user - service "
+7
+8 def start_workload ( self ):
+9 wrk = Wrk( rate =100 , duration =10)
+10 wrk. start_workload (url= self .app.
+frontend_url )
+11
+12 def inject_fault ( self ):
+13 inj = VirtFaultInjector ( self .app.ns)
+14 inj. inject ([ self .ans], " misconfig_k8s ")
+15
+16 def eval (self , soln , trace , duration ):
+17 res["TTL"] = duration
+18 res[" success "] = is_exact_match (soln , self .
+ans)
+19 return res
+Here, the task T is fault localization, and the solution S is
+the microservice named “user-service”, which is also the
+fault injection target. The context C includes the social
+network application, a misconfiguration fault from AIO P-
+SLAB’s fault library, and a standard workload using thewrk
+tool. AIO PSLAB provides several such interfaces for all
+AIOps tasks (Section 2.4.1) and allows users to add new
+problems by extending them. Once problems are defined,
+AIO PSLAB can instantiate them and allow agents to interact
+with them using an Orchestrator that we describe next.
+2.2 Orchestrator
+AIO PSLAB’s Orchestrator strictly enforces the separation
+of concerns between the agent and the service, using a
+well-defined central piece, the Orchestrator. It provides a
+robust set of interfaces that allow seamless integration and
+extension of various system components.
+2.2.1 Agent Cloud Interface
+A key responsibility of the Orchestrator is to provide a well-
+defined interface for the agent to interact with the cloud
+environment. Typically, developers operate clouds and ser-
+vices with various programming (e.g., APIs, CLIs) and user
+interfaces (incident portals, dashboards, etc.). However,
+existing interfaces to the cloud are not well-designed for
+LLMs and agents. For instance, humans can reliably ig-
+nore irrelevant information, which can prove distracting for
+agents and hamper performance.
+The ACI specifies (1) the set of valid actions available to
+the agent 7 9 , and (2) how the service’s state is conveyed
+back to the agent as the observation of its actions 8 .
+In doing so, the ACI abstracts the cloud environment’s
+complexity, simplifying the agent’s decision-making pro-
+cess. The ACI is designed to be intuitive and easy to use,
+with a concise list of APIs, each documented to ensure
+
+
+=== PAGE 4 ===
+AIOpsLab: A Holistic Framework to Evaluate AI Agents for Enabling Autonomous Clouds
+Agents
+(§3.1)
+Workload 
+Generator (§2.2.3)
+Fault Generator
+(§2.4)
+Common Evaluation
+Customized Evalution
+Evaluator (§2.2.3)
+Action A
+Workload Policy 
+(§2.2.3)
+Fault library
+(§2.4) 
+Telemetry Collector ( §2.5)
+3 2
+SocialNetwork
+Services Under Test (§2.3)
+HotelReservation
+Others
+5
+4 6
+... ...
+Submit S
+7
+9
+extensible by developer
+provided by AIOpsLab
+external API
+internal call
+system state/telemetry
+evaluation result
+Evaluation
+Result (§3)
+Problem Pool ( §3.3)
+Problem Definition ( §2.1):
+- Task T
+- Workload W
+- Specified Fault F
+- Expected Solution S’
+Task (§2.4.1):
+- Detect
+- Localize
+- RCA
+- Mitigate
+Orchestrator (§2.2)
+8
+Register1
+10
+Figure 2. Overview of AIO PSLAB. The Orchestrator coordinates interactions between various system components and serves as the
+Agent-Cloud-Interface (ACI). Agents engage with the Orchestrator to solve tasks, receiving a problem description, instructions, and
+relevant APIs. The Orchestrator generates diverse problems using the Workload and Fault Generators, injecting these into applications it
+can deploy. The deployed service has observability, providing telemetry such as metrics, traces, and logs. Agents act via the Orchestrator,
+which executes them and updates the service’s state. The Orchestrator evaluates the final solution using predefined metrics for the task.
+that agents can make meaningful progress towards their ob-
+jectives. Some APIs that AIO PSLAB provides by default
+include get_logs (fetch logs), get_metrics (fetch metrics),
+get_traces (fetch traces), and exec_shell (execute shell
+commands after applying security policy filters).
+Example 2.2. This example illustrates how the ACI is de-
+fined in AIO PSLAB as APIs that agents can use.
+1 class TaskActions :
+2 def get_traces (ns: str , duration : int = 5) ->
+str :
+3 """
+4 Collects trace data of the services from
+Jaeger .
+5 Args :
+6 ns (str): The K8S namespace .
+7 duration (int): Duration to collect
+traces .
+8 Returns :
+9 str: Path to the directory where traces
+saved .
+10 """
+11 trace_api = TraceAPI (ns)
+12 end_t = datetime .now ()
+13 start_t = end_t - timedelta ( duration )
+14 traces = trace_api . extract_traces ( start_t ,
+end_t )
+15 return trace_api . save_traces ( traces )
+As shown, the ACI encapsulates complex operations behind
+simple APIs like get_traces. On initializing a problem,
+the Orchestrator automatically extracts documentation from
+these APIs to provide as context C to the agent. At runtime,
+agents can specify a wide range of actions on the service
+(e.g., scaling, redeploying, patching) by way of the Orches-
+trator’s privileged access. Finally, the Orchestrator conveys
+the service’s state after each action with high-quality feed-
+back to the agent, including outputs, error messages, and
+tracebacks.
+2.2.2 Session Interface
+Another key responsibility of the Orchestrator is to manage
+the lifecycle of the agent and the service. We implement the
+Orchestrator as a session-based system, where a Session
+is created for each instance of an agent solving a problem.
+Agents are registered with the Orchestrator, and a session
+starts with simple API calls passing a unique problem iden-
+tifier 1 . AIO PSLAB’s design is highly flexible and inte-
+grates with the growing LLM and agent framework space.
+Our only requirement is that the agent must implement a
+get_action method with the following signature: async
+def get_action(state: str)-> str. It takes the service’s
+state as input from the Orchestrator and returns the next ac-
+tion the agent wants to take. Note that this could be a simple
+wrapper function around any existing agent framework.
+Example 2.3. In this simplified example, we illustrate how
+an Agent can be onboarded to AIO PSLAB.
+1 from aiopslab import Orchestrator
+2 class Agent :
+3 def __init__ (self , prob , instructs , apis ):
+4 self . prompt = self . set_prompt (prob ,
+instructs , apis )
+5 self .llm = GPT4 ()
+6
+7 async def get_action (self , state : str ) -> str :
+8 return self .llm. generate ( self . prompt +
+state )
+9
+10 # initialize the orchestrator
+11 orch = Orchestrator ()
+12 pid = " misconfig_app_hotel_res - mitigation -1"
+13 prob_desc , instructs , apis = orch . init_problem (pid)
+14 # register and evaluate the agent
+15 agent = Agent ( prob_desc , instructs , apis )
+16 orch . register_agent (agent , name =" myAgent ")
+17 asyncio .run( orch . start_problem ( max_steps =10) )
+As shown on initializing a problem, the Orchestrator shares
+context necessary for the agent to solve the problem. It then
+
+
+=== PAGE 5 ===
+AIOpsLab: A Holistic Framework to Evaluate AI Agents for Enabling Autonomous Clouds
+polls (via get_action) for the agent’s next action.
+2.2.3 Other Interfaces
+Problem Initializers. As described in Section 2.1, each
+problem is defined with a context C which includes its
+operational environment. This environment is the service,
+fault, and workload conditions under which the problem
+occurs. Here, the Orchestrator deploys services and uses
+infrastructure-as-code tools like (Helm, 2024) to deploy
+the required cloud service for each problem. We describe
+services already integrated into AIO PSLAB in Section 2.3.
+As shown in Figure 2, to create realistic benchmark sce-
+narios, the Orchestrator then interfaces with two entities:
+(1) a workload generator 5 and (2) a fault generator 3 .
+These generators introduce controlled service disruptions
+that simulate live benchmark problems. As the workload
+generator, AIO PSLAB currently uses the wrk2 tool (Gan
+et al., 2019), which supports several workload policies and
+also replays industry workloads 6 . However, the AIO P-
+SLAB is extensible to other workload generators. For fault
+generation, AIO PSLAB uses a custom fault library that in-
+stantiates faults across different levels of the system stack
+4 , such as application and virtualization. The library con-
+tains and extends to several fine-grained and parametric
+faults that go beyond surface-level symptoms and engage
+deeper into more complex resolution strategies. We describe
+the fault library in detail in Section 2.4.
+Problem Evaluators. Finally, the Orchestrator plays a criti-
+cal role in evaluating the agent’s performance on a problem.
+It compares the agent’s solutions against predefined suc-
+cess criteria and evaluation metrics specific to each task 10.
+AIO PSLAB supports several default and common metrics
+for each task (e.g., Time-to-Detect for detection, number of
+steps taken, and tokens produced by an LLM-powered agent
+sent to AIO PSLAB). Additionally, AIO PSLAB provides an
+optional qualitative evaluation of agent trajectories using
+LLMs-as-Judges (Zheng et al., 2024). Beyond that, all user-
+defined evaluation metrics specific to the problem are run.
+For instance, for the localization problem in Example 2.1,
+the metric success is defined by the agent’s submission
+matching the fault microservice’s name. Lastly, the Orches-
+trator maintains comprehensive logs of all agent trajectories,
+including actions taken and resulting system states, facilitat-
+ing detailed analysis and debugging. All of the evaluation
+results will be automatically collected.
+2.3 Cloud Services
+AIO PSLAB deploys live microservice applications as cloud
+environments 2 . AIO PSLAB is currently integrated with
+the HotelReservation and SocialNetwork from DeathStar-
+Bench (Gan et al., 2019). The SocialNetwork application
+has 28 microservices, including Memcached, MongoDB,
+and Redis, that together implement several features of real-
+Faults Provided by
+AIOpsLab (§2.4)
+Symptomatic
+Faults (§2.4.2)
+Functional
+Faults (§2.4.3)
+Network
+Loss
+Pod
+Failure
+Application-
+level Faults
+Virtualization-
+level Faults
+Figure 3. Fault categories to instantiate problems in AIO PSLAB.
+Table 1. Task taxonomy for AIOps agent evaluation. The lower
+the level, the easier the task. AIO PSLAB aims to evaluate agents
+across all task levels with its problems.
+Level Task (# sub tasks) Evaluation Focus
+1 Detection (1) Can the approach accurately detect
+anomalies or deviations?
+2 Localization (1) Can the approach pinpoint a fault’s exact
+source (e.g., microservice)?
+3 Root Cause Analysis
+(RCA) (2)
+Can the approach determine the underly-
+ing cause of the fault?
+4 Mitigation (1) Can the approach give effective solutions
+to recover the environment?
+world social networking applications. The HotelReservation
+application, implemented with Go and gRPC, supports ser-
+vices like recommending and reserving hotels.
+2.4 Task-oriented Fault Library
+2.4.1 Task Taxonomy
+We present a task-level taxonomy (Table 1) that categorizes
+the tasks that AIOps agents should accomplish according
+to the different stages of the incident management lifecycle,
+with progressively increasing complexity. In Table 1, a
+higher level indicates a harder and more impactful task to
+evaluate agents.
+Level 1 focuses on the preliminary identification of unusual
+behavior within the system, for example, detecting a mal-
+functioning Kubernetes pod of a microservice. Also, users
+can define more complex tasks or create sub-tasks. The root
+cause analysis task has both the system level and fault type
+prediction sub-tasks to be solved.
+To instantiate problems across different task levels, we use
+fault injection to inject faults into the system, and construct
+a problem pool for AIO PSLAB. We classify them into two
+main types, symptomatic faults and functional faults, as
+shown in Figure 3.
+2.4.2 Symptomatic Faults
+Symptomatic faults, such as performance degradation and
+crash failures, manifest as observable symptoms, such as
+increased latency, resource exhaustion, or service outages.
+These faults typically help to construct Level 1 and Level
+2 tasks in the taxonomy, which can create problems that
+evaluate AIOps approaches’ detection and localization abil-
+ity. These faults provide an overview of potential problems
+but do not necessarily reveal the deeper, underlying root
+
+
+=== PAGE 6 ===
+AIOpsLab: A Holistic Framework to Evaluate AI Agents for Enabling Autonomous Clouds
+Frontend
+Search User Recommend
+Rate Geo
+Mongodb-geo
+Error: Not authorized on 
+geo-db to execute command
+Revoke the admin’s 
+privilege during execution
+Figure 4. Revoke authentication fault example. Injection happens
+at Mongodb-geo service, while Geo service will be abnormal and
+generate error logs.
+causes of issues (since they do not have one). AIO PSLAB
+integrates the fault injection tool, Chaos-Mesh (ChaosMesh
+Authors, 2022), to inject symptomatic faults into microser-
+vice applications.
+2.4.3 Functional Faults
+Though there are many fault injection tools for testing the
+resilience of cloud systems (Marinescu and Candea, 2009;
+Banabic and Candea, 2012; Christakis et al., 2017; Zhang
+and Elbaum, 2012; Kingsbury, 2022; Pillai et al ., 2014;
+Alquraan et al ., 2018; Lu et al ., 2019; Chen et al ., 2020;
+Leesatapornwongsa et al., 2014; Gunawi et al., 2011; Ma-
+jumdar and Niksic, 2018; Ju et al., 2013; Heorhiadi et al.,
+2016; Alagappan et al., 2016; Mohan et al., 2018; Sun et al.,
+2022; Canini et al ., 2012), most of them focus solely on
+injecting system symptoms. These coarse-grained faults can
+only disrupt without modeling the underlying, fine-grained
+root causes, e.g., misconfigurations or software bugs, and
+hence are unable to evaluate the capabilities of AIOps agents
+to diagnose and mitigate root causes.
+The failure scenarios to evaluate AIOps agents across tasks
+must go beyond simple performance or crash failures, and
+reflect realistic cases that challenge agents, where functional
+faults come into play. Functional faults require approaches
+to not only detect (Level 1) and localize (Level 2) the failure
+but also diagnose the root cause (Level 3), such as incorrect
+deployment or operations, and apply the correct mitigation
+strategies (Level 4). For instance, the fault in Figure 4
+revokes the admin authentication for the MongoDB database
+of the geographic microservice (Mongodb-geo). Since the
+Geo service relies on its backend database, errors will appear
+during its invocation.
+Example 2.4. In the following example, we illustrate the
+structure of the application-level fault injector for a revoke
+authentication fault and its usage example in AIO PSLAB.
+1 from aiopslab . generators . fault . base import
+FaultInjector
+2 from aiopslab . service . apps . hotelres import
+HotelReservation
+3 class ApplicationFaultInjector ( FaultInjector ):
+4 def inject_revoke_auth (self , microservices :
+list [str ]):
+5 """ Revoke MongoDB admin privileges ."""
+6 ...
+7 def recover_revoke_auth (self , microservices :
+list [str ]):
+8 """ Recover the revoke admin privileges
+fault ."""
+9 ...
+10 # Usage Example
+11 class MongoDBRevokeAuth :
+12 def __init__ ( self ):
+13 self .app = HotelReservation ()
+14
+15 def inject_fault ( self ):
+16 injector = ApplicationFaultInjector (ns)
+17 injector . _inject ([" mongodb -geo"], "
+revoke_auth ")
+Users can define problems using the existing fault library.
+For instance, users can specify different faulty services or
+even construct a task that injects multiple faults into multiple
+services concurrently. Users can also customize their faults
+to generate various problems. AIO PSLAB provides the
+injection function for its associated failure scenarios and
+offers the corresponding mitigation mechanism to recover
+the system from the erroneous state. In Section 3.3, we will
+discuss the current problem pool we implement.
+2.5 Observability
+AIO PSLAB is equipped with an extensible observability
+layer to provide comprehensive monitoring capabilities.
+AIO PSLAB collects a wide array of telemetry data by its
+telemetry collector, including (1) traces from Jaeger (Jaeger
+Authors, 2024) detailing the end-to-end paths of requests
+through distributed systems, (2) application logs retrieved
+by Kubectl, or formatted and recorded by Filebeat (Elastic-
+search, 2024b) and Logstash (Elasticsearch, 2024a), and (3)
+system metrics monitored by Prometheus (Prometheus Au-
+thors, 2024). AIO PSLAB not only supports data collection
+during the interaction with the LLM agent but can also ex-
+port the data offline to facilitate evaluating other traditional
+AIOps approaches. Besides, AIO PSLAB is designed to
+capture information from other dimensions, e.g., codebase,
+configuration, and cluster information. Developers can also
+design and expose low-level system information (such as
+syscall logs) to agents using AIO PSLAB’s interface.
+3 E VALUATION
+This section begins by outlining the evaluation setup and
+metrics employed within AIO PSLAB. We then delve into
+the selected faults listed in Table 2, which serve as diverse
+evaluation scenarios within AIO PSLAB. Following this, we
+evaluate the performance of the AIOps agents solving these
+problems, and then analyze the cost of the agents. We also
+dig into the reasons behind the performance differences to
+understand the challenges and potential agent improvements.
+Note that, all of the results are automatically collected and
+recorded by the problem evaluators (Section 2.2.3).
+3.1 Evaluation Setup
+We evaluate four LLM-based agents withAIO PSLAB. Note
+that, for a fair comparison, we register the naive agent in
+AIO PSLAB without any fine-tuning or modifications. We
+
+
+=== PAGE 7 ===
+AIOpsLab: A Holistic Framework to Evaluate AI Agents for Enabling Autonomous Clouds
+Table 2. Selected faults used to instantiate the problems for evaluation in AIO PSLAB. Ext. stands for extensibility. denotes the
+fault can be easily used to construct other problems; G #denotes there is some manual effort needed to create new problems; while #
+means the fault is specific to some problems and cannot be applied to create other problems.
+No. Name Application Task Level Category Ext. # Problem Description
+1 AuthenticationMissing HotelReservation 1, 2, 3, 4 Functional
+Virtualization G # 4 Missing authentication credentials cause
+access denial to MongoDB.
+2 TargetPortMisconfig SocialNetwork 1, 2, 3, 4 Functional
+Virtualization  12 The service cannot connect to the specified
+port due to misconfiguration.
+3 RevokeAuth HotelReservation 1, 2, 3, 4 Functional
+Application G # 8 Revoked authentication causes database
+connection failure.
+4 UserUnregistered HotelReservation 1, 2, 3, 4 Functional
+Application G # 8 The database service has access failures
+after the user was unregistered.
+5 BuggyAppImage HotelReservation 1, 2, 3, 4 Functional
+Application # 4 Connection code bug in the application
+image causes access issues.
+6 ScalePod SocialNetwork 1, 2, 3, 4 Functional
+Virtualization  4 Incorrect scaling operation makes the
+number of pod zero for a service.
+7 AssignNonExistentNode SocialNetwork 1, 2, 3, 4 Functional
+Virtualization  4 Pod in a pending a failure status due to
+wrong assignment to a non-existent node.
+8 NetworkLoss HotelReservation 1, 2 Symptomatic  2 Network loss causes communication
+failures for a specific service.
+9 PodFailure HotelReservation 1, 2 Symptomatic  2 Service interruption due to a pod failure.
+10 Noop HotelReservation
+SocialNetwork 1 -  2 No faults injected into the system.
+use GPT-3.5- TURBO and GPT-4- TURBO (Achiam et al., 2023)
+that have access to only a secure shell as baselines (GPT- W-
+SHELL ). In addition, we also evaluate the performance of
+REACT (Yao et al., 2023), which extends chain-of-thought
+reasoning (Wei et al., 2022b) by integrating reasoning and
+acting in an interleaved manner,
+As for cloud operation-specific agents, we choose
+FLASH (Zhang et al., 2024b). FLASH employs a workflow au-
+tomation system that monitors execution status and decom-
+poses complex instructions into manageable, conditional
+segments. It incorporates hindsight generation to learn from
+past interactions. As FLASH was not publicly available at
+the time of writing, we develop a simplified version that
+retrospectively generates insights after each step.
+To compare with other AIOps approaches specific to a cer-
+tain type of task, we evaluate three state-of-the-art, non-
+LLM-based AIOps algorithms on AIO PSLAB, using (multi-
+modal) telemetry data as input. They are: MKSMC (Çetin
+and Tasgin, 2020) for detection, RMLAD (Wang et al .,
+2020) and PDiagnose (Hou et al., 2021) for localization.
+3.2 Metrics
+Correctness. This metric measures the accuracy of the
+agent’s response to problems. It evaluates whether the agent
+successfully detects, localizes, analyzes and resolves the
+problems as expected.
+Time/Steps. These metrics evaluate the efficiency of the
+AIOps agent for each type of task. For example, Time-to-
+Detect (TTD) is the time elapsed from the occurrence of
+a fault to its detection, and Time-to-Mitigate (TTM) is the
+time taken from detection to complete mitigation of the fault.
+The number of steps or actions taken to solve the problem
+is also recorded. Note that this is the number of times the
+agent interacts with the AIO PSLAB instead of the number
+of requests sent to the backend LLM.
+Cost. We use the number of tokens, including both the input
+token and output tokens, generated by the agents/environ-
+ment as an indicator of the cost.
+3.3 Problem Pool of AIO PSLAB Benchmark
+Currently, AIO PSLAB benchmark consists of 48 problems
+in its problem pool. With six agents, we evaluate a total
+of 288 cases. Table 2 lists the faults used to instantiate the
+problems. As shown in Table 2, all functional faults (in-
+cluding Fault 1-7) are used to create problems at all of the
+four task levels; while the symptomatic faults (including
+Fault 8-9) can only be used to create problems at the detec-
+tion and localization levels (Level 1 and Level 2). In the
+detection-level task, the agents must identify the presence
+of faults in real-time. This task is a binary classification,
+where the agents have to respond either “yes” if a fault is
+present or “no” on the contrary. The detection task (Level
+1) can be made more complex, e.g., by asking the agents
+to label the abnormal telemetry data; however, we keep it
+simple here and leave the complex tasks to other levels. The
+localization (Level 2) task asks the agents to specify the
+exact location of the fault, usually a service or pod name
+in Kubernetes. The RCA task (Level 3) requires the agents
+to identify (1) the system layer the fault affects and (2) the
+type of the fault, e.g., misconfiguration or operation error.
+The mitigation task (Level 4) requires the agents to interact
+with the environment to fix the fault with a series of actions,
+such as updating the configuration, or rollback to a previous
+version, etc.
+Most faults enable users to extend and create new prob-
+lems easily by injecting the fault into other targets, such
+as services. For example, Fault 2 in AIO PSLAB can be
+
+
+=== PAGE 8 ===
+AIOpsLab: A Holistic Framework to Evaluate AI Agents for Enabling Autonomous Clouds
+Table 3. Overall performance of different agents. We show the
+lines of code (LoC) to register the agent in AIO PSLAB, average
+running time in seconds, average number of steps taken, average
+tokens used, and accuracy across all problems.
+Agent LoC Time (s) # Steps Tokens Acc.
+GPT-4-W-SHELL 41 28.61 6.44 6,394.5 49.15%
+GPT-3.5-W-SHELL 41 12.44 14.70 2,557.95 15.25%
+REACT 49 43.79 11.50 16,941.46 55.93%
+FLASH 60 99.64 8.48 6,484.25 59.32%
+injected into 10 services by simply configuring the injec-
+tion target. We select the “user-service”, “text-service”,
+and “post-storage-service” from SocialNetwork as injec-
+tion targets. Injecting faults into different targets is crucial
+because each service may have distinct dependencies, re-
+sulting in varied fault “blast radius” or failure propagation
+topologies. Consequently, faults can manifest at different
+locations within the microservice architecture to help evalu-
+ate the ability of the AIOps agents since different locations
+may indicate distinct difficulties. Applying some faults to
+construct problems may require additional effort. For ex-
+ample, Fault 3 and Fault 4 require the users to not only
+prepare the scripts to trigger the admin privilege revoke or
+user unregisteration during the testing, but also update the
+config map of the application in Kubernetes; and Fault 1
+needs to enforce its TLS requirements through a Helm con-
+figuration update. Furthermore, some faults are designed
+for specific problems and are not readily adaptable, such as
+Fault 5, which involves an application-level code bug in the
+microservice’s image.
+3.4 Performance Results
+The overall performance of the agents is summarized in
+Table 3, with task-specific results in Table 4. As illustrated
+in Table 3, FLASH achieves the highest accuracy among all
+agents. Although GPT-3.5- TURBO completes the tasks the
+fastest, it has the lowest accuracy at 15.25%.
+The detection task, being a binary choice question, should be
+the simplest task and the first step an AIOps agent performs.
+However, as shown in Table 4(a), only FLASH answers
+all the detection problems correctly. For localization task,
+agents are allowed to come up with a list of potential faulty
+services as their answers (since there could be multiple faults
+happenning in the system at the same time). To evaluate
+their accuracy, we consider both the top 1 and top 3 answers.
+In Table 4(b), REACT performs best when evaluated using
+the top 3 answers, but its accuracy drops when considering
+the top 1. The RCA and mitigation tasks prove to be the
+most challenging for the agents. GPT-3.5- W-SHELL fails to
+recover any failure in its mitigation attempts.
+Problem difficulty differs across task levels.Despite show-
+ing promise in addressing realistic operational tasks, none of
+the agents consistently achieve high problem-solving accu-
+racy across four task categories in AIO PSLAB benchmark.
+3 5 10 15 20
+K (# Steps Taken)
+0.0
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8Accuracy
+GPT4-w-Shell
+GPT3.5-w-Shell
+ReAct
+Flash
+Figure 5. Agent performance vs. number of steps taken.
+Even the top-performing agents, such as FLASH , exhibit lim-
+itations, particularly when tackling more complex tasks like
+mitigation. In Section 3.6, we will explore in detail the fail-
+ure modes and challenges contributing to these performance
+limitations of agents, and opportunities for improvement.
+3.5 Influence of the Step Limit
+We examine the impact of the maximum number of allowed
+steps on the agent’s performance, with the results shown
+in Figure 5. The step limit significantly affects the perfor-
+mance of certain agents. For instance, REACT and FLASH
+show improved accuracy with more steps, withFLASH reach-
+ing the highest accuracy of 59.32% when the step limit is
+set to 20. However, for GPT-3.5- TURBO , increasing the step
+limit beyond 5 does not yield better performance but merely
+increases the token consumption. Notably, the plateauing
+of accuracy after a certain number of steps indicates that
+self-repair with environment feedback can saturate quickly
+for AIOps problems. On the contrary, in development tasks
+(Dev), such as code generation, feedback via various com-
+positional tools such as linters, type checkers, and test cases
+help agents continuously improve. This suggests the need
+for (1) better task decomposition for AIOps problems using
+planning, (2) improved feedback mechanisms for interme-
+diate steps, and (3) solutions that go beyond environment
+feedback and self-repair.
+3.6 Agent Behavior: The Good, the Bad and the Gaps
+We now delve into the behaviors of the agents and analyze
+the good, the challenges, and opportunities for improve-
+ment. In Table 4, we see that all agents perform better
+than the traditional non-LLM AIOps methods in terms of
+the problems for detection and localization tasks. Figure 6,
+shows the telemetry API usage patterns among agents. The
+get_logs API is the most frequently used API across all
+agents, then the get_metrics, and the get_traces APIs.
+However, agents also diverge in their patterns of API usage.
+For example, FLASH does not use the get_traces API at
+all. We present the occurrences of other system commands
+for each agent in Table 5. We next discuss the underly-
+ing reasons and patterns contributing to the agents’ poor
+
+
+=== PAGE 9 ===
+AIOpsLab: A Holistic Framework to Evaluate AI Agents for Enabling Autonomous Clouds
+Table 4. Agent performance by task. This table summarizes the performance of different agents across various tasks including detection,
+localization, RCA, and mitigation. Acc. stands for accuracy. Input/Output represents the number of tokens given to and produced by the
+agent, respectively. (a) Detection Task
+Agent Accuracy Time (s) # Steps Input Output
+GPT-4-W-SHELL 69.23% 7.08 3.85 5,492 132
+GPT-3.5-W-SHELL 23.07% 11.05 13.60 1,940.44 385.56
+REACT 76.92% 39.00 11.46 15,608.08 933.15
+FLASH 100% 78.27 6.77 12,869.08 125.69
+MKSMC 15.38% 1.00 N/A N/A N/A
+(b) Localization Task
+Agent Acc.@3 Acc.@1 Time (s) # Steps Input Output
+GPT-4-W-SHELL 61.54% 61.54% 7.04 4.23 4,588.07 133.23
+GPT-3.5-W-SHELL 30.77% 30.77% 6.26 11.92 1,784.23 217.08
+REACT 69.23% 53.85%↓ 38.65 11.08 4,760.77 880.92
+FLASH 61.54% 46.15%↓ 56.60 5.77 1,875.08 123.31
+PDIAGNOSE 15.38% 15.38% 1.02 N/A N/A N/A
+RMLAD 7.69% 7.69% 1.98 N/A N/A N/A
+(c) Root Cause Analysis (RCA) Task
+Agent Accuracy Time (s) # Steps Input Output
+GPT-4-W-SHELL 40.90% 8.68 4.81 4,297.91 176.18
+GPT-3.5-W-SHELL 9.09% 10.06 14.00 1,495.55 406.27
+REACT 45.45% 32.16 8.00 16,276.09 757.27
+FLASH 36.36% 59.00 6.09 1,193.90 152.45
+(d) Mitigation Task
+Agent Accuracy Time (s) # Steps Input Output
+GPT-4-W-SHELL 27.27% 99.47 13.72 10,142.55 1,060.00
+GPT-3.5-W-SHELL 0% 23.78 20.00 3,178.33 967.71
+REACT 36.36% 67.18 15.54 29,211.90 1,464.90
+FLASH 54.55% 216.41 16.09 8,469.00 760.36
+Table 5. Occurrences of system commands.
+Agent find echo py awk mongo grep ls cat ip
+REACT 0 0 0 3 0 1 26 30 0
+FLASH 0 3 0 0 0 0 8 10 0
+ReAct Flash
+Agents
+0
+10
+20
+30
+40
+50
+60
+70Percentage (%)
+25.5%
+35.1%
+5.8%
+1.3%
+4.1%
+0.0%
+16.4%
+5.4%
+48.2%
+58.1%
+Actions
+get_logs
+get_metrics
+get_traces
+Others
+K8S
+Figure 6. Total percentage of actions taken by different agents.
+performance.
+3.6.1 Wasting steps on unnecessary actions
+We observe that agents often waste steps on unnecessary
+actions, such as repeatedly calling the same API, generating
+non-existent APIs, or spending excessive steps in multi-
+agent communication. Specifically, the GPT-3.5- W-SHELL
+agent often generates incorrect API commands in loops,
+leading to repeated errors in execution. For instance, set-
+ting speaker_selection_method as round_robin allows ev-
+ery agent to speak in every step, but this often prevents
+decisive, efficient decisions, as agents repeatedly resort
+to telemetry APIs for more information. Even with the
+speaker_selection_method set to auto, where the next
+speaker is automatically chosen, a selected agent always
+speaks ten times in a step without communication (with a
+maximum of ten communication rounds per step).
+Submit
+23.5%kubectl get
+23.0%
+kubectl other
+25.6%
+6.0%
+Others
+get_logs
+16.7%
+get_traces2.6%
+get_metrics 2.6%
+(a) Successful cases.
+Submit
+20.5%kubectl get
+22.3%
+kubectl other
+16.9%
+8.9%
+Others
+get_logs
+17.4%
+get_traces
+5.8%
+get_metrics
+8.2% (b) Failure cases.
+Figure 7. Action distribution by success and failure cases.
+3.6.2 Overloaded information when consuming data
+To dig deeper into the agent failure modes, we analyze the
+correlation between the agents’ actions and the success or
+failure of problem-solving, as well as the distribution of
+actions across steps. In Figure 7, we present the distribution
+of actions for both successful and failed cases. Agents tend
+to use get_metrics and get_traces APIs sparingly in suc-
+cessfully resolved problems, typically only when necessary.
+This is understandable, as the metrics data, e.g., CPU and
+memory usage have numerous values, which are hard to
+directly interpret, and trace data are descriptive records of
+the system’s dependencies, which are more comprehensi-
+ble when visualized. However, agents may subsequently
+consume these data with a cat command directly, which
+can overwhelm the model’s input context window and cause
+distraction and more tokens to be consumed. Consequently,
+using these telemetry APIs without careful consideration or
+analysis can add more noise into the agents’ reasoning, pos-
+sibly leading to token exhaustion. We expect more refined
+telemetry data processing and filtering mechanisms to be
+implemented in the agents to avoid this issue in the future.
+3.6.3 Invalid API usage
+We notice that agents can struggle with improper formatting
+of API calls. For instance, GPT-3.5- W-SHELL consistently
+generates incorrect command formats (though the API name
+
+
+=== PAGE 10 ===
+AIOpsLab: A Holistic Framework to Evaluate AI Agents for Enabling Autonomous Clouds
+is correct), such as malformed parameters, and repeat the
+error in subsequent steps. In many cases, GPT-3.5- W-SHELL
+repeatedly responds with: “I apologize for the error. Here is
+the API call again:” followed by the same/similar mistake.
+This issue is observed as many as 14 times within a 20-step
+problem-solving case.
+Similar issues with invalid API usage are also observed in
+other agents. For instance, the REACT agent occasionally
+generates incorrect API commands, but typically recovers
+by reasoning through the errors and self-correcting its com-
+mands. In the following example, REACT uses an incorrect
+parameter for the get_logs API, but subsequently corrects
+it by checking the existing services in its next step.
+REACT: get_logs("test-social-network", "Social Network")
+AIO PSLAB: Error: Your service/namespace does not exist.
+REACT:
+Thought: I should check the services deployed within the test-social-network
+namespace to ensure I use the correct service name.
+Action: I will list the services in the test-social-network namespace to confirm
+the correct name of the service.
+exec_shell("kubectl get services -n test-social-network")
+3.6.4 False positive detection issues
+To further evaluate the agents’ performance, we set up two
+detection problems for the two microservice applications
+where no faults exist, referred to as no operation (Fault 10 –
+Noop in Table 2) problems. Only GPT-4- W-SHELL correctly
+identify these cases as normal system execution, while the
+others report false positives, misinterpreting normal activi-
+ties (e.g., standard workload generation) as faults.
+4 D ISCUSSION
+AIO PSLAB helps engineers to easily create customized in-
+cident scenarios for evaluating agents. By providing Agent
+Cloud Interfaces (ACIs) as guard-rails, AIO PSLAB ensures
+that agents are tested within a controlled environment, al-
+lowing users to focus on designing scenarios that accurately
+represent incidents in their systems and defining the specific
+problems their agents should solve.
+AIO PSLAB is also adaptable to other fault types. For exam-
+ple, an anomaly detection workload scenario can be intro-
+duced for detection tasks. Further, users can create problems
+where agents are required to label the workload or telemetry
+data to identify anomalies.
+When implementing problem evaluators, fine-grained evalu-
+ation oracles, or AIO PSLAB’s optional LLM-as-Judge, may
+be necessary. For instance, in the binary-choice detection
+task, agents may answer correctly but provide incorrect in-
+terpretations or reasoning. In one case, an agent claimed to
+detect an abnormal system behavior, but its explanation ref-
+erenced a workload that was, in fact, normal and unrelated
+to the injected fault. Leveraging AIO PSLAB’s LLM-as-
+Judges can help address this issue by comparing the LLM
+reasoning chains with the problem description (including
+the fault, workload, and environment setup).
+5 R ELATED WORK
+AgentOps. Recent advancements in cloud management
+have increasingly incorporated LLMs to enhance opera-
+tional tasks. Approaches such as fine-tuned GPT models
+(Ahmed et al., 2023), RCACopilot (Chen et al., 2024), RCA-
+gent (Wang et al., 2023), MonitorAssistant (Yu et al., 2024a),
+and Xpert (Jiang et al., 2024) illustrate the effectiveness of
+LLMs in monitoring and analyzing complex system be-
+haviors. However, beyond the lack of publicly available
+implementations and associated private datasets, there is a
+notable gap: the absence of a unified benchmark capable
+of providing realistic evaluation scenarios to assess agents’
+performance across operational tasks.
+AIOps benchmarks. Existing AIOps benchmarks pri-
+marily rely on static or text-based datasets, such as sys-
+tem metrics (Han et al., 2022; Jacob et al., 2020), typically
+time series data, or fixed question-answer format (Liu et al.,
+2023). These benchmarks, together with the general Lan-
+guage Model benchmarks (Hendrycks et al., 2021b;a; Liang
+et al., 2023; Lee et al ., 2024; BIG-bench authors, 2023;
+Huang et al., 2023), do not simulate the dynamic and com-
+plex cloud environments, not to mention allowing agents to
+interact with them to solve operational tasks.
+6 C ONCLUSION
+In this paper, we unravel the requirements and challenges
+for a comprehensive framework that supports the design,
+development, and evaluation of autonomous AIOps agents.
+We develop a framework, AIO PSLAB, which combines a
+fault injector, workload generator, cloud-agent orchestra-
+tor, and telemetry observer to simulate cloud incidents and
+provide an agent-cloud interface for orchestrating and evalu-
+ating AIOps agents. We leverage AIO PSLAB to construct a
+benchmark suite with 48 problems and evaluate four agents
+to demonstrate the application of AIO PSLAB in evaluating
+LLM-based agents across different types of AIOps tasks.
+REFERENCES
+Josh Achiam, Steven Adler, Sandhini Agarwal, Lama Ah-
+mad, Ilge Akkaya, Florencia Leoni Aleman, Diogo
+Almeida, Janko Altenschmidt, Sam Altman, Shyamal
+Anadkat, et al . 2023. Gpt-4 technical report. arXiv
+preprint arXiv:2303.08774 (2023).
+Toufique Ahmed, Supriyo Ghosh, Chetan Bansal, Thomas
+Zimmermann, Xuchao Zhang, and Saravan Rajmohan.
+2023. Recommending Root-Cause and Mitigation Steps
+for Cloud Incidents using Large Language Models. In
+Proceedings of the 45th International Conference on Soft-
+ware Engineering (ICSE’23).
+
+
+=== PAGE 11 ===
+AIOpsLab: A Holistic Framework to Evaluate AI Agents for Enabling Autonomous Clouds
+Ramnatthan Alagappan, Aishwarya Ganesan, Yuvraj Pa-
+tel, Thanumalayan Sankaranarayana Pillai, Andrea C.
+Arpaci-Dusseau, and Remzi H. Arpaci-Dusseau. 2016.
+Correlated Crash Vulnerabilities. In Proceedings of the
+12th USENIX Conference on Operating Systems Design
+and Implementation (OSDI’16).
+Ahmed Alquraan, Hatem Takruri, Mohammed Alfatafta,
+and Samer Al-Kiswany. 2018. An Analysis of Network-
+Partitioning Failures in Cloud Systems. In Proceedings
+of the 13th USENIX Conference on Operating Systems
+Design and Implementation (OSDI’18).
+Radu Banabic and George Candea. 2012. Fast Black-Box
+Testing of System Recovery Code. In Proceedings of
+the 7th European Conference on Computer Systems (Eu-
+roSys’12).
+BIG-bench authors. 2023. Beyond the Imitation Game:
+Quantifying and extrapolating the capabilities of language
+models. Transactions on Machine Learning Research
+(2023).
+Marco Canini, Daniele Venzano, Peter Perešíni, Dejan
+Kosti´c, and Jennifer Rexford. 2012. A NICE Way to
+Test OpenFlow Applications. In Proceedings of the 9th
+USENIX Conference on Networked Systems Design and
+Implementation (NSDI’12).
+Uzay Çetin and Mursel Tasgin. 2020. Anomaly detection
+with multivariate K-sigma score using Monte Carlo. In
+2020 5th International Conference on Computer Science
+and Engineering.
+ChaosBlade Team. 2019. ChaosBlade. https://
+github.com/chaosblade-io/chaosblade. Ac-
+cessed: 2024-07-08.
+ChaosMesh Authors. 2022. ChaosMesh. https://chaos-
+mesh.org/. Accessed: 2024-07-08.
+Haicheng Chen, Wensheng Dou, Dong Wang, and Feng
+Qin. 2020. CoFI: Consistency-Guided Fault Injection for
+Cloud Systems. In Proceedings of the 35th ACM/IEEE
+International Conference on Automated Software Engi-
+neering (ASE’20).
+Mark Chen, Jerry Tworek, Heewoo Jun, Qiming Yuan, Hen-
+rique Ponde De Oliveira Pinto, Jared Kaplan, Harri Ed-
+wards, Yuri Burda, Nicholas Joseph, Greg Brockman,
+et al. 2021. Evaluating large language models trained on
+code. arXiv preprint arXiv:2107.03374 (2021).
+Yinfang Chen, Huaibing Xie, Minghua Ma, Yu Kang, Xin
+Gao, Liu Shi, Yunjie Cao, Xuedong Gao, Hao Fan,
+Ming Wen, Jun Zeng, Supriyo Ghosh, Xuchao Zhang,
+Chaoyun Zhang, Qingwei Lin, Saravan Rajmohan, Dong-
+mei Zhang, and Tianyin Xu. 2024. Automatic Root Cause
+Analysis via Large Language Models for Cloud Incidents.
+In Proceedings of the Nineteenth European Conference
+on Computer Systems (EuroSys’24).
+Maria Christakis, Patrick Emmisberger, Patrice Godefroid,
+and Peter Müller. 2017. A General Framework for Dy-
+namic Stub Injection. In Proceedings of the 39th Interna-
+tional Conference on Software Engineering (ICSE’17).
+Yuanshun Dai, Yanping Xiang, and Gewei Zhang. 2009.
+Self-healing and Hybrid Diagnosis in Cloud Computing.
+In Cloud Computing, Martin Gilje Jaatun, Gansen Zhao,
+and Chunming Rong (Eds.). Springer Berlin Heidelberg,
+Berlin, Heidelberg.
+Elasticsearch. 2024a. Centralize, transform & stash your
+data. https://www.elastic.co/logstash.
+Elasticsearch. 2024b. Lightweight shipper for logs. https:
+//www.elastic.co/beats/filebeat.
+Yu Gan, Yanqi Zhang, Dailun Cheng, Ankitha Shetty, Priyal
+Rathi, Nayan Katarki, Ariana Bruno, Justin Hu, Brian
+Ritchken, Brendon Jackson, et al. 2019. An open-source
+benchmark suite for microservices and their hardware-
+software implications for cloud & edge systems. In Pro-
+ceedings of the 24th International Conference on Archi-
+tectural Support for Programming Languages and Oper-
+ating Systems (ASPLOS’19).
+Vaibhav Ganatra, Anjaly Parayil, Supriyo Ghosh, Yu Kang,
+Minghua Ma, Chetan Bansal, Suman Nath, and Jonathan
+Mace. 2023. Detection Is Better Than Cure: A Cloud
+Incidents Perspective. In Proceedings of the 31st Joint
+European Software Engineering Conference and Sympo-
+sium on the Foundations of Software Engineering (ES-
+EC/FSE’23).
+Haryadi S. Gunawi, Thanh Do, Pallavi Joshi, Peter Al-
+varo, Joseph M. Hellerstein, Andrea C. Arpaci-Dusseau,
+Remzi H. Arpaci-Dusseau, Koushik Sen, and Dhruba
+Borthakur. 2011. Fate and Destini: A Framework
+for Cloud Recovery Testing. In Proceedings of the 8th
+USENIX Symposium on Networked Systems Design and
+Implementation (NSDI’11).
+Songqiao Han, Xiyang Hu, Hailiang Huang, Minqi Jiang,
+and Yue Zhao. 2022. ADBench: Anomaly Detection
+Benchmark. In Thirty-sixth Conference on Neural Infor-
+mation Processing Systems Datasets and Benchmarks
+Track.
+Shilin He, Botao Feng, Liqun Li, Xu Zhang, Yu Kang,
+Qingwei Lin, Saravan Rajmohan, and Dongmei Zhang.
+2023. STEAM: Observability-Preserving Trace Sampling.
+Association for Computing Machinery.
+
+
+=== PAGE 12 ===
+AIOpsLab: A Holistic Framework to Evaluate AI Agents for Enabling Autonomous Clouds
+Shilin He, Xu Zhang, Pinjia He, Yong Xu, Liqun Li, Yu
+Kang, Minghua Ma, Yining Wei, Yingnong Dang, Sara-
+vanakumar Rajmohan, et al. 2022. An empirical study
+of log analysis at Microsoft. In Proceedings of the 30th
+ACM Joint European Software Engineering Conference
+and Symposium on the Foundations of Software Engineer-
+ing (ESEC/FSE).
+Helm. 2024. Helm: The package manager for Kubernetes.
+Dan Hendrycks, Collin Burns, Steven Basart, Andrew
+Critch, Jerry Li, Dawn Song, and Jacob Steinhardt. 2021a.
+Aligning AI With Shared Human Values. Proceedings
+of the International Conference on Learning Representa-
+tions (ICLR’21)(2021).
+Dan Hendrycks, Collin Burns, Steven Basart, Andy Zou,
+Mantas Mazeika, Dawn Song, and Jacob Steinhardt.
+2021b. Measuring Massive Multitask Language Under-
+standing. Proceedings of the International Conference
+on Learning Representations (ICLR’21)(2021).
+Victor Heorhiadi, Shriram Rajagopalan, Hani Jamjoom,
+Michael K Reiter, and Vyas Sekar. 2016. Gremlin: Sys-
+tematic Resilience Testing of Microservices. In Proceed-
+ings of the IEEE 36th International Conference on Dis-
+tributed Computing Systems (ICDCS’16).
+Chuanjia Hou, Tong Jia, Yifan Wu, Ying Li, and Jing Han.
+2021. Diagnosing performance issues in microservices
+with heterogeneous data source. In 2021 IEEE Intl Conf
+on Parallel & Distributed Processing with Applications,
+Big Data & Cloud Computing, Sustainable Computing
+& Communications, Social Computing & Networking
+(ISPA/BDCloud/SocialCom/SustainCom).
+Yuzhen Huang, Yuzhuo Bai, Zhihao Zhu, Junlei Zhang,
+Jinghan Zhang, Tangjun Su, Junteng Liu, Chuancheng
+Lv, Yikai Zhang, Jiayi Lei, Yao Fu, Maosong Sun,
+and Junxian He. 2023. C-Eval: A Multi-Level Multi-
+Discipline Chinese Evaluation Suite for Foundation Mod-
+els. In Advances in Neural Information Processing Sys-
+tems (NeurIPS’23).
+Vincent Jacob, Fei Song, Arnaud Stiegler, Yanlei Diao, and
+Nesime Tatbul. 2020. AnomalyBench: An Open Bench-
+mark for Explainable Anomaly Detection. CoRR (2020).
+Jaeger Authors. 2024. Jaeger: Open source, end-to-end
+distributed tracing. https://www.jaegertracing.io.
+Naman Jain, King Han, Alex Gu, Wen-Ding Li, Fanjia
+Yan, Tianjun Zhang, Sida Wang, Armando Solar-Lezama,
+Koushik Sen, and Ion Stoica. 2024a. LiveCodeBench:
+Holistic and Contamination Free Evaluation of Large Lan-
+guage Models for Code.arXiv preprint arXiv:2403.07974
+(2024).
+Naman Jain, Manish Shetty, Tianjun Zhang, King Han,
+Koushik Sen, and Ion Stoica. 2024b. R2E: Turning any
+Github Repository into a Programming Agent Environ-
+ment. In Forty-first International Conference on Machine
+Learning (ICML’24).
+Yuxuan Jiang, Chaoyun Zhang, Shilin He, Zhihao Yang,
+Minghua Ma, Si Qin, Yu Kang, Yingnong Dang, Sara-
+van Rajmohan, Qingwei Lin, and Dongmei Zhang. 2024.
+Xpert: Empowering Incident Management with Query
+Recommendations via Large Language Models. In Pro-
+ceedings of the 46th IEEE/ACM International Conference
+on Software Engineering (ICSE’24).
+Carlos E Jimenez, John Yang, Alexander Wettig, Shunyu
+Yao, Kexin Pei, Ofir Press, and Karthik R Narasimhan.
+2024. SWE-bench: Can Language Models Resolve Real-
+world Github Issues?. In The Twelfth International Con-
+ference on Learning Representations (ICLR’24).
+Xiaoen Ju, Livio Soares, Kang G. Shin, Kyung Dong Ryu,
+and Dilma Da Silva. 2013. On Fault Resilience of Open-
+Stack. In Proceedings of the 12th ACM Symposium on
+Cloud Computing (SOCC’13).
+Kyle Kingsbury. 2022. Jepsen. https://jepsen.io/.
+Tony Lee, Michihiro Yasunaga, Chenlin Meng, Yifan Mai,
+Joon Sung Park, Agrim Gupta, Yunzhi Zhang, Deepak
+Narayanan, Hannah Teufel, Marco Bellagente, et al. 2024.
+Holistic evaluation of text-to-image models. Advances
+in Neural Information Processing Systems (NeurIPS’24)
+(2024).
+Tanakorn Leesatapornwongsa, Mingzhe Hao, Pallavi Joshi,
+Jeffrey F. Lukman, and Haryadi S. Gunawi. 2014. SAMC:
+Semantic-Aware Model Checking for Fast Discovery of
+Deep Bugs in Cloud Systems. In Proceedings of the 11th
+USENIX Conference on Operating Systems Design and
+Implementation (OSDI’14).
+Wenrui Li, Pengcheng Zhang, and Zhongxue Yang. 2012.
+A Framework for Self-Healing Service Compositions
+in Cloud Computing Environments. In 2012 IEEE 19th
+International Conference on Web Services (ICWS’12).
+Percy Liang, Rishi Bommasani, Tony Lee, Dimitris Tsipras,
+Dilara Soylu, Michihiro Yasunaga, Yian Zhang, Deepak
+Narayanan, Yuhuai Wu, Ananya Kumar, Benjamin New-
+man, Binhang Yuan, Bobby Yan, Ce Zhang, Christian
+Cosgrove, Christopher D. Manning, Christopher Ré, Di-
+ana Acosta-Navas, Drew A. Hudson, Eric Zelikman,
+Esin Durmus, Faisal Ladhak, Frieda Rong, Hongyu
+Ren, Huaxiu Yao, Jue Wang, Keshav Santhanam, Lau-
+rel Orr, Lucia Zheng, Mert Yuksekgonul, Mirac Suz-
+gun, Nathan Kim, Neel Guha, Niladri Chatterji, Omar
+Khattab, Peter Henderson, Qian Huang, Ryan Chi,
+
+
+=== PAGE 13 ===
+AIOpsLab: A Holistic Framework to Evaluate AI Agents for Enabling Autonomous Clouds
+Sang Michael Xie, Shibani Santurkar, Surya Ganguli, Tat-
+sunori Hashimoto, Thomas Icard, Tianyi Zhang, Vishrav
+Chaudhary, William Wang, Xuechen Li, Yifan Mai, Yuhui
+Zhang, and Yuta Koreeda. 2023. Holistic Evaluation of
+Language Models.
+Yuhe Liu, Changhua Pei, Longlong Xu, Bohan Chen,
+Mingze Sun, Zhirui Zhang, Yongqian Sun, Shenglin
+Zhang, Kun Wang, Haiming Zhang, et al . 2023. Op-
+sEval: A Comprehensive Task-Oriented AIOps Bench-
+mark for Large Language Models. arXiv preprint
+arXiv:2310.07637 (2023).
+Jie Lu, Chen Liu, Lian Li, Xiaobing Feng, Feng Tan, Jun
+Yang, and Liang You. 2019. CrashTuner: Detecting
+Crash-Recovery Bugs in Cloud Systems via Meta-Info
+Analysis. In Proceedings of the 26th ACM Symposium on
+Operating System Principles (SOSP’19).
+Minghua Ma, Shenglin Zhang, Dan Pei, Xin Huang, and
+Hongwei Dai. 2018. Robust and rapid adaption for con-
+cept drift in software system anomaly detection. In 2018
+IEEE 29th International Symposium on Software Relia-
+bility Engineering (ISSRE). IEEE, 13–24.
+Rupak Majumdar and Filip Niksic. 2018. Why is Ran-
+dom Testing Effective for Partition Tolerance Bugs?. In
+Proceedings of the 45th ACM SIGPLAN Symposium on
+Principles of Programming Languages (POPL’18).
+Paul D Marinescu and George Candea. 2009. LFI: A Practi-
+cal and General Library-Level Fault Injector. In Proceed-
+ings of the 39th IEEE/IFIP International Conference on
+Dependable Systems and Networks (DSN’09).
+Grégoire Mialon, Roberto Dessì, Maria Lomeli, Christo-
+foros Nalmpantis, Ram Pasunuru, Roberta Raileanu, Bap-
+tiste Rozière, Timo Schick, Jane Dwivedi-Yu, Asli Ce-
+likyilmaz, et al. 2023. Augmented language models: a
+survey. arXiv preprint arXiv:2302.07842 (2023).
+Jayashree Mohan, Ashlie Martinez, Soujanya Ponnapalli,
+Pandian Raju, and Vijay Chidambaram. 2018. Find-
+ing Crash-Consistency Bugs with Bounded Black-Box
+Crash Testing. In Proceedings of the 13th USENIX Con-
+ference on Operating Systems Design and Implementation
+(OSDI’18).
+Netflix. 2011. ChaosMonkey. https://github.com/
+Netflix/chaosmonkey. Accessed: 2024-07-08.
+Thanumalayan Sankaranarayana Pillai, Vijay Chidambaram,
+Samer Al Kiswany, Andrea C. Arpaci-Dusseau, and
+Remzi H. Arpaci-Dusseau. 2014. All File Systems
+Are Not Created Equal: On the Complexity of Craft-
+ing Crash-Consistent Applications. In Proceedings of the
+11th USENIX Conference on Operating Systems Design
+and Implementation (OSDI’14).
+Prometheus Authors. 2024. Prometheus. https://
+prometheus.io.
+Timo Schick, Jane Dwivedi-Yu, Roberto Dessì, Roberta
+Raileanu, Maria Lomeli, Eric Hambro, Luke Zettlemoyer,
+Nicola Cancedda, and Thomas Scialom. 2024. Tool-
+former: Language models can teach themselves to use
+tools. Advances in Neural Information Processing Sys-
+tems (NeurIPS’24)(2024).
+Jesper Simonsson, Long Zhang, Brice Morin, Benoit
+Baudry, and Martin Monperrus. 2021. Observability and
+chaos engineering on system calls for containerized appli-
+cations in docker. Future Generation Computer Systems
+(2021).
+Gagan Somashekar, Anurag Dutt, Mainak Adak, Tania
+Lorido Botran, and Anshul Gandhi. 2024. GAMMA:
+Graph Neural Network-Based Multi-Bottleneck Localiza-
+tion for Microservices Applications. In Proceedings of
+the ACM Web Conference 2024.
+Akshitha Sriraman and Thomas F Wenisch. 2018. µ suite:
+a benchmark suite for microservices. In 2018 IEEE Inter-
+national Symposium on Workload Characterization.
+Xudong Sun, Wenqing Luo, Jiawei Tyler Gu, Aishwarya
+Ganesan, Ramnatthan Alagappan, Michael Gasch, Lalith
+Suresh, and Tianyin Xu. 2022. Automatic Reliability Test-
+ing for Cluster Management Controllers. In Proceedings
+of the 16th USENIX Symposium on Operating Systems
+Design and Implementation (OSDI’22).
+Yongqian Sun, Binpeng Shi, Mingyu Mao, Minghua Ma,
+Sibo Xia, Shenglin Zhang, and Dan Pei. 2024. ART:
+A Unified Unsupervised Framework for Incident Man-
+agement in Microservice Systems. In Proceedings of the
+39th IEEE/ACM International Conference on Automated
+Software Engineering.
+Lingzhi Wang, Nengwen Zhao, Junjie Chen, Pinnong Li,
+Wenchi Zhang, and Kaixin Sui. 2020. Root-cause metric
+location for microservice systems via log anomaly de-
+tection. In 2020 IEEE international conference on web
+services (ICWS’20).
+Zefan Wang, Zichuan Liu, Yingying Zhang, Aoxiao Zhong,
+Lunting Fan, Lingfei Wu, and Qingsong Wen. 2023.
+Rcagent: Cloud root cause analysis by autonomous
+agents with tool-augmented large language models.arXiv
+preprint arXiv:2310.16340 (2023).
+Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten
+Bosma, Ed Chi, Quoc Le, and Denny Zhou. 2022a. Chain
+of thought prompting elicits reasoning in large language
+models. arXiv preprint arXiv:2201.11903 (2022).
+
+
+=== PAGE 14 ===
+AIOpsLab: A Holistic Framework to Evaluate AI Agents for Enabling Autonomous Clouds
+Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten
+Bosma, Fei Xia, Ed Chi, Quoc V Le, Denny Zhou, et al.
+2022b. Chain-of-thought prompting elicits reasoning in
+large language models. Advances in neural information
+processing systems (NeurIPS’22)(2022).
+Sean Wolfe. 2018. Amazon’s one hour of downtime on
+Prime Day may have cost it up to $100 million in lost
+sales. (2018). https://www.businessinsider.com/
+amazon-prime-day-website-issues-cost-it-
+millions-in-lost-sales-2018-7
+Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran,
+Karthik Narasimhan, and Yuan Cao. 2023. ReAct: Syn-
+ergizing Reasoning and Acting in Language Models. In
+International Conference on Learning Representations
+(ICLR’23).
+Zhaoyang Yu, Minghua Ma, Chaoyun Zhang, Si Qin, Yu
+Kang, Chetan Bansal, Saravan Rajmohan, Yingnong
+Dang, Changhua Pei, Dan Pei, Qingwei Lin, and Dong-
+mei Zhang. 2024a. MonitorAssistant: Simplifying Cloud
+Service Monitoring via Large Language Models. In Com-
+panion Proceedings of the 32nd ACM International Con-
+ference on the Foundations of Software Engineering
+(FSE’24).
+Zhaoyang Yu, Changhua Pei, Xin Wang, Minghua Ma,
+Chetan Bansal, Saravan Rajmohan, Qingwei Lin, Dong-
+mei Zhang, Xidao Wen, Jianhui Li, et al . 2024b. Pre-
+trained KPI Anomaly Detection Model Through Disen-
+tangled Transformer. In Proceedings of the 30th ACM
+SIGKDD Conference on Knowledge Discovery and Data
+Mining.
+Matei Zaharia, Omar Khattab, Lingjiao Chen, Jared Quincy
+Davis, Heather Miller, Chris Potts, James Zou, Michael
+Carbin, Jonathan Frankle, Naveen Rao, and Ali Ghodsi.
+2024. The Shift from Models to Compound AI Sys-
+tems. https://bair.berkeley.edu/blog/2024/02/
+18/compound-ai-systems/.
+Pingyu Zhang and Sebastian Elbaum. 2012. Amplifying
+Tests to Validate Exception Handling Code. InProceed-
+ings of the 34th International Conference on Software
+Engineering (ICSE’12).
+Qiao Zhang, Guo Yu, Chuanxiong Guo, Yingnong Dang,
+Nick Swanson, Xinsheng Yang, Randolph Yao, , Murali
+Chintalapati, Arvind Krishnamurthy, and Thomas Ander-
+son. 2018. Deepview: Virtual Disk Failure Diagnosis and
+Pattern Detection for Azure. In Proceedings of the 15th
+USENIX Symposium on Networked Systems Design and
+Implementation (NSDI’18).
+Xuchao Zhang, Supriyo Ghosh, Chetan Bansal, Rujia Wang,
+Minghua Ma, Yu Kang, and Saravan Rajmohan. 2024a.
+Automated Root Causing of Cloud Incidents using In-
+Context Learning with GPT-4. In Companion Proceed-
+ings of the 32nd ACM International Conference on the
+Foundations of Software Engineering.
+Xuchao Zhang, Tanish Mittal, Chetan Bansal, Rujia Wang,
+Minghua Ma, Zhixin Ren, Hao Huang, and Saravan Raj-
+mohan. 2024b. FLASH: A Workflow Automation Agent
+for Diagnosing Recurring Incidents. (2024).
+Chenyu Zhao, Minghua Ma, Zhenyu Zhong, Shenglin
+Zhang, Zhiyuan Tan, Xiao Xiong, LuLu Yu, Jiayi Feng,
+Yongqian Sun, Yuzhi Zhang, et al. 2023. Robust Mul-
+timodal Failure Detection for Microservice Systems. In
+Proceedings of the 29th ACM SIGKDD Conference on
+Knowledge Discovery and Data Mining.
+Lianmin Zheng, Wei-Lin Chiang, Ying Sheng, Siyuan
+Zhuang, Zhanghao Wu, Yonghao Zhuang, Zi Lin, Zhuo-
+han Li, Dacheng Li, Eric Xing, et al. 2024. Judging llm-
+as-a-judge with mt-bench and chatbot arena. Advances
+in Neural Information Processing Systems (NeurIPS’24)
+(2024).
+Shuyan Zhou, Frank F Xu, Hao Zhu, Xuhui Zhou, Robert
+Lo, Abishek Sridhar, Xianyi Cheng, Yonatan Bisk, Daniel
+Fried, Uri Alon, et al. 2023. WebArena: A Realistic Web
+Environment for Building Autonomous Agents. arXiv
+preprint arXiv:2307.13854 (2023).
+Xiang Zhou, Xin Peng, Tao Xie, Jun Sun, Chao Ji, Wenhai
+Li, and Dan Ding. 2021. Fault Analysis and Debugging
+of Microservice Systems: Industrial Survey, Benchmark
+System, and Empirical Study. IEEE Transactions on
+Software Engineering (2021).

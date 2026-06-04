@@ -1,0 +1,109 @@
+\begin{thebibliography}{21}
+\providecommand{\natexlab}[1]{#1}
+
+\bibitem[{Chen et~al.(2025{\natexlab{a}})Chen, Pan, Clark, Su, Zheutlin, Bhavya, Arora, Deng, Jha, and Xu}]{chen2025stratus}
+Chen, Y.; Pan, J.; Clark, J.; Su, Y.; Zheutlin, N.; Bhavya, B.; Arora, R.; Deng, Y.; Jha, S.; and Xu, T. 2025{\natexlab{a}}.
+\newblock Stratus: A Multi-agent System for Autonomous Reliability Engineering of Modern Clouds.
+\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}.
+
+\bibitem[{Chen et~al.(2025{\natexlab{b}})Chen, Shetty, Somashekar, Ma, Simmhan, Mace, Bansal, Wang, and Rajmohan}]{chen2025aiopslab}
+Chen, Y.; Shetty, M.; Somashekar, G.; Ma, M.; Simmhan, Y.; Mace, J.; Bansal, C.; Wang, R.; and Rajmohan, S. 2025{\natexlab{b}}.
+\newblock {AIOpsLab}: A Holistic Framework to Evaluate {AI} Agents for Enabling Autonomous Clouds.
+\newblock In \emph{Proceedings of Machine Learning and Systems (MLSys)}.
+
+\bibitem[{Chen et~al.(2024)Chen, Xie, Ma, Kang, Gao, Shi, Cao, Gao, Fan, Wen et~al.}]{chen2024rcacopilot}
+Chen, Y.; Xie, H.; Ma, M.; Kang, Y.; Gao, X.; Shi, L.; Cao, Y.; Gao, X.; Fan, H.; Wen, M.; et~al. 2024.
+\newblock {RCACopilot}: Automatic Root Cause Analysis via Large Language Models for Cloud Incidents.
+\newblock In \emph{Proceedings of the European Conference on Computer Systems (EuroSys)}.
+
+\bibitem[{Clark et~al.(2026)Clark, Su, Pial, Tian, Gniedziejko, Jacobsen, Chen, and Xu}]{clark2026sregym}
+Clark, J.; Su, Y.; Pial, S. M.~R.; Tian, Y.; Gniedziejko, L.; Jacobsen, H.-A.; Chen, Y.; and Xu, T. 2026.
+\newblock {SREGym}: A Live Benchmark for {AI} {SRE} Agents with High-Fidelity Failure Scenarios.
+\newblock \emph{arXiv preprint arXiv:2506.XXXXX}.
+
+\bibitem[{Cui et~al.(2025)}]{cui2025gpuresilience}
+Cui, R.; et~al. 2025.
+\newblock Characterizing {GPU} Resilience and Impact on {AI/HPC} Systems.
+\newblock \emph{arXiv preprint arXiv:2503.11901}.
+
+\bibitem[{Gan et~al.(2019)Gan, Zhang, Cheng, Shetty, Rathi, Katarki, Bruno, Hu, Ritchken, Jackson et~al.}]{gan2019deathstarbench}
+Gan, Y.; Zhang, Y.; Cheng, D.; Shetty, A.; Rathi, P.; Katarki, N.; Bruno, A.; Hu, J.; Ritchken, B.; Jackson, B.; et~al. 2019.
+\newblock An Open-Source Benchmark Suite for Microservices and Their Hardware-Software Implications for Cloud and Edge Systems.
+\newblock In \emph{Proceedings of the International Conference on Architectural Support for Programming Languages and Operating Systems (ASPLOS)}.
+
+\bibitem[{Jha et~al.(2025)Jha, Arora, Watanabe, Yanagawa, Chen, Clark et~al.}]{jha2025itbench}
+Jha, S.; Arora, R.~R.; Watanabe, Y.; Yanagawa, T.; Chen, Y.; Clark, J.; et~al. 2025.
+\newblock {ITBench}: Evaluating {AI} Agents across Diverse Real-World {IT} Automation Tasks.
+\newblock In \emph{Proceedings of the International Conference on Machine Learning (ICML)}.
+
+\bibitem[{Jiang et~al.(2024)Jiang, Zhang, He, Yang, Ma, Qin, Kang, Dang, Rajmohan, Lin, and Zhang}]{jiang2024xpert}
+Jiang, Y.; Zhang, C.; He, S.; Yang, Z.; Ma, M.; Qin, S.; Kang, Y.; Dang, Y.; Rajmohan, S.; Lin, Q.; and Zhang, D. 2024.
+\newblock Xpert: Empowering Incident Management with Query Recommendations via {LLMs}.
+\newblock In \emph{Proceedings of the International Conference on Software Engineering (ICSE)}.
+
+\bibitem[{Liu et~al.(2024)Liu, Yu, Zhang, Xu, Lei, Lai, Gu, Ding, Men, Yang et~al.}]{liu2024agentbench}
+Liu, X.; Yu, H.; Zhang, H.; Xu, Y.; Lei, X.; Lai, H.; Gu, Y.; Ding, H.; Men, K.; Yang, K.; et~al. 2024.
+\newblock {AgentBench}: Evaluating {LLMs} as Agents.
+\newblock In \emph{International Conference on Learning Representations (ICLR)}.
+
+\bibitem[{Pei et~al.(2025)Pei, Wang, Liu, Li, Liu, He, Kang, Zhang, Chen, Li, Xie, and Pei}]{pei2025flowofaction}
+Pei, C.; Wang, Z.; Liu, F.; Li, Z.; Liu, Y.; He, X.; Kang, R.; Zhang, T.; Chen, J.; Li, J.; Xie, G.; and Pei, D. 2025.
+\newblock Flow-of-Action: {SOP} Enhanced {LLM}-Based Multi-Agent System for Root Cause Analysis.
+\newblock In \emph{Companion Proceedings of the Web Conference (WWW)}.
+
+\bibitem[{Ruan et~al.(2024)Ruan, Dong, Wang, Pitis, Zhou, Ba, Dubois, Maddison, and Hashimoto}]{ruan2024toolemu}
+Ruan, Y.; Dong, H.; Wang, A.; Pitis, S.; Zhou, Y.; Ba, J.; Dubois, Y.; Maddison, C.~J.; and Hashimoto, T. 2024.
+\newblock Identifying the Risks of {LM} Agents with an {LM}-Emulated Sandbox.
+\newblock \emph{International Conference on Learning Representations (ICLR)}.
+
+\bibitem[{Wan et~al.(2025)}]{wan2025byterobust}
+Wan, M.; et~al. 2025.
+\newblock {ByteRobust}: Robust {LLM} Training Infrastructure.
+\newblock In \emph{Proceedings of the ACM Symposium on Operating Systems Principles (SOSP)}.
+
+\bibitem[{Wang et~al.(2026)Wang, Yu, Huang, Wang, Huang, Chen, and Lyu}]{wang2026cloudopsbench}
+Wang, Y.; Yu, G.; Huang, H.; Wang, Z.; Huang, Y.; Chen, P.; and Lyu, M.~R. 2026.
+\newblock {Cloud-OpsBench}: A Reproducible Benchmark for Agentic Root Cause Analysis in Cloud Systems.
+\newblock \emph{arXiv preprint arXiv:2602.XXXXX}.
+
+\bibitem[{Wang et~al.(2024)Wang, Liu, Zhang, Zhong, Fan, Wu, and Wen}]{wang2024rcagent}
+Wang, Z.; Liu, Z.; Zhang, Y.; Zhong, A.; Fan, J.; Wu, L.; and Wen, Q. 2024.
+\newblock {RCAgent}: Cloud Root Cause Analysis by Autonomous Agents with Tool-Augmented {LLMs}.
+\newblock In \emph{Proceedings of the ACM International Conference on Information and Knowledge Management (CIKM)}.
+
+\bibitem[{Xu et~al.(2025)Xu, Zhang, Zhong, He, Zhang, Lin, Pei, He, Zhang, and Zhang}]{xu2025openrca}
+Xu, J.; Zhang, Q.; Zhong, Z.; He, S.; Zhang, C.; Lin, Q.; Pei, D.; He, P.; Zhang, D.; and Zhang, Q. 2025.
+\newblock {OpenRCA}: Can Large Language Models Locate the Root Cause of Software Failures?
+\newblock In \emph{International Conference on Learning Representations (ICLR)}.
+
+\bibitem[{Yao et~al.(2023)Yao, Zhao, Yu, Du, Shafran, Narasimhan, and Cao}]{yao2023react}
+Yao, S.; Zhao, J.; Yu, D.; Du, N.; Shafran, I.; Narasimhan, K.; and Cao, Y. 2023.
+\newblock {ReAct}: Synergizing Reasoning and Acting in Language Models.
+\newblock \emph{International Conference on Learning Representations (ICLR)}.
+
+\bibitem[{Yu et~al.(2024{\natexlab{a}})}]{yu2024fisurvey}
+Yu, G.; et~al. 2024{\natexlab{a}}.
+\newblock A Survey on Failure Analysis and Fault Injection in {AI} Systems.
+\newblock \emph{ACM Transactions on Software Engineering and Methodology}.
+
+\bibitem[{Yu et~al.(2024{\natexlab{b}})Yu, Ma, Zhang, Qin, Kang, Bansal, Rajmohan, Dang, Pei, Pei, Lin, and Zhang}]{yu2024monitorassistant}
+Yu, Z.; Ma, M.; Zhang, C.; Qin, S.; Kang, Y.; Bansal, C.; Rajmohan, S.; Dang, Y.; Pei, C.; Pei, D.; Lin, Q.; and Zhang, D. 2024{\natexlab{b}}.
+\newblock {MonitorAssistant}: Simplifying Cloud Service Monitoring via Large Language Models.
+\newblock In \emph{Companion Proceedings of the International Symposium on Foundations of Software Engineering (FSE)}.
+
+\bibitem[{Zhang et~al.(2024)Zhang, Mittal, Bansal, Wang, Ma, Ren, Huang, and Rajmohan}]{zhang2024flash}
+Zhang, X.; Mittal, T.; Bansal, C.; Wang, R.; Ma, M.; Ren, Z.; Huang, H.; and Rajmohan, S. 2024.
+\newblock {FLASH}: A Workflow Automation Agent for Diagnosing Recurring Incidents.
+\newblock \emph{arXiv preprint arXiv:2410.XXXXX}.
+
+\bibitem[{Zhang et~al.(2025)Zhang, Wang, Li, Yuan, Xiao, Zhuang, and Yu}]{zhang2025tamo}
+Zhang, X.; Wang, Q.; Li, M.; Yuan, Y.; Xiao, M.; Zhuang, F.; and Yu, D. 2025.
+\newblock {TAMO}: Fine-Grained Root Cause Analysis via Tool-Assisted {LLM} Agent With Multi-Modality Observation Data.
+\newblock \emph{IEEE Transactions on Services Computing}, 18(6).
+
+\bibitem[{Zhou et~al.(2024)}]{zhou2024dbot}
+Zhou, X.; et~al. 2024.
+\newblock {D-Bot}: Database Diagnosis System using Large Language Models.
+\newblock \emph{Proceedings of the VLDB Endowment}.
+
+\end{thebibliography}

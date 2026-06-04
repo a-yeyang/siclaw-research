@@ -1,0 +1,2262 @@
+[
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c001",
+    "category": "image-pull",
+    "title": "missing image tag",
+    "targets": [
+      "pod/c001-image"
+    ],
+    "symptom": "GPU workload pod c001-image never starts and is reported around ImagePullBackOff/ErrImagePull.",
+    "groundTruth": {
+      "localization": "pod/c001-image",
+      "mechanism": "image registry host/tag is invalid and cannot be pulled",
+      "scope": "single pod image startup"
+    },
+    "expectedSignals": [
+      "pod waiting reason",
+      "describe pod events",
+      "image field"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c002",
+    "category": "image-pull",
+    "title": "nonexistent docker image",
+    "targets": [
+      "pod/c002-image"
+    ],
+    "symptom": "GPU workload pod c002-image never starts and is reported around ImagePullBackOff/ErrImagePull.",
+    "groundTruth": {
+      "localization": "pod/c002-image",
+      "mechanism": "image repository does not exist",
+      "scope": "single pod image startup"
+    },
+    "expectedSignals": [
+      "pod waiting reason",
+      "describe pod events",
+      "image field"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c003",
+    "category": "image-pull",
+    "title": "bad private registry",
+    "targets": [
+      "pod/c003-image"
+    ],
+    "symptom": "GPU workload pod c003-image never starts and is reported around ImagePullBackOff/ErrImagePull.",
+    "groundTruth": {
+      "localization": "pod/c003-image",
+      "mechanism": "private registry is unreachable or unauthorized",
+      "scope": "single pod image startup"
+    },
+    "expectedSignals": [
+      "pod waiting reason",
+      "describe pod events",
+      "image field"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c004",
+    "category": "image-pull",
+    "title": "typoed cuda image",
+    "targets": [
+      "pod/c004-image"
+    ],
+    "symptom": "GPU workload pod c004-image never starts and is reported around ImagePullBackOff/ErrImagePull.",
+    "groundTruth": {
+      "localization": "pod/c004-image",
+      "mechanism": "image name has a typo: pytroch instead of pytorch",
+      "scope": "single pod image startup"
+    },
+    "expectedSignals": [
+      "pod waiting reason",
+      "describe pod events",
+      "image field"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c005",
+    "category": "image-pull",
+    "title": "bad model sidecar image",
+    "targets": [
+      "pod/c005-image"
+    ],
+    "symptom": "GPU workload pod c005-image never starts and is reported around ImagePullBackOff/ErrImagePull.",
+    "groundTruth": {
+      "localization": "pod/c005-image",
+      "mechanism": "sidecar image cannot be pulled",
+      "scope": "single pod image startup"
+    },
+    "expectedSignals": [
+      "pod waiting reason",
+      "describe pod events",
+      "image field"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c006",
+    "category": "image-pull",
+    "title": "bad init image",
+    "targets": [
+      "pod/c006-image"
+    ],
+    "symptom": "GPU workload pod c006-image never starts and is reported around ImagePullBackOff/ErrImagePull.",
+    "groundTruth": {
+      "localization": "pod/c006-image",
+      "mechanism": "initContainer image cannot be pulled",
+      "scope": "single pod image startup"
+    },
+    "expectedSignals": [
+      "pod waiting reason",
+      "describe pod events",
+      "image field"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c007",
+    "category": "image-pull",
+    "title": "wrong exporter image",
+    "targets": [
+      "pod/c007-image"
+    ],
+    "symptom": "GPU workload pod c007-image never starts and is reported around ImagePullBackOff/ErrImagePull.",
+    "groundTruth": {
+      "localization": "pod/c007-image",
+      "mechanism": "GPU exporter image tag is invalid",
+      "scope": "single pod image startup"
+    },
+    "expectedSignals": [
+      "pod waiting reason",
+      "describe pod events",
+      "image field"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c008",
+    "category": "image-pull",
+    "title": "bad training image digest",
+    "targets": [
+      "pod/c008-image"
+    ],
+    "symptom": "GPU workload pod c008-image never starts and is reported around ImagePullBackOff/ErrImagePull.",
+    "groundTruth": {
+      "localization": "pod/c008-image",
+      "mechanism": "image digest does not exist",
+      "scope": "single pod image startup"
+    },
+    "expectedSignals": [
+      "pod waiting reason",
+      "describe pod events",
+      "image field"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c009",
+    "category": "image-pull",
+    "title": "bad pull secret reference",
+    "targets": [
+      "pod/c009-image"
+    ],
+    "symptom": "GPU workload pod c009-image never starts and is reported around ImagePullBackOff/ErrImagePull.",
+    "groundTruth": {
+      "localization": "pod/c009-image",
+      "mechanism": "private image cannot be pulled and pull secret is missing",
+      "scope": "single pod image startup"
+    },
+    "expectedSignals": [
+      "pod waiting reason",
+      "describe pod events",
+      "image field"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c010",
+    "category": "image-pull",
+    "title": "airgap mirror typo",
+    "targets": [
+      "pod/c010-image"
+    ],
+    "symptom": "GPU workload pod c010-image never starts and is reported around ImagePullBackOff/ErrImagePull.",
+    "groundTruth": {
+      "localization": "pod/c010-image",
+      "mechanism": "air-gapped mirror hostname is wrong",
+      "scope": "single pod image startup"
+    },
+    "expectedSignals": [
+      "pod waiting reason",
+      "describe pod events",
+      "image field"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c011",
+    "category": "crashloop",
+    "title": "missing model path env",
+    "targets": [
+      "pod/c011-crash"
+    ],
+    "symptom": "Training pod c011-crash repeatedly restarts before becoming ready.",
+    "groundTruth": {
+      "localization": "pod/c011-crash",
+      "mechanism": "required MODEL_PATH env var is absent",
+      "scope": "single container crash loop"
+    },
+    "expectedSignals": [
+      "CrashLoopBackOff",
+      "previous logs",
+      "restart count"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c012",
+    "category": "crashloop",
+    "title": "bad cuda visible devices",
+    "targets": [
+      "pod/c012-crash"
+    ],
+    "symptom": "Training pod c012-crash repeatedly restarts before becoming ready.",
+    "groundTruth": {
+      "localization": "pod/c012-crash",
+      "mechanism": "CUDA_VISIBLE_DEVICES is mis-set for the workload",
+      "scope": "single container crash loop"
+    },
+    "expectedSignals": [
+      "CrashLoopBackOff",
+      "previous logs",
+      "restart count"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c013",
+    "category": "crashloop",
+    "title": "bad entrypoint",
+    "targets": [
+      "pod/c013-crash"
+    ],
+    "symptom": "Training pod c013-crash repeatedly restarts before becoming ready.",
+    "groundTruth": {
+      "localization": "pod/c013-crash",
+      "mechanism": "container command exits because startup arguments are invalid",
+      "scope": "single container crash loop"
+    },
+    "expectedSignals": [
+      "CrashLoopBackOff",
+      "previous logs",
+      "restart count"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c014",
+    "category": "crashloop",
+    "title": "missing checkpoint",
+    "targets": [
+      "pod/c014-crash"
+    ],
+    "symptom": "Training pod c014-crash repeatedly restarts before becoming ready.",
+    "groundTruth": {
+      "localization": "pod/c014-crash",
+      "mechanism": "application exits because checkpoint path is missing",
+      "scope": "single container crash loop"
+    },
+    "expectedSignals": [
+      "CrashLoopBackOff",
+      "previous logs",
+      "restart count"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c015",
+    "category": "crashloop",
+    "title": "bad nccl interface",
+    "targets": [
+      "pod/c015-crash"
+    ],
+    "symptom": "Training pod c015-crash repeatedly restarts before becoming ready.",
+    "groundTruth": {
+      "localization": "pod/c015-crash",
+      "mechanism": "NCCL network interface env points to a nonexistent interface",
+      "scope": "single container crash loop"
+    },
+    "expectedSignals": [
+      "CrashLoopBackOff",
+      "previous logs",
+      "restart count"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c016",
+    "category": "crashloop",
+    "title": "oom-like self exit",
+    "targets": [
+      "pod/c016-crash"
+    ],
+    "symptom": "Training pod c016-crash repeatedly restarts before becoming ready.",
+    "groundTruth": {
+      "localization": "pod/c016-crash",
+      "mechanism": "process exits with 137-like code from memory allocation failure",
+      "scope": "single container crash loop"
+    },
+    "expectedSignals": [
+      "CrashLoopBackOff",
+      "previous logs",
+      "restart count"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c017",
+    "category": "crashloop",
+    "title": "permission denied",
+    "targets": [
+      "pod/c017-crash"
+    ],
+    "symptom": "Training pod c017-crash repeatedly restarts before becoming ready.",
+    "groundTruth": {
+      "localization": "pod/c017-crash",
+      "mechanism": "application lacks permission to read its model directory",
+      "scope": "single container crash loop"
+    },
+    "expectedSignals": [
+      "CrashLoopBackOff",
+      "previous logs",
+      "restart count"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c018",
+    "category": "crashloop",
+    "title": "bad config yaml",
+    "targets": [
+      "pod/c018-crash"
+    ],
+    "symptom": "Training pod c018-crash repeatedly restarts before becoming ready.",
+    "groundTruth": {
+      "localization": "pod/c018-crash",
+      "mechanism": "trainer configuration file content is invalid",
+      "scope": "single container crash loop"
+    },
+    "expectedSignals": [
+      "CrashLoopBackOff",
+      "previous logs",
+      "restart count"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c019",
+    "category": "crashloop",
+    "title": "missing license token",
+    "targets": [
+      "pod/c019-crash"
+    ],
+    "symptom": "Training pod c019-crash repeatedly restarts before becoming ready.",
+    "groundTruth": {
+      "localization": "pod/c019-crash",
+      "mechanism": "required LICENSE_TOKEN env var is absent",
+      "scope": "single container crash loop"
+    },
+    "expectedSignals": [
+      "CrashLoopBackOff",
+      "previous logs",
+      "restart count"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c020",
+    "category": "crashloop",
+    "title": "wrong port binding",
+    "targets": [
+      "pod/c020-crash"
+    ],
+    "symptom": "Training pod c020-crash repeatedly restarts before becoming ready.",
+    "groundTruth": {
+      "localization": "pod/c020-crash",
+      "mechanism": "application fails during startup while binding its port",
+      "scope": "single container crash loop"
+    },
+    "expectedSignals": [
+      "CrashLoopBackOff",
+      "previous logs",
+      "restart count"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c021",
+    "category": "config",
+    "title": "missing configmap key",
+    "targets": [
+      "pod/c021-config"
+    ],
+    "symptom": "Pod c021-config is stuck during container configuration or volume setup.",
+    "groundTruth": {
+      "localization": "pod/c021-config",
+      "mechanism": "ConfigMap missing-model-config/key bucket is absent",
+      "scope": "single pod configuration dependency"
+    },
+    "expectedSignals": [
+      "CreateContainerConfigError or FailedMount",
+      "describe pod events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c022",
+    "category": "config",
+    "title": "missing secret key",
+    "targets": [
+      "pod/c022-config"
+    ],
+    "symptom": "Pod c022-config is stuck during container configuration or volume setup.",
+    "groundTruth": {
+      "localization": "pod/c022-config",
+      "mechanism": "Secret missing-registry-secret/key token is absent",
+      "scope": "single pod configuration dependency"
+    },
+    "expectedSignals": [
+      "CreateContainerConfigError or FailedMount",
+      "describe pod events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c023",
+    "category": "config",
+    "title": "missing envFrom configmap",
+    "targets": [
+      "pod/c023-config"
+    ],
+    "symptom": "Pod c023-config is stuck during container configuration or volume setup.",
+    "groundTruth": {
+      "localization": "pod/c023-config",
+      "mechanism": "envFrom references a missing ConfigMap",
+      "scope": "single pod configuration dependency"
+    },
+    "expectedSignals": [
+      "CreateContainerConfigError or FailedMount",
+      "describe pod events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c024",
+    "category": "config",
+    "title": "missing secret envFrom",
+    "targets": [
+      "pod/c024-config"
+    ],
+    "symptom": "Pod c024-config is stuck during container configuration or volume setup.",
+    "groundTruth": {
+      "localization": "pod/c024-config",
+      "mechanism": "envFrom references a missing Secret",
+      "scope": "single pod configuration dependency"
+    },
+    "expectedSignals": [
+      "CreateContainerConfigError or FailedMount",
+      "describe pod events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c025",
+    "category": "config",
+    "title": "missing config volume",
+    "targets": [
+      "pod/c025-config"
+    ],
+    "symptom": "Pod c025-config is stuck during container configuration or volume setup.",
+    "groundTruth": {
+      "localization": "pod/c025-config",
+      "mechanism": "volume references a missing ConfigMap",
+      "scope": "single pod configuration dependency"
+    },
+    "expectedSignals": [
+      "CreateContainerConfigError or FailedMount",
+      "describe pod events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c026",
+    "category": "config",
+    "title": "missing secret volume",
+    "targets": [
+      "pod/c026-config"
+    ],
+    "symptom": "Pod c026-config is stuck during container configuration or volume setup.",
+    "groundTruth": {
+      "localization": "pod/c026-config",
+      "mechanism": "volume references a missing Secret",
+      "scope": "single pod configuration dependency"
+    },
+    "expectedSignals": [
+      "CreateContainerConfigError or FailedMount",
+      "describe pod events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c027",
+    "category": "config",
+    "title": "missing pvc volume",
+    "targets": [
+      "pod/c027-config"
+    ],
+    "symptom": "Pod c027-config is stuck during container configuration or volume setup.",
+    "groundTruth": {
+      "localization": "pod/c027-config",
+      "mechanism": "pod references a missing PVC",
+      "scope": "single pod configuration dependency"
+    },
+    "expectedSignals": [
+      "CreateContainerConfigError or FailedMount",
+      "describe pod events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c028",
+    "category": "config",
+    "title": "bad projected secret",
+    "targets": [
+      "pod/c028-config"
+    ],
+    "symptom": "Pod c028-config is stuck during container configuration or volume setup.",
+    "groundTruth": {
+      "localization": "pod/c028-config",
+      "mechanism": "projected volume references a missing Secret",
+      "scope": "single pod configuration dependency"
+    },
+    "expectedSignals": [
+      "CreateContainerConfigError or FailedMount",
+      "describe pod events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c029",
+    "category": "config",
+    "title": "bad config subpath",
+    "targets": [
+      "pod/c029-config"
+    ],
+    "symptom": "Pod c029-config is stuck during container configuration or volume setup.",
+    "groundTruth": {
+      "localization": "pod/c029-config",
+      "mechanism": "subPath mount depends on a missing ConfigMap",
+      "scope": "single pod configuration dependency"
+    },
+    "expectedSignals": [
+      "CreateContainerConfigError or FailedMount",
+      "describe pod events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c030",
+    "category": "config",
+    "title": "missing downward config",
+    "targets": [
+      "pod/c030-config"
+    ],
+    "symptom": "Pod c030-config is stuck during container configuration or volume setup.",
+    "groundTruth": {
+      "localization": "pod/c030-config",
+      "mechanism": "pod references a missing training ConfigMap",
+      "scope": "single pod configuration dependency"
+    },
+    "expectedSignals": [
+      "CreateContainerConfigError or FailedMount",
+      "describe pod events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c031",
+    "category": "scheduling-gpu",
+    "title": "gpu type selector unavailable",
+    "targets": [
+      "pod/c031-pending"
+    ],
+    "symptom": "GPU or training pod c031-pending remains Pending / unscheduled.",
+    "groundTruth": {
+      "localization": "pod/c031-pending",
+      "mechanism": "nodeSelector asks for unavailable GPU type h100-pcie-80gb",
+      "scope": "single workload scheduling constraint"
+    },
+    "expectedSignals": [
+      "FailedScheduling events",
+      "pod spec resource requests/selectors"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c032",
+    "category": "scheduling-gpu",
+    "title": "impossible gpu count",
+    "targets": [
+      "pod/c032-pending"
+    ],
+    "symptom": "GPU or training pod c032-pending remains Pending / unscheduled.",
+    "groundTruth": {
+      "localization": "pod/c032-pending",
+      "mechanism": "pod requests more GPUs than any node/cluster can provide",
+      "scope": "single workload scheduling constraint"
+    },
+    "expectedSignals": [
+      "FailedScheduling events",
+      "pod spec resource requests/selectors"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c033",
+    "category": "scheduling-gpu",
+    "title": "huge cpu request",
+    "targets": [
+      "pod/c033-pending"
+    ],
+    "symptom": "GPU or training pod c033-pending remains Pending / unscheduled.",
+    "groundTruth": {
+      "localization": "pod/c033-pending",
+      "mechanism": "CPU request exceeds schedulable capacity",
+      "scope": "single workload scheduling constraint"
+    },
+    "expectedSignals": [
+      "FailedScheduling events",
+      "pod spec resource requests/selectors"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c034",
+    "category": "scheduling-gpu",
+    "title": "huge memory request",
+    "targets": [
+      "pod/c034-pending"
+    ],
+    "symptom": "GPU or training pod c034-pending remains Pending / unscheduled.",
+    "groundTruth": {
+      "localization": "pod/c034-pending",
+      "mechanism": "memory request exceeds schedulable capacity",
+      "scope": "single workload scheduling constraint"
+    },
+    "expectedSignals": [
+      "FailedScheduling events",
+      "pod spec resource requests/selectors"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c035",
+    "category": "scheduling-gpu",
+    "title": "nonexistent scheduler",
+    "targets": [
+      "pod/c035-pending"
+    ],
+    "symptom": "GPU or training pod c035-pending remains Pending / unscheduled.",
+    "groundTruth": {
+      "localization": "pod/c035-pending",
+      "mechanism": "pod names a scheduler that is not running",
+      "scope": "single workload scheduling constraint"
+    },
+    "expectedSignals": [
+      "FailedScheduling events",
+      "pod spec resource requests/selectors"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c036",
+    "category": "scheduling-gpu",
+    "title": "missing gpu scheduler profile",
+    "targets": [
+      "pod/c036-pending"
+    ],
+    "symptom": "GPU or training pod c036-pending remains Pending / unscheduled.",
+    "groundTruth": {
+      "localization": "pod/c036-pending",
+      "mechanism": "schedulerName points to a nonexistent GPU scheduler profile",
+      "scope": "single workload scheduling constraint"
+    },
+    "expectedSignals": [
+      "FailedScheduling events",
+      "pod spec resource requests/selectors"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c037",
+    "category": "scheduling-gpu",
+    "title": "zone selector impossible",
+    "targets": [
+      "pod/c037-pending"
+    ],
+    "symptom": "GPU or training pod c037-pending remains Pending / unscheduled.",
+    "groundTruth": {
+      "localization": "pod/c037-pending",
+      "mechanism": "nodeSelector asks for a nonexistent zone",
+      "scope": "single workload scheduling constraint"
+    },
+    "expectedSignals": [
+      "FailedScheduling events",
+      "pod spec resource requests/selectors"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c038",
+    "category": "scheduling-gpu",
+    "title": "hostname selector impossible",
+    "targets": [
+      "pod/c038-pending"
+    ],
+    "symptom": "GPU or training pod c038-pending remains Pending / unscheduled.",
+    "groundTruth": {
+      "localization": "pod/c038-pending",
+      "mechanism": "nodeSelector pins pod to nonexistent node",
+      "scope": "single workload scheduling constraint"
+    },
+    "expectedSignals": [
+      "FailedScheduling events",
+      "pod spec resource requests/selectors"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c039",
+    "category": "scheduling-gpu",
+    "title": "gpu label typo",
+    "targets": [
+      "pod/c039-pending"
+    ],
+    "symptom": "GPU or training pod c039-pending remains Pending / unscheduled.",
+    "groundTruth": {
+      "localization": "pod/c039-pending",
+      "mechanism": "nodeSelector key has a typo: gpu-typ instead of gpu-type",
+      "scope": "single workload scheduling constraint"
+    },
+    "expectedSignals": [
+      "FailedScheduling events",
+      "pod spec resource requests/selectors"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c040",
+    "category": "scheduling-gpu",
+    "title": "pod anti-affinity impossible",
+    "targets": [
+      "pod/c040-pending"
+    ],
+    "symptom": "GPU or training pod c040-pending remains Pending / unscheduled.",
+    "groundTruth": {
+      "localization": "pod/c040-pending",
+      "mechanism": "required anti-affinity conflicts with broad existing eval labels",
+      "scope": "single workload scheduling constraint"
+    },
+    "expectedSignals": [
+      "FailedScheduling events",
+      "pod spec resource requests/selectors"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c041",
+    "category": "scheduling-gpu",
+    "title": "gpu plus invalid selector",
+    "targets": [
+      "pod/c041-pending"
+    ],
+    "symptom": "GPU or training pod c041-pending remains Pending / unscheduled.",
+    "groundTruth": {
+      "localization": "pod/c041-pending",
+      "mechanism": "GPU request is combined with an unavailable GPU type selector",
+      "scope": "single workload scheduling constraint"
+    },
+    "expectedSignals": [
+      "FailedScheduling events",
+      "pod spec resource requests/selectors"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c042",
+    "category": "scheduling-gpu",
+    "title": "gpu no toleration style",
+    "targets": [
+      "pod/c042-pending"
+    ],
+    "symptom": "GPU or training pod c042-pending remains Pending / unscheduled.",
+    "groundTruth": {
+      "localization": "pod/c042-pending",
+      "mechanism": "selector targets a dedicated label that no node has",
+      "scope": "single workload scheduling constraint"
+    },
+    "expectedSignals": [
+      "FailedScheduling events",
+      "pod spec resource requests/selectors"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c043",
+    "category": "scheduling-gpu",
+    "title": "min cpu on fake pool",
+    "targets": [
+      "pod/c043-pending"
+    ],
+    "symptom": "GPU or training pod c043-pending remains Pending / unscheduled.",
+    "groundTruth": {
+      "localization": "pod/c043-pending",
+      "mechanism": "GPU workload targets a nonexistent node pool",
+      "scope": "single workload scheduling constraint"
+    },
+    "expectedSignals": [
+      "FailedScheduling events",
+      "pod spec resource requests/selectors"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c044",
+    "category": "scheduling-gpu",
+    "title": "required affinity impossible",
+    "targets": [
+      "pod/c044-pending"
+    ],
+    "symptom": "GPU or training pod c044-pending remains Pending / unscheduled.",
+    "groundTruth": {
+      "localization": "pod/c044-pending",
+      "mechanism": "required node affinity uses a label that no node has",
+      "scope": "single workload scheduling constraint"
+    },
+    "expectedSignals": [
+      "FailedScheduling events",
+      "pod spec resource requests/selectors"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c045",
+    "category": "scheduling-gpu",
+    "title": "wrong arch",
+    "targets": [
+      "pod/c045-pending"
+    ],
+    "symptom": "GPU or training pod c045-pending remains Pending / unscheduled.",
+    "groundTruth": {
+      "localization": "pod/c045-pending",
+      "mechanism": "node architecture selector is impossible",
+      "scope": "single workload scheduling constraint"
+    },
+    "expectedSignals": [
+      "FailedScheduling events",
+      "pod spec resource requests/selectors"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c046",
+    "category": "storage",
+    "title": "PVC storageClass does not exist",
+    "targets": [
+      "pvc/c046-data",
+      "pod/c046-storage"
+    ],
+    "symptom": "Training pod c046-storage cannot start because its dataset PVC c046-data is not bound.",
+    "groundTruth": {
+      "localization": "pvc/c046-data",
+      "mechanism": "PVC requests nonexistent storageClass missing-storageclass",
+      "scope": "pod blocked by unbound PVC"
+    },
+    "expectedSignals": [
+      "PVC Pending",
+      "pod FailedScheduling due unbound PVC",
+      "storageClassName"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c047",
+    "category": "storage",
+    "title": "GPU local SSD class typo",
+    "targets": [
+      "pvc/c047-data",
+      "pod/c047-storage"
+    ],
+    "symptom": "Training pod c047-storage cannot start because its dataset PVC c047-data is not bound.",
+    "groundTruth": {
+      "localization": "pvc/c047-data",
+      "mechanism": "PVC requests nonexistent storageClass gpu-local-ssd-missing",
+      "scope": "pod blocked by unbound PVC"
+    },
+    "expectedSignals": [
+      "PVC Pending",
+      "pod FailedScheduling due unbound PVC",
+      "storageClassName"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c048",
+    "category": "storage",
+    "title": "PVC storageClass does not exist",
+    "targets": [
+      "pvc/c048-data",
+      "pod/c048-storage"
+    ],
+    "symptom": "Training pod c048-storage cannot start because its dataset PVC c048-data is not bound.",
+    "groundTruth": {
+      "localization": "pvc/c048-data",
+      "mechanism": "PVC requests nonexistent storageClass missing-storageclass",
+      "scope": "pod blocked by unbound PVC"
+    },
+    "expectedSignals": [
+      "PVC Pending",
+      "pod FailedScheduling due unbound PVC",
+      "storageClassName"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c049",
+    "category": "storage",
+    "title": "GPU local SSD class typo",
+    "targets": [
+      "pvc/c049-data",
+      "pod/c049-storage"
+    ],
+    "symptom": "Training pod c049-storage cannot start because its dataset PVC c049-data is not bound.",
+    "groundTruth": {
+      "localization": "pvc/c049-data",
+      "mechanism": "PVC requests nonexistent storageClass gpu-local-ssd-missing",
+      "scope": "pod blocked by unbound PVC"
+    },
+    "expectedSignals": [
+      "PVC Pending",
+      "pod FailedScheduling due unbound PVC",
+      "storageClassName"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c050",
+    "category": "storage",
+    "title": "PVC storageClass does not exist",
+    "targets": [
+      "pvc/c050-data",
+      "pod/c050-storage"
+    ],
+    "symptom": "Training pod c050-storage cannot start because its dataset PVC c050-data is not bound.",
+    "groundTruth": {
+      "localization": "pvc/c050-data",
+      "mechanism": "PVC requests nonexistent storageClass missing-storageclass",
+      "scope": "pod blocked by unbound PVC"
+    },
+    "expectedSignals": [
+      "PVC Pending",
+      "pod FailedScheduling due unbound PVC",
+      "storageClassName"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c051",
+    "category": "storage",
+    "title": "GPU local SSD class typo",
+    "targets": [
+      "pvc/c051-data",
+      "pod/c051-storage"
+    ],
+    "symptom": "Training pod c051-storage cannot start because its dataset PVC c051-data is not bound.",
+    "groundTruth": {
+      "localization": "pvc/c051-data",
+      "mechanism": "PVC requests nonexistent storageClass gpu-local-ssd-missing",
+      "scope": "pod blocked by unbound PVC"
+    },
+    "expectedSignals": [
+      "PVC Pending",
+      "pod FailedScheduling due unbound PVC",
+      "storageClassName"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c052",
+    "category": "storage",
+    "title": "PVC storageClass does not exist",
+    "targets": [
+      "pvc/c052-data",
+      "pod/c052-storage"
+    ],
+    "symptom": "Training pod c052-storage cannot start because its dataset PVC c052-data is not bound.",
+    "groundTruth": {
+      "localization": "pvc/c052-data",
+      "mechanism": "PVC requests nonexistent storageClass missing-storageclass",
+      "scope": "pod blocked by unbound PVC"
+    },
+    "expectedSignals": [
+      "PVC Pending",
+      "pod FailedScheduling due unbound PVC",
+      "storageClassName"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c053",
+    "category": "storage",
+    "title": "GPU local SSD class typo",
+    "targets": [
+      "pvc/c053-data",
+      "pod/c053-storage"
+    ],
+    "symptom": "Training pod c053-storage cannot start because its dataset PVC c053-data is not bound.",
+    "groundTruth": {
+      "localization": "pvc/c053-data",
+      "mechanism": "PVC requests nonexistent storageClass gpu-local-ssd-missing",
+      "scope": "pod blocked by unbound PVC"
+    },
+    "expectedSignals": [
+      "PVC Pending",
+      "pod FailedScheduling due unbound PVC",
+      "storageClassName"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c054",
+    "category": "storage",
+    "title": "PVC storageClass does not exist",
+    "targets": [
+      "pvc/c054-data",
+      "pod/c054-storage"
+    ],
+    "symptom": "Training pod c054-storage cannot start because its dataset PVC c054-data is not bound.",
+    "groundTruth": {
+      "localization": "pvc/c054-data",
+      "mechanism": "PVC requests nonexistent storageClass missing-storageclass",
+      "scope": "pod blocked by unbound PVC"
+    },
+    "expectedSignals": [
+      "PVC Pending",
+      "pod FailedScheduling due unbound PVC",
+      "storageClassName"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "easy",
+    "noise": false,
+    "id": "c055",
+    "category": "storage",
+    "title": "GPU local SSD class typo",
+    "targets": [
+      "pvc/c055-data",
+      "pod/c055-storage"
+    ],
+    "symptom": "Training pod c055-storage cannot start because its dataset PVC c055-data is not bound.",
+    "groundTruth": {
+      "localization": "pvc/c055-data",
+      "mechanism": "PVC requests nonexistent storageClass gpu-local-ssd-missing",
+      "scope": "pod blocked by unbound PVC"
+    },
+    "expectedSignals": [
+      "PVC Pending",
+      "pod FailedScheduling due unbound PVC",
+      "storageClassName"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c056",
+    "category": "service-readiness",
+    "title": "readiness probe points to a missing health endpoint, so endpoints are not ready",
+    "targets": [
+      "deployment/c056-app",
+      "service/c056-svc"
+    ],
+    "symptom": "Internal service c056-svc for workload c056-app is unavailable to clients.",
+    "groundTruth": {
+      "localization": "deployment/c056-app",
+      "mechanism": "readiness probe points to a missing health endpoint, so endpoints are not ready",
+      "scope": "one service path in the eval namespace"
+    },
+    "expectedSignals": [
+      "deployment readiness",
+      "service selector",
+      "endpoints/endpointslices",
+      "pod events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c057",
+    "category": "service-readiness",
+    "title": "Service selector does not match the backing pod labels, so endpoints are empty",
+    "targets": [
+      "deployment/c057-app",
+      "service/c057-svc"
+    ],
+    "symptom": "Internal service c057-svc for workload c057-app is unavailable to clients.",
+    "groundTruth": {
+      "localization": "service/c057-svc",
+      "mechanism": "Service selector does not match the backing pod labels, so endpoints are empty",
+      "scope": "one service path in the eval namespace"
+    },
+    "expectedSignals": [
+      "deployment readiness",
+      "service selector",
+      "endpoints/endpointslices",
+      "pod events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c058",
+    "category": "service-readiness",
+    "title": "Service targetPort points to 9090 while the container listens on 8080",
+    "targets": [
+      "deployment/c058-app",
+      "service/c058-svc"
+    ],
+    "symptom": "Internal service c058-svc for workload c058-app is unavailable to clients.",
+    "groundTruth": {
+      "localization": "service/c058-svc",
+      "mechanism": "Service targetPort points to 9090 while the container listens on 8080",
+      "scope": "one service path in the eval namespace"
+    },
+    "expectedSignals": [
+      "deployment readiness",
+      "service selector",
+      "endpoints/endpointslices",
+      "pod events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c059",
+    "category": "service-readiness",
+    "title": "readiness probe points to a missing health endpoint, so endpoints are not ready",
+    "targets": [
+      "deployment/c059-app",
+      "service/c059-svc"
+    ],
+    "symptom": "Internal service c059-svc for workload c059-app is unavailable to clients.",
+    "groundTruth": {
+      "localization": "deployment/c059-app",
+      "mechanism": "readiness probe points to a missing health endpoint, so endpoints are not ready",
+      "scope": "one service path in the eval namespace"
+    },
+    "expectedSignals": [
+      "deployment readiness",
+      "service selector",
+      "endpoints/endpointslices",
+      "pod events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c060",
+    "category": "service-readiness",
+    "title": "Service selector does not match the backing pod labels, so endpoints are empty",
+    "targets": [
+      "deployment/c060-app",
+      "service/c060-svc"
+    ],
+    "symptom": "Internal service c060-svc for workload c060-app is unavailable to clients.",
+    "groundTruth": {
+      "localization": "service/c060-svc",
+      "mechanism": "Service selector does not match the backing pod labels, so endpoints are empty",
+      "scope": "one service path in the eval namespace"
+    },
+    "expectedSignals": [
+      "deployment readiness",
+      "service selector",
+      "endpoints/endpointslices",
+      "pod events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c061",
+    "category": "service-readiness",
+    "title": "Service targetPort points to 9090 while the container listens on 8080",
+    "targets": [
+      "deployment/c061-app",
+      "service/c061-svc"
+    ],
+    "symptom": "Internal service c061-svc for workload c061-app is unavailable to clients.",
+    "groundTruth": {
+      "localization": "service/c061-svc",
+      "mechanism": "Service targetPort points to 9090 while the container listens on 8080",
+      "scope": "one service path in the eval namespace"
+    },
+    "expectedSignals": [
+      "deployment readiness",
+      "service selector",
+      "endpoints/endpointslices",
+      "pod events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "hard",
+    "noise": false,
+    "id": "c062",
+    "category": "service-readiness",
+    "title": "readiness probe points to a missing health endpoint, so endpoints are not ready",
+    "targets": [
+      "deployment/c062-app",
+      "service/c062-svc"
+    ],
+    "symptom": "Internal service c062-svc for workload c062-app is unavailable to clients.",
+    "groundTruth": {
+      "localization": "deployment/c062-app",
+      "mechanism": "readiness probe points to a missing health endpoint, so endpoints are not ready",
+      "scope": "one service path in the eval namespace"
+    },
+    "expectedSignals": [
+      "deployment readiness",
+      "service selector",
+      "endpoints/endpointslices",
+      "pod events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "hard",
+    "noise": false,
+    "id": "c063",
+    "category": "service-readiness",
+    "title": "Service selector does not match the backing pod labels, so endpoints are empty",
+    "targets": [
+      "deployment/c063-app",
+      "service/c063-svc"
+    ],
+    "symptom": "Internal service c063-svc for workload c063-app is unavailable to clients.",
+    "groundTruth": {
+      "localization": "service/c063-svc",
+      "mechanism": "Service selector does not match the backing pod labels, so endpoints are empty",
+      "scope": "one service path in the eval namespace"
+    },
+    "expectedSignals": [
+      "deployment readiness",
+      "service selector",
+      "endpoints/endpointslices",
+      "pod events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "hard",
+    "noise": false,
+    "id": "c064",
+    "category": "service-readiness",
+    "title": "Service targetPort points to 9090 while the container listens on 8080",
+    "targets": [
+      "deployment/c064-app",
+      "service/c064-svc"
+    ],
+    "symptom": "Internal service c064-svc for workload c064-app is unavailable to clients.",
+    "groundTruth": {
+      "localization": "service/c064-svc",
+      "mechanism": "Service targetPort points to 9090 while the container listens on 8080",
+      "scope": "one service path in the eval namespace"
+    },
+    "expectedSignals": [
+      "deployment readiness",
+      "service selector",
+      "endpoints/endpointslices",
+      "pod events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "hard",
+    "noise": false,
+    "id": "c065",
+    "category": "service-readiness",
+    "title": "readiness probe points to a missing health endpoint, so endpoints are not ready",
+    "targets": [
+      "deployment/c065-app",
+      "service/c065-svc"
+    ],
+    "symptom": "Internal service c065-svc for workload c065-app is unavailable to clients.",
+    "groundTruth": {
+      "localization": "deployment/c065-app",
+      "mechanism": "readiness probe points to a missing health endpoint, so endpoints are not ready",
+      "scope": "one service path in the eval namespace"
+    },
+    "expectedSignals": [
+      "deployment readiness",
+      "service selector",
+      "endpoints/endpointslices",
+      "pod events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "hard",
+    "noise": false,
+    "id": "c066",
+    "category": "service-readiness",
+    "title": "Service selector does not match the backing pod labels, so endpoints are empty",
+    "targets": [
+      "deployment/c066-app",
+      "service/c066-svc"
+    ],
+    "symptom": "Internal service c066-svc for workload c066-app is unavailable to clients.",
+    "groundTruth": {
+      "localization": "service/c066-svc",
+      "mechanism": "Service selector does not match the backing pod labels, so endpoints are empty",
+      "scope": "one service path in the eval namespace"
+    },
+    "expectedSignals": [
+      "deployment readiness",
+      "service selector",
+      "endpoints/endpointslices",
+      "pod events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "hard",
+    "noise": false,
+    "id": "c067",
+    "category": "service-readiness",
+    "title": "Service targetPort points to 9090 while the container listens on 8080",
+    "targets": [
+      "deployment/c067-app",
+      "service/c067-svc"
+    ],
+    "symptom": "Internal service c067-svc for workload c067-app is unavailable to clients.",
+    "groundTruth": {
+      "localization": "service/c067-svc",
+      "mechanism": "Service targetPort points to 9090 while the container listens on 8080",
+      "scope": "one service path in the eval namespace"
+    },
+    "expectedSignals": [
+      "deployment readiness",
+      "service selector",
+      "endpoints/endpointslices",
+      "pod events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c068",
+    "category": "network-dns",
+    "title": "NetworkPolicy selects the client and denies all egress, including DNS/service traffic",
+    "targets": [
+      "pod/c068-client",
+      "pod/c068-server",
+      "service/c068-server-svc"
+    ],
+    "symptom": "Client pod c068-client cannot resolve or reach service c068-server-svc even though the server pod exists.",
+    "groundTruth": {
+      "localization": "networkpolicy/c068-deny-egress",
+      "mechanism": "NetworkPolicy selects the client and denies all egress, including DNS/service traffic",
+      "scope": "traffic involving this case's client/server pods"
+    },
+    "expectedSignals": [
+      "NetworkPolicy spec",
+      "pod DNS config",
+      "service endpoints"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c069",
+    "category": "network-dns",
+    "title": "NetworkPolicy selects the server and denies all ingress from the client",
+    "targets": [
+      "pod/c069-client",
+      "pod/c069-server",
+      "service/c069-server-svc"
+    ],
+    "symptom": "Client pod c069-client cannot resolve or reach service c069-server-svc even though the server pod exists.",
+    "groundTruth": {
+      "localization": "networkpolicy/c069-deny-ingress",
+      "mechanism": "NetworkPolicy selects the server and denies all ingress from the client",
+      "scope": "traffic involving this case's client/server pods"
+    },
+    "expectedSignals": [
+      "NetworkPolicy spec",
+      "pod DNS config",
+      "service endpoints"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c070",
+    "category": "network-dns",
+    "title": "client pod overrides DNS with TEST-NET nameserver 203.0.113.1, so cluster DNS resolution fails",
+    "targets": [
+      "pod/c070-client",
+      "pod/c070-server",
+      "service/c070-server-svc"
+    ],
+    "symptom": "Client pod c070-client cannot resolve or reach service c070-server-svc even though the server pod exists.",
+    "groundTruth": {
+      "localization": "pod/c070-client",
+      "mechanism": "client pod overrides DNS with TEST-NET nameserver 203.0.113.1, so cluster DNS resolution fails",
+      "scope": "traffic involving this case's client/server pods"
+    },
+    "expectedSignals": [
+      "NetworkPolicy spec",
+      "pod DNS config",
+      "service endpoints"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c071",
+    "category": "network-dns",
+    "title": "NetworkPolicy selects the client and denies all egress, including DNS/service traffic",
+    "targets": [
+      "pod/c071-client",
+      "pod/c071-server",
+      "service/c071-server-svc"
+    ],
+    "symptom": "Client pod c071-client cannot resolve or reach service c071-server-svc even though the server pod exists.",
+    "groundTruth": {
+      "localization": "networkpolicy/c071-deny-egress",
+      "mechanism": "NetworkPolicy selects the client and denies all egress, including DNS/service traffic",
+      "scope": "traffic involving this case's client/server pods"
+    },
+    "expectedSignals": [
+      "NetworkPolicy spec",
+      "pod DNS config",
+      "service endpoints"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c072",
+    "category": "network-dns",
+    "title": "NetworkPolicy selects the server and denies all ingress from the client",
+    "targets": [
+      "pod/c072-client",
+      "pod/c072-server",
+      "service/c072-server-svc"
+    ],
+    "symptom": "Client pod c072-client cannot resolve or reach service c072-server-svc even though the server pod exists.",
+    "groundTruth": {
+      "localization": "networkpolicy/c072-deny-ingress",
+      "mechanism": "NetworkPolicy selects the server and denies all ingress from the client",
+      "scope": "traffic involving this case's client/server pods"
+    },
+    "expectedSignals": [
+      "NetworkPolicy spec",
+      "pod DNS config",
+      "service endpoints"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c073",
+    "category": "network-dns",
+    "title": "client pod overrides DNS with TEST-NET nameserver 203.0.113.1, so cluster DNS resolution fails",
+    "targets": [
+      "pod/c073-client",
+      "pod/c073-server",
+      "service/c073-server-svc"
+    ],
+    "symptom": "Client pod c073-client cannot resolve or reach service c073-server-svc even though the server pod exists.",
+    "groundTruth": {
+      "localization": "pod/c073-client",
+      "mechanism": "client pod overrides DNS with TEST-NET nameserver 203.0.113.1, so cluster DNS resolution fails",
+      "scope": "traffic involving this case's client/server pods"
+    },
+    "expectedSignals": [
+      "NetworkPolicy spec",
+      "pod DNS config",
+      "service endpoints"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c074",
+    "category": "network-dns",
+    "title": "NetworkPolicy selects the client and denies all egress, including DNS/service traffic",
+    "targets": [
+      "pod/c074-client",
+      "pod/c074-server",
+      "service/c074-server-svc"
+    ],
+    "symptom": "Client pod c074-client cannot resolve or reach service c074-server-svc even though the server pod exists.",
+    "groundTruth": {
+      "localization": "networkpolicy/c074-deny-egress",
+      "mechanism": "NetworkPolicy selects the client and denies all egress, including DNS/service traffic",
+      "scope": "traffic involving this case's client/server pods"
+    },
+    "expectedSignals": [
+      "NetworkPolicy spec",
+      "pod DNS config",
+      "service endpoints"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c075",
+    "category": "network-dns",
+    "title": "NetworkPolicy selects the server and denies all ingress from the client",
+    "targets": [
+      "pod/c075-client",
+      "pod/c075-server",
+      "service/c075-server-svc"
+    ],
+    "symptom": "Client pod c075-client cannot resolve or reach service c075-server-svc even though the server pod exists.",
+    "groundTruth": {
+      "localization": "networkpolicy/c075-deny-ingress",
+      "mechanism": "NetworkPolicy selects the server and denies all ingress from the client",
+      "scope": "traffic involving this case's client/server pods"
+    },
+    "expectedSignals": [
+      "NetworkPolicy spec",
+      "pod DNS config",
+      "service endpoints"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c076",
+    "category": "network-dns",
+    "title": "client pod overrides DNS with TEST-NET nameserver 203.0.113.1, so cluster DNS resolution fails",
+    "targets": [
+      "pod/c076-client",
+      "pod/c076-server",
+      "service/c076-server-svc"
+    ],
+    "symptom": "Client pod c076-client cannot resolve or reach service c076-server-svc even though the server pod exists.",
+    "groundTruth": {
+      "localization": "pod/c076-client",
+      "mechanism": "client pod overrides DNS with TEST-NET nameserver 203.0.113.1, so cluster DNS resolution fails",
+      "scope": "traffic involving this case's client/server pods"
+    },
+    "expectedSignals": [
+      "NetworkPolicy spec",
+      "pod DNS config",
+      "service endpoints"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c077",
+    "category": "network-dns",
+    "title": "NetworkPolicy selects the client and denies all egress, including DNS/service traffic",
+    "targets": [
+      "pod/c077-client",
+      "pod/c077-server",
+      "service/c077-server-svc"
+    ],
+    "symptom": "Client pod c077-client cannot resolve or reach service c077-server-svc even though the server pod exists.",
+    "groundTruth": {
+      "localization": "networkpolicy/c077-deny-egress",
+      "mechanism": "NetworkPolicy selects the client and denies all egress, including DNS/service traffic",
+      "scope": "traffic involving this case's client/server pods"
+    },
+    "expectedSignals": [
+      "NetworkPolicy spec",
+      "pod DNS config",
+      "service endpoints"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c078",
+    "category": "controller",
+    "title": "Deployment rollout is blocked because new ReplicaSet pods cannot pull the image",
+    "targets": [
+      "deployment/c078-deploy"
+    ],
+    "symptom": "Controller-managed workload c078-deploy is not serving traffic or not progressing.",
+    "groundTruth": {
+      "localization": "deployment/c078-deploy",
+      "mechanism": "Deployment rollout is blocked because new ReplicaSet pods cannot pull the image",
+      "scope": "controller object and its owned resources"
+    },
+    "expectedSignals": [
+      "rollout status",
+      "replicas/pods",
+      "HPA conditions",
+      "Ingress backend"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c079",
+    "category": "controller",
+    "title": "Deployment pods run but readiness probe targets port 9090 instead of 8080",
+    "targets": [
+      "deployment/c079-deploy"
+    ],
+    "symptom": "Controller-managed workload c079-deploy is not serving traffic or not progressing.",
+    "groundTruth": {
+      "localization": "deployment/c079-deploy",
+      "mechanism": "Deployment pods run but readiness probe targets port 9090 instead of 8080",
+      "scope": "controller object and its owned resources"
+    },
+    "expectedSignals": [
+      "rollout status",
+      "replicas/pods",
+      "HPA conditions",
+      "Ingress backend"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c080",
+    "category": "controller",
+    "title": "HPA cannot compute CPU utilization because the target container has no CPU request",
+    "targets": [
+      "deployment/c080-deploy",
+      "horizontalpodautoscaler/c080-hpa"
+    ],
+    "symptom": "Controller-managed workload c080-deploy is not serving traffic or not progressing.",
+    "groundTruth": {
+      "localization": "deployment/c080-deploy",
+      "mechanism": "HPA cannot compute CPU utilization because the target container has no CPU request",
+      "scope": "controller object and its owned resources"
+    },
+    "expectedSignals": [
+      "rollout status",
+      "replicas/pods",
+      "HPA conditions",
+      "Ingress backend"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c081",
+    "category": "controller",
+    "title": "Ingress backend points to missing Service c081-missing-svc",
+    "targets": [
+      "ingress/c081-ing"
+    ],
+    "symptom": "Controller-managed workload c081-deploy is not serving traffic or not progressing.",
+    "groundTruth": {
+      "localization": "ingress/c081-ing",
+      "mechanism": "Ingress backend points to missing Service c081-missing-svc",
+      "scope": "controller object and its owned resources"
+    },
+    "expectedSignals": [
+      "rollout status",
+      "replicas/pods",
+      "HPA conditions",
+      "Ingress backend"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c082",
+    "category": "controller",
+    "title": "Deployment rollout is blocked because new ReplicaSet pods cannot pull the image",
+    "targets": [
+      "deployment/c082-deploy"
+    ],
+    "symptom": "Controller-managed workload c082-deploy is not serving traffic or not progressing.",
+    "groundTruth": {
+      "localization": "deployment/c082-deploy",
+      "mechanism": "Deployment rollout is blocked because new ReplicaSet pods cannot pull the image",
+      "scope": "controller object and its owned resources"
+    },
+    "expectedSignals": [
+      "rollout status",
+      "replicas/pods",
+      "HPA conditions",
+      "Ingress backend"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c083",
+    "category": "controller",
+    "title": "Deployment pods run but readiness probe targets port 9090 instead of 8080",
+    "targets": [
+      "deployment/c083-deploy"
+    ],
+    "symptom": "Controller-managed workload c083-deploy is not serving traffic or not progressing.",
+    "groundTruth": {
+      "localization": "deployment/c083-deploy",
+      "mechanism": "Deployment pods run but readiness probe targets port 9090 instead of 8080",
+      "scope": "controller object and its owned resources"
+    },
+    "expectedSignals": [
+      "rollout status",
+      "replicas/pods",
+      "HPA conditions",
+      "Ingress backend"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c084",
+    "category": "controller",
+    "title": "HPA cannot compute CPU utilization because the target container has no CPU request",
+    "targets": [
+      "deployment/c084-deploy",
+      "horizontalpodautoscaler/c084-hpa"
+    ],
+    "symptom": "Controller-managed workload c084-deploy is not serving traffic or not progressing.",
+    "groundTruth": {
+      "localization": "deployment/c084-deploy",
+      "mechanism": "HPA cannot compute CPU utilization because the target container has no CPU request",
+      "scope": "controller object and its owned resources"
+    },
+    "expectedSignals": [
+      "rollout status",
+      "replicas/pods",
+      "HPA conditions",
+      "Ingress backend"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "c085",
+    "category": "controller",
+    "title": "Ingress backend points to missing Service c085-missing-svc",
+    "targets": [
+      "ingress/c085-ing"
+    ],
+    "symptom": "Controller-managed workload c085-deploy is not serving traffic or not progressing.",
+    "groundTruth": {
+      "localization": "ingress/c085-ing",
+      "mechanism": "Ingress backend points to missing Service c085-missing-svc",
+      "scope": "controller object and its owned resources"
+    },
+    "expectedSignals": [
+      "rollout status",
+      "replicas/pods",
+      "HPA conditions",
+      "Ingress backend"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "hard",
+    "noise": false,
+    "id": "c086",
+    "category": "volcano-gpu",
+    "title": "minMember exceeds pods",
+    "targets": [
+      "podgroup/c086-pg",
+      "pod/c086-vcpod"
+    ],
+    "symptom": "Volcano GPU training pod c086-vcpod remains pending with PodGroup c086-pg.",
+    "groundTruth": {
+      "localization": "podgroup/c086-pg",
+      "mechanism": "Volcano PodGroup has minMember=2 but only one grouped pod exists",
+      "scope": "Volcano podgroup / grouped pod"
+    },
+    "expectedSignals": [
+      "PodGroup spec/status",
+      "grouped pod annotation",
+      "Volcano scheduling events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "hard",
+    "noise": false,
+    "id": "c087",
+    "category": "volcano-gpu",
+    "title": "queue does not exist",
+    "targets": [
+      "podgroup/c087-pg",
+      "pod/c087-vcpod"
+    ],
+    "symptom": "Volcano GPU training pod c087-vcpod remains pending with PodGroup c087-pg.",
+    "groundTruth": {
+      "localization": "podgroup/c087-pg",
+      "mechanism": "Volcano PodGroup references a nonexistent queue",
+      "scope": "Volcano podgroup / grouped pod"
+    },
+    "expectedSignals": [
+      "PodGroup spec/status",
+      "grouped pod annotation",
+      "Volcano scheduling events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "hard",
+    "noise": false,
+    "id": "c088",
+    "category": "volcano-gpu",
+    "title": "gpu count impossible",
+    "targets": [
+      "job.batch.volcano.sh/c088-vj"
+    ],
+    "symptom": "Volcano GPU training job c088-vj is not admitted/running as expected.",
+    "groundTruth": {
+      "localization": "job.batch.volcano.sh/c088-vj",
+      "mechanism": "Volcano task requests impossible GPU count",
+      "scope": "Volcano job / podgroup / owned pods"
+    },
+    "expectedSignals": [
+      "Volcano Job status",
+      "PodGroup status",
+      "owned pod events",
+      "queue"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "hard",
+    "noise": false,
+    "id": "c089",
+    "category": "volcano-gpu",
+    "title": "wrong gpu type selector",
+    "targets": [
+      "job.batch.volcano.sh/c089-vj"
+    ],
+    "symptom": "Volcano GPU training job c089-vj is not admitted/running as expected.",
+    "groundTruth": {
+      "localization": "job.batch.volcano.sh/c089-vj",
+      "mechanism": "Volcano task requires unavailable GPU type a100-missing",
+      "scope": "Volcano job / podgroup / owned pods"
+    },
+    "expectedSignals": [
+      "Volcano Job status",
+      "PodGroup status",
+      "owned pod events",
+      "queue"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "hard",
+    "noise": false,
+    "id": "c090",
+    "category": "volcano-gpu",
+    "title": "bad priority class",
+    "targets": [
+      "job.batch.volcano.sh/c090-vj"
+    ],
+    "symptom": "Volcano GPU training job c090-vj is not admitted/running as expected.",
+    "groundTruth": {
+      "localization": "job.batch.volcano.sh/c090-vj",
+      "mechanism": "Volcano Job references missing priority class",
+      "scope": "Volcano job / podgroup / owned pods"
+    },
+    "expectedSignals": [
+      "Volcano Job status",
+      "PodGroup status",
+      "owned pod events",
+      "queue"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "hard",
+    "noise": false,
+    "id": "c091",
+    "category": "volcano-gpu",
+    "title": "min resources too high",
+    "targets": [
+      "job.batch.volcano.sh/c091-vj"
+    ],
+    "symptom": "Volcano GPU training job c091-vj is not admitted/running as expected.",
+    "groundTruth": {
+      "localization": "job.batch.volcano.sh/c091-vj",
+      "mechanism": "Volcano task CPU request is unschedulably high",
+      "scope": "Volcano job / podgroup / owned pods"
+    },
+    "expectedSignals": [
+      "Volcano Job status",
+      "PodGroup status",
+      "owned pod events",
+      "queue"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "hard",
+    "noise": false,
+    "id": "c092",
+    "category": "volcano-gpu",
+    "title": "missing config in volcano task",
+    "targets": [
+      "job.batch.volcano.sh/c092-vj"
+    ],
+    "symptom": "Volcano GPU training job c092-vj is not admitted/running as expected.",
+    "groundTruth": {
+      "localization": "job.batch.volcano.sh/c092-vj",
+      "mechanism": "Volcano-created pod cannot start because task env references missing ConfigMap",
+      "scope": "Volcano job / podgroup / owned pods"
+    },
+    "expectedSignals": [
+      "Volcano Job status",
+      "PodGroup status",
+      "owned pod events",
+      "queue"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "hard",
+    "noise": false,
+    "id": "c093",
+    "category": "volcano-gpu",
+    "title": "gang plus image pull",
+    "targets": [
+      "job.batch.volcano.sh/c093-vj"
+    ],
+    "symptom": "Volcano GPU training job c093-vj is not admitted/running as expected.",
+    "groundTruth": {
+      "localization": "job.batch.volcano.sh/c093-vj",
+      "mechanism": "Volcano-created pod is blocked by invalid image pull",
+      "scope": "Volcano job / podgroup / owned pods"
+    },
+    "expectedSignals": [
+      "Volcano Job status",
+      "PodGroup status",
+      "owned pod events",
+      "queue"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "hard",
+    "noise": true,
+    "id": "c094",
+    "category": "compound",
+    "title": "service selector plus readiness probe",
+    "targets": [
+      "deployment/c094-compound-app",
+      "service/c094-compound-svc"
+    ],
+    "symptom": "Compound incident c094: a GPU-related service or training workflow has multiple symptoms. Diagnose all root causes, not just the first anomaly.",
+    "groundTruth": {
+      "localization": "deployment/c094-compound-app, service/c094-compound-svc",
+      "mechanism": "Service selector is wrong and the deployment readiness probe also points to a missing path",
+      "scope": "multi-resource compound failure in the eval namespace"
+    },
+    "expectedSignals": [
+      "multiple resources",
+      "events",
+      "spec mismatch",
+      "avoid anchoring on first anomaly"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "hard",
+    "noise": true,
+    "id": "c095",
+    "category": "compound",
+    "title": "GPU selector plus missing config",
+    "targets": [
+      "pod/c095-compound-gpu"
+    ],
+    "symptom": "Compound incident c095: a GPU-related service or training workflow has multiple symptoms. Diagnose all root causes, not just the first anomaly.",
+    "groundTruth": {
+      "localization": "pod/c095-compound-gpu",
+      "mechanism": "Pod has an unavailable GPU nodeSelector and also references a missing ConfigMap",
+      "scope": "multi-resource compound failure in the eval namespace"
+    },
+    "expectedSignals": [
+      "multiple resources",
+      "events",
+      "spec mismatch",
+      "avoid anchoring on first anomaly"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "hard",
+    "noise": true,
+    "id": "c096",
+    "category": "compound",
+    "title": "PVC pending plus service mismatch",
+    "targets": [
+      "persistentvolumeclaim/c096-compound-pvc",
+      "deployment/c096-compound-storage",
+      "service/c096-compound-svc"
+    ],
+    "symptom": "Compound incident c096: a GPU-related service or training workflow has multiple symptoms. Diagnose all root causes, not just the first anomaly.",
+    "groundTruth": {
+      "localization": "persistentvolumeclaim/c096-compound-pvc, deployment/c096-compound-storage, service/c096-compound-svc",
+      "mechanism": "Dataset PVC uses a missing storageClass and the Service selector does not match the app",
+      "scope": "multi-resource compound failure in the eval namespace"
+    },
+    "expectedSignals": [
+      "multiple resources",
+      "events",
+      "spec mismatch",
+      "avoid anchoring on first anomaly"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "hard",
+    "noise": true,
+    "id": "c097",
+    "category": "compound",
+    "title": "network deny plus DNS override",
+    "targets": [
+      "pod/c097-compound-client",
+      "networkpolicy/c097-compound-deny-egress"
+    ],
+    "symptom": "Compound incident c097: a GPU-related service or training workflow has multiple symptoms. Diagnose all root causes, not just the first anomaly.",
+    "groundTruth": {
+      "localization": "pod/c097-compound-client, networkpolicy/c097-compound-deny-egress",
+      "mechanism": "Client has invalid DNS config and a NetworkPolicy denying all egress",
+      "scope": "multi-resource compound failure in the eval namespace"
+    },
+    "expectedSignals": [
+      "multiple resources",
+      "events",
+      "spec mismatch",
+      "avoid anchoring on first anomaly"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "hard",
+    "noise": true,
+    "id": "c098",
+    "category": "compound",
+    "title": "Volcano queue plus GPU type",
+    "targets": [
+      "podgroup/c098-compound-pg",
+      "pod/c098-compound-vcpod"
+    ],
+    "symptom": "Compound incident c098: a GPU-related service or training workflow has multiple symptoms. Diagnose all root causes, not just the first anomaly.",
+    "groundTruth": {
+      "localization": "podgroup/c098-compound-pg, pod/c098-compound-vcpod",
+      "mechanism": "Volcano Job references a missing queue and requests an unavailable GPU type",
+      "scope": "multi-resource compound failure in the eval namespace"
+    },
+    "expectedSignals": [
+      "multiple resources",
+      "events",
+      "spec mismatch",
+      "avoid anchoring on first anomaly"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "hard",
+    "noise": true,
+    "id": "c099",
+    "category": "compound",
+    "title": "bad image plus HPA no requests",
+    "targets": [
+      "deployment/c099-compound-deploy",
+      "horizontalpodautoscaler/c099-compound-hpa"
+    ],
+    "symptom": "Compound incident c099: a GPU-related service or training workflow has multiple symptoms. Diagnose all root causes, not just the first anomaly.",
+    "groundTruth": {
+      "localization": "deployment/c099-compound-deploy, horizontalpodautoscaler/c099-compound-hpa",
+      "mechanism": "Deployment pods cannot pull the image and its HPA cannot compute CPU utilization because requests are absent",
+      "scope": "multi-resource compound failure in the eval namespace"
+    },
+    "expectedSignals": [
+      "multiple resources",
+      "events",
+      "spec mismatch",
+      "avoid anchoring on first anomaly"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "hard",
+    "noise": true,
+    "id": "c100",
+    "category": "compound",
+    "title": "scheduler profile plus NCCL env",
+    "targets": [
+      "pod/c100-compound-runtime"
+    ],
+    "symptom": "Compound incident c100: a GPU-related service or training workflow has multiple symptoms. Diagnose all root causes, not just the first anomaly.",
+    "groundTruth": {
+      "localization": "pod/c100-compound-runtime",
+      "mechanism": "Pod uses a nonexistent GPU scheduler profile and the container command would also fail due bad NCCL interface",
+      "scope": "multi-resource compound failure in the eval namespace"
+    },
+    "expectedSignals": [
+      "multiple resources",
+      "events",
+      "spec mismatch",
+      "avoid anchoring on first anomaly"
+    ]
+  }
+]

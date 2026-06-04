@@ -1,0 +1,5420 @@
+[
+  {
+    "caseId": "c001",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.929,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c001-image"
+        ]
+      },
+      "mechanism": {
+        "score": 0.95625,
+        "matched": [
+          "missing",
+          "image",
+          "tag",
+          "registry",
+          "host",
+          "invalid",
+          "cannot",
+          "imagepullbackoff",
+          "pull",
+          "no such host"
+        ]
+      },
+      "scope": {
+        "score": 0.8,
+        "matched": [
+          "image",
+          "single",
+          "only",
+          "one"
+        ]
+      },
+      "evidence": {
+        "score": 0.8166666666666667,
+        "matched": [
+          "pod waiting reason",
+          "image field"
+        ],
+        "toolCallCount": 8
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "replace",
+          "create",
+          "set",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 21912,
+    "toolCallCount": 8
+  },
+  {
+    "caseId": "c002",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.925,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c002-image"
+        ]
+      },
+      "mechanism": {
+        "score": 0.95,
+        "matched": [
+          "docker",
+          "image",
+          "repository",
+          "does",
+          "not",
+          "exist",
+          "imagepullbackoff",
+          "pull",
+          "not found"
+        ]
+      },
+      "scope": {
+        "score": 0.6,
+        "matched": [
+          "image",
+          "single",
+          "only"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "pod waiting reason",
+          "describe pod events",
+          "image field"
+        ],
+        "toolCallCount": 8
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "update",
+          "configure",
+          "add",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 22319,
+    "toolCallCount": 8
+  },
+  {
+    "caseId": "c003",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.847,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c003-image"
+        ]
+      },
+      "mechanism": {
+        "score": 0.79,
+        "matched": [
+          "private",
+          "registry",
+          "imagepullbackoff",
+          "image",
+          "pull",
+          "no such host"
+        ]
+      },
+      "scope": {
+        "score": 0.4,
+        "matched": [
+          "image",
+          "single"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "pod waiting reason",
+          "describe pod events",
+          "image field"
+        ],
+        "toolCallCount": 8
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "correct",
+          "create",
+          "configure",
+          "add"
+        ]
+      }
+    },
+    "durationMs": 28875,
+    "toolCallCount": 8
+  },
+  {
+    "caseId": "c004",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.887,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c004-image"
+        ]
+      },
+      "mechanism": {
+        "score": 0.9222222222222223,
+        "matched": [
+          "image",
+          "name",
+          "has",
+          "typo",
+          "pytroch",
+          "instead",
+          "pytorch",
+          "imagepullbackoff",
+          "pull",
+          "registry"
+        ]
+      },
+      "scope": {
+        "score": 0.4,
+        "matched": [
+          "image",
+          "single"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "pod waiting reason",
+          "describe pod events",
+          "image field"
+        ],
+        "toolCallCount": 7
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "correct",
+          "create",
+          "configure",
+          "add",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 21425,
+    "toolCallCount": 7
+  },
+  {
+    "caseId": "c005",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.828,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c005-image"
+        ]
+      },
+      "mechanism": {
+        "score": 0.825,
+        "matched": [
+          "model",
+          "image",
+          "cannot",
+          "imagepullbackoff",
+          "pull",
+          "registry",
+          "no such host"
+        ]
+      },
+      "scope": {
+        "score": 0.2,
+        "matched": [
+          "image"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "pod waiting reason",
+          "describe pod events",
+          "image field"
+        ],
+        "toolCallCount": 8
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "replace",
+          "correct",
+          "update",
+          "configure",
+          "add"
+        ]
+      }
+    },
+    "durationMs": 24115,
+    "toolCallCount": 8
+  },
+  {
+    "caseId": "c006",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.857,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c006-image"
+        ]
+      },
+      "mechanism": {
+        "score": 0.825,
+        "matched": [
+          "init",
+          "image",
+          "cannot",
+          "imagepullbackoff",
+          "pull",
+          "registry",
+          "no such host"
+        ]
+      },
+      "scope": {
+        "score": 0.4,
+        "matched": [
+          "image",
+          "only"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "pod waiting reason",
+          "describe pod events",
+          "image field"
+        ],
+        "toolCallCount": 9
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "replace",
+          "correct",
+          "create",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 28273,
+    "toolCallCount": 9
+  },
+  {
+    "caseId": "c007",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.887,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c007-image"
+        ]
+      },
+      "mechanism": {
+        "score": 0.825,
+        "matched": [
+          "exporter",
+          "image",
+          "invalid",
+          "imagepullbackoff",
+          "pull",
+          "registry"
+        ]
+      },
+      "scope": {
+        "score": 0.6,
+        "matched": [
+          "image",
+          "single",
+          "only"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "pod waiting reason",
+          "describe pod events",
+          "image field"
+        ],
+        "toolCallCount": 5
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "patch",
+          "configure",
+          "set",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 10192,
+    "toolCallCount": 5
+  },
+  {
+    "caseId": "c008",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.88,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c008-image"
+        ]
+      },
+      "mechanism": {
+        "score": 0.9,
+        "matched": [
+          "image",
+          "digest",
+          "does",
+          "not",
+          "exist",
+          "imagepullbackoff",
+          "pull",
+          "not found"
+        ]
+      },
+      "scope": {
+        "score": 0.4,
+        "matched": [
+          "image",
+          "single"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "pod waiting reason",
+          "describe pod events",
+          "image field"
+        ],
+        "toolCallCount": 8
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct"
+        ]
+      }
+    },
+    "durationMs": 21747,
+    "toolCallCount": 8
+  },
+  {
+    "caseId": "c009",
+    "status": "completed",
+    "passed": false,
+    "totalScore": 0.587,
+    "dimensions": {
+      "localization": {
+        "score": 0,
+        "matched": []
+      },
+      "mechanism": {
+        "score": 0.9222222222222223,
+        "matched": [
+          "pull",
+          "secret",
+          "reference",
+          "private",
+          "image",
+          "cannot",
+          "missing",
+          "imagepullbackoff",
+          "errimagepull",
+          "registry"
+        ]
+      },
+      "scope": {
+        "score": 0.4,
+        "matched": [
+          "image",
+          "only"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "pod waiting reason",
+          "describe pod events",
+          "image field"
+        ],
+        "toolCallCount": 9
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "create",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 14891,
+    "toolCallCount": 9
+  },
+  {
+    "caseId": "c010",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.805,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c010-image"
+        ]
+      },
+      "mechanism": {
+        "score": 0.75,
+        "matched": [
+          "mirror",
+          "hostname",
+          "imagepullbackoff",
+          "image",
+          "pull",
+          "registry",
+          "no such host"
+        ]
+      },
+      "scope": {
+        "score": 0.2,
+        "matched": [
+          "image"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "pod waiting reason",
+          "describe pod events",
+          "image field"
+        ],
+        "toolCallCount": 11
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "correct",
+          "configure",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 25548,
+    "toolCallCount": 11
+  },
+  {
+    "caseId": "c011",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.943,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c011-crash"
+        ]
+      },
+      "mechanism": {
+        "score": 0.9,
+        "matched": [
+          "missing",
+          "model",
+          "path",
+          "env",
+          "var",
+          "crashloopbackoff",
+          "crash",
+          "exit",
+          "command"
+        ]
+      },
+      "scope": {
+        "score": 1,
+        "matched": [
+          "container",
+          "crash",
+          "loop",
+          "only",
+          "one"
+        ]
+      },
+      "evidence": {
+        "score": 0.8166666666666667,
+        "matched": [
+          "CrashLoopBackOff",
+          "restart count"
+        ],
+        "toolCallCount": 8
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "add",
+          "set",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 12804,
+    "toolCallCount": 8
+  },
+  {
+    "caseId": "c012",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.97,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c012-crash"
+        ]
+      },
+      "mechanism": {
+        "score": 0.9,
+        "matched": [
+          "cuda",
+          "visible",
+          "devices",
+          "set",
+          "workload",
+          "crashloopbackoff",
+          "crash",
+          "exit",
+          "logs",
+          "env",
+          "command"
+        ]
+      },
+      "scope": {
+        "score": 1,
+        "matched": [
+          "container",
+          "crash",
+          "loop",
+          "only",
+          "one"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "CrashLoopBackOff",
+          "previous logs",
+          "restart count"
+        ],
+        "toolCallCount": 11
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "add",
+          "set",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 30551,
+    "toolCallCount": 11
+  },
+  {
+    "caseId": "c013",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.89,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c013-crash"
+        ]
+      },
+      "mechanism": {
+        "score": 0.825,
+        "matched": [
+          "entrypoint",
+          "container",
+          "command",
+          "exits",
+          "are",
+          "crashloopbackoff",
+          "crash",
+          "back off",
+          "exit",
+          "env",
+          "failed"
+        ]
+      },
+      "scope": {
+        "score": 0.8,
+        "matched": [
+          "container",
+          "crash",
+          "loop",
+          "single"
+        ]
+      },
+      "evidence": {
+        "score": 0.8166666666666667,
+        "matched": [
+          "CrashLoopBackOff",
+          "restart count"
+        ],
+        "toolCallCount": 5
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "replace",
+          "correct",
+          "create",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 19501,
+    "toolCallCount": 5
+  },
+  {
+    "caseId": "c014",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.948,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c014-crash"
+        ]
+      },
+      "mechanism": {
+        "score": 0.825,
+        "matched": [
+          "missing",
+          "checkpoint",
+          "exits",
+          "crashloopbackoff",
+          "crash",
+          "back off",
+          "exit",
+          "logs",
+          "command"
+        ]
+      },
+      "scope": {
+        "score": 1,
+        "matched": [
+          "container",
+          "crash",
+          "loop",
+          "only",
+          "one",
+          "isolated"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "CrashLoopBackOff",
+          "previous logs",
+          "restart count"
+        ],
+        "toolCallCount": 5
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "replace",
+          "create",
+          "remove",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 13342,
+    "toolCallCount": 5
+  },
+  {
+    "caseId": "c015",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.955,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c015-crash"
+        ]
+      },
+      "mechanism": {
+        "score": 0.85,
+        "matched": [
+          "nccl",
+          "interface",
+          "network",
+          "env",
+          "crashloopbackoff",
+          "crash",
+          "exit",
+          "logs",
+          "command",
+          "probe"
+        ]
+      },
+      "scope": {
+        "score": 1,
+        "matched": [
+          "container",
+          "crash",
+          "loop",
+          "single",
+          "only",
+          "one"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "CrashLoopBackOff",
+          "previous logs",
+          "restart count"
+        ],
+        "toolCallCount": 7
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "correct",
+          "set",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 39754,
+    "toolCallCount": 7
+  },
+  {
+    "caseId": "c016",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.941,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c016-crash"
+        ]
+      },
+      "mechanism": {
+        "score": 0.895,
+        "matched": [
+          "oom",
+          "exit",
+          "process",
+          "exits",
+          "137",
+          "code",
+          "memory",
+          "crash",
+          "logs",
+          "command",
+          "failed"
+        ]
+      },
+      "scope": {
+        "score": 1,
+        "matched": [
+          "container",
+          "crash",
+          "loop",
+          "only",
+          "one"
+        ]
+      },
+      "evidence": {
+        "score": 0.8166666666666667,
+        "matched": [
+          "previous logs",
+          "restart count"
+        ],
+        "toolCallCount": 7
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "replace",
+          "correct",
+          "set",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 38842,
+    "toolCallCount": 7
+  },
+  {
+    "caseId": "c017",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.944,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c017-crash"
+        ]
+      },
+      "mechanism": {
+        "score": 0.9125,
+        "matched": [
+          "permission",
+          "denied",
+          "read",
+          "its",
+          "model",
+          "directory",
+          "crashloopbackoff",
+          "crash",
+          "exit",
+          "logs",
+          "command"
+        ]
+      },
+      "scope": {
+        "score": 0.8,
+        "matched": [
+          "container",
+          "crash",
+          "loop",
+          "one"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "CrashLoopBackOff",
+          "previous logs",
+          "restart count"
+        ],
+        "toolCallCount": 6
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "replace",
+          "correct",
+          "configure",
+          "add",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 29717,
+    "toolCallCount": 6
+  },
+  {
+    "caseId": "c018",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.933,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c018-crash"
+        ]
+      },
+      "mechanism": {
+        "score": 0.86875,
+        "matched": [
+          "config",
+          "yaml",
+          "trainer",
+          "configuration",
+          "file",
+          "crashloopbackoff",
+          "crash",
+          "back off",
+          "exit",
+          "command"
+        ]
+      },
+      "scope": {
+        "score": 1,
+        "matched": [
+          "container",
+          "crash",
+          "loop",
+          "single",
+          "only"
+        ]
+      },
+      "evidence": {
+        "score": 0.8166666666666667,
+        "matched": [
+          "CrashLoopBackOff",
+          "restart count"
+        ],
+        "toolCallCount": 9
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "correct",
+          "update",
+          "configure",
+          "remove",
+          "set",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 27010,
+    "toolCallCount": 9
+  },
+  {
+    "caseId": "c019",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.957,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c019-crash"
+        ]
+      },
+      "mechanism": {
+        "score": 0.95,
+        "matched": [
+          "missing",
+          "license",
+          "token",
+          "env",
+          "var",
+          "absent",
+          "crashloopbackoff",
+          "crash",
+          "exit",
+          "command"
+        ]
+      },
+      "scope": {
+        "score": 1,
+        "matched": [
+          "container",
+          "crash",
+          "loop",
+          "single",
+          "only",
+          "isolated"
+        ]
+      },
+      "evidence": {
+        "score": 0.8166666666666667,
+        "matched": [
+          "CrashLoopBackOff",
+          "restart count"
+        ],
+        "toolCallCount": 8
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "correct",
+          "create",
+          "set",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 23843,
+    "toolCallCount": 8
+  },
+  {
+    "caseId": "c020",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.902,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c020-crash"
+        ]
+      },
+      "mechanism": {
+        "score": 0.7666666666666667,
+        "matched": [
+          "port",
+          "application",
+          "its",
+          "crashloopbackoff",
+          "crash",
+          "exit",
+          "command"
+        ]
+      },
+      "scope": {
+        "score": 1,
+        "matched": [
+          "container",
+          "crash",
+          "loop",
+          "only",
+          "one"
+        ]
+      },
+      "evidence": {
+        "score": 0.8166666666666667,
+        "matched": [
+          "CrashLoopBackOff",
+          "restart count"
+        ],
+        "toolCallCount": 7
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "create",
+          "configure",
+          "add"
+        ]
+      }
+    },
+    "durationMs": 27581,
+    "toolCallCount": 7
+  },
+  {
+    "caseId": "c021",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.922,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c021-config"
+        ]
+      },
+      "mechanism": {
+        "score": 0.9416666666666667,
+        "matched": [
+          "missing",
+          "key",
+          "model",
+          "config",
+          "bucket",
+          "configmap",
+          "env",
+          "not found",
+          "createcontainerconfigerror"
+        ]
+      },
+      "scope": {
+        "score": 0.6,
+        "matched": [
+          "single",
+          "only",
+          "one"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "CreateContainerConfigError or FailedMount",
+          "describe pod events"
+        ],
+        "toolCallCount": 5
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "create",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 27781,
+    "toolCallCount": 5
+  },
+  {
+    "caseId": "c022",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.863,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c022-config"
+        ]
+      },
+      "mechanism": {
+        "score": 0.9416666666666667,
+        "matched": [
+          "missing",
+          "secret",
+          "key",
+          "registry",
+          "token",
+          "env",
+          "not found",
+          "createcontainerconfigerror"
+        ]
+      },
+      "scope": {
+        "score": 0.2,
+        "matched": [
+          "single"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "CreateContainerConfigError or FailedMount",
+          "describe pod events"
+        ],
+        "toolCallCount": 7
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "create",
+          "remove",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 12955,
+    "toolCallCount": 7
+  },
+  {
+    "caseId": "c023",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.91,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c023-config"
+        ]
+      },
+      "mechanism": {
+        "score": 1,
+        "matched": [
+          "missing",
+          "envfrom",
+          "references",
+          "configmap",
+          "key",
+          "env",
+          "createcontainerconfigerror"
+        ]
+      },
+      "scope": {
+        "score": 0.4,
+        "matched": [
+          "single",
+          "only"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "CreateContainerConfigError or FailedMount",
+          "describe pod events"
+        ],
+        "toolCallCount": 6
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "correct",
+          "create",
+          "remove",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 21043,
+    "toolCallCount": 6
+  },
+  {
+    "caseId": "c024",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.887,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c024-config"
+        ]
+      },
+      "mechanism": {
+        "score": 1,
+        "matched": [
+          "missing",
+          "secret",
+          "envfrom",
+          "references",
+          "key",
+          "env",
+          "not found",
+          "createcontainerconfigerror"
+        ]
+      },
+      "scope": {
+        "score": 0.6,
+        "matched": [
+          "single",
+          "only",
+          "one"
+        ]
+      },
+      "evidence": {
+        "score": 0.65,
+        "matched": [
+          "CreateContainerConfigError or FailedMount"
+        ],
+        "toolCallCount": 7
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "create",
+          "configure",
+          "add",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 23457,
+    "toolCallCount": 7
+  },
+  {
+    "caseId": "c025",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.94,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c025-config"
+        ]
+      },
+      "mechanism": {
+        "score": 1,
+        "matched": [
+          "missing",
+          "config",
+          "volume",
+          "references",
+          "configmap",
+          "not found",
+          "configuration"
+        ]
+      },
+      "scope": {
+        "score": 0.6,
+        "matched": [
+          "configuration",
+          "single",
+          "only"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "CreateContainerConfigError or FailedMount",
+          "describe pod events"
+        ],
+        "toolCallCount": 6
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "update",
+          "create",
+          "set",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 16452,
+    "toolCallCount": 6
+  },
+  {
+    "caseId": "c026",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.88,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c026-config"
+        ]
+      },
+      "mechanism": {
+        "score": 1,
+        "matched": [
+          "missing",
+          "secret",
+          "volume",
+          "references",
+          "key",
+          "not found"
+        ]
+      },
+      "scope": {
+        "score": 0.2,
+        "matched": [
+          "only"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "CreateContainerConfigError or FailedMount",
+          "describe pod events"
+        ],
+        "toolCallCount": 7
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "create",
+          "remove",
+          "set",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 22385,
+    "toolCallCount": 7
+  },
+  {
+    "caseId": "c027",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.857,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c027-config"
+        ]
+      },
+      "mechanism": {
+        "score": 1,
+        "matched": [
+          "missing",
+          "pvc",
+          "volume",
+          "references",
+          "not found"
+        ]
+      },
+      "scope": {
+        "score": 0.4,
+        "matched": [
+          "single",
+          "only"
+        ]
+      },
+      "evidence": {
+        "score": 0.65,
+        "matched": [
+          "describe pod events"
+        ],
+        "toolCallCount": 7
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "correct",
+          "update",
+          "create",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 20073,
+    "toolCallCount": 7
+  },
+  {
+    "caseId": "c028",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.893,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c028-config"
+        ]
+      },
+      "mechanism": {
+        "score": 0.9416666666666667,
+        "matched": [
+          "projected",
+          "secret",
+          "volume",
+          "references",
+          "missing",
+          "key",
+          "not found",
+          "configuration"
+        ]
+      },
+      "scope": {
+        "score": 0.4,
+        "matched": [
+          "configuration",
+          "single"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "CreateContainerConfigError or FailedMount",
+          "describe pod events"
+        ],
+        "toolCallCount": 6
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "create",
+          "set",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 15537,
+    "toolCallCount": 6
+  },
+  {
+    "caseId": "c029",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.875,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c029-config"
+        ]
+      },
+      "mechanism": {
+        "score": 0.8833333333333333,
+        "matched": [
+          "config",
+          "subpath",
+          "mount",
+          "missing",
+          "configmap",
+          "key",
+          "volume",
+          "not found",
+          "configuration"
+        ]
+      },
+      "scope": {
+        "score": 0.4,
+        "matched": [
+          "configuration",
+          "only"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "CreateContainerConfigError or FailedMount",
+          "describe pod events"
+        ],
+        "toolCallCount": 6
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "update",
+          "create",
+          "remove",
+          "set",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 44583,
+    "toolCallCount": 6
+  },
+  {
+    "caseId": "c030",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.919,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c030-config"
+        ]
+      },
+      "mechanism": {
+        "score": 0.9299999999999999,
+        "matched": [
+          "missing",
+          "config",
+          "references",
+          "training",
+          "configmap",
+          "key",
+          "env",
+          "not found",
+          "createcontainerconfigerror"
+        ]
+      },
+      "scope": {
+        "score": 0.6,
+        "matched": [
+          "dependency",
+          "single",
+          "only"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "CreateContainerConfigError or FailedMount",
+          "describe pod events"
+        ],
+        "toolCallCount": 6
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "patch",
+          "create",
+          "set",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 12507,
+    "toolCallCount": 6
+  },
+  {
+    "caseId": "c031",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.947,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c031-pending"
+        ]
+      },
+      "mechanism": {
+        "score": 0.9222222222222223,
+        "matched": [
+          "gpu",
+          "type",
+          "selector",
+          "nodeselector",
+          "h100",
+          "pcie",
+          "80gb",
+          "pending",
+          "scheduler",
+          "node selector",
+          "taint",
+          "affinity",
+          "unschedulable"
+        ]
+      },
+      "scope": {
+        "score": 0.8,
+        "matched": [
+          "scheduling",
+          "single",
+          "only",
+          "one"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "FailedScheduling events",
+          "pod spec resource requests/selectors"
+        ],
+        "toolCallCount": 25
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "fix",
+          "correct",
+          "add",
+          "remove"
+        ]
+      }
+    },
+    "durationMs": 75502,
+    "toolCallCount": 25
+  },
+  {
+    "caseId": "c032",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.974,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c032-pending"
+        ]
+      },
+      "mechanism": {
+        "score": 0.9125,
+        "matched": [
+          "gpu",
+          "requests",
+          "gpus",
+          "than",
+          "any",
+          "node",
+          "cluster",
+          "can",
+          "provide",
+          "pending",
+          "scheduler",
+          "taint",
+          "insufficient",
+          "unschedulable"
+        ]
+      },
+      "scope": {
+        "score": 1,
+        "matched": [
+          "workload",
+          "scheduling",
+          "single",
+          "only",
+          "one"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "FailedScheduling events",
+          "pod spec resource requests/selectors"
+        ],
+        "toolCallCount": 14
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 32346,
+    "toolCallCount": 14
+  },
+  {
+    "caseId": "c033",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.857,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c033-pending"
+        ]
+      },
+      "mechanism": {
+        "score": 0.825,
+        "matched": [
+          "cpu",
+          "request",
+          "schedulable",
+          "pending",
+          "scheduler",
+          "node selector",
+          "nodeselector",
+          "taint",
+          "toleration",
+          "insufficient",
+          "unschedulable"
+        ]
+      },
+      "scope": {
+        "score": 0.4,
+        "matched": [
+          "scheduling",
+          "only"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "FailedScheduling events",
+          "pod spec resource requests/selectors"
+        ],
+        "toolCallCount": 3
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "correct",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 23471,
+    "toolCallCount": 3
+  },
+  {
+    "caseId": "c034",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.792,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c034-pending"
+        ]
+      },
+      "mechanism": {
+        "score": 0.8833333333333333,
+        "matched": [
+          "memory",
+          "request",
+          "exceeds",
+          "capacity",
+          "pending",
+          "scheduler",
+          "taint",
+          "insufficient"
+        ]
+      },
+      "scope": {
+        "score": 0.2,
+        "matched": [
+          "only"
+        ]
+      },
+      "evidence": {
+        "score": 0.65,
+        "matched": [
+          "pod spec resource requests/selectors"
+        ],
+        "toolCallCount": 6
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 26688,
+    "toolCallCount": 6
+  },
+  {
+    "caseId": "c035",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.97,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c035-pending"
+        ]
+      },
+      "mechanism": {
+        "score": 1,
+        "matched": [
+          "nonexistent",
+          "scheduler",
+          "names",
+          "not",
+          "running",
+          "pending",
+          "gpu"
+        ]
+      },
+      "scope": {
+        "score": 0.8,
+        "matched": [
+          "scheduling",
+          "single",
+          "only",
+          "one"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "FailedScheduling events",
+          "pod spec resource requests/selectors"
+        ],
+        "toolCallCount": 12
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "create",
+          "set"
+        ]
+      }
+    },
+    "durationMs": 80632,
+    "toolCallCount": 12
+  },
+  {
+    "caseId": "c036",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.831,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c036-pending"
+        ]
+      },
+      "mechanism": {
+        "score": 0.7375,
+        "matched": [
+          "missing",
+          "gpu",
+          "scheduler",
+          "profile",
+          "schedulername",
+          "pending"
+        ]
+      },
+      "scope": {
+        "score": 0.4,
+        "matched": [
+          "scheduling",
+          "only"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "FailedScheduling events",
+          "pod spec resource requests/selectors"
+        ],
+        "toolCallCount": 21
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "configure",
+          "set",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 111045,
+    "toolCallCount": 21
+  },
+  {
+    "caseId": "c037",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.905,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c037-pending"
+        ]
+      },
+      "mechanism": {
+        "score": 0.8833333333333333,
+        "matched": [
+          "zone",
+          "selector",
+          "nodeselector",
+          "nonexistent",
+          "pending",
+          "scheduler",
+          "node selector",
+          "taint",
+          "affinity",
+          "unschedulable"
+        ]
+      },
+      "scope": {
+        "score": 0.6,
+        "matched": [
+          "workload",
+          "only",
+          "one"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "FailedScheduling events",
+          "pod spec resource requests/selectors"
+        ],
+        "toolCallCount": 3
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "update",
+          "remove",
+          "set",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 20880,
+    "toolCallCount": 3
+  },
+  {
+    "caseId": "c038",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.782,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c038-pending"
+        ]
+      },
+      "mechanism": {
+        "score": 0.85,
+        "matched": [
+          "hostname",
+          "selector",
+          "nodeselector",
+          "node",
+          "pending",
+          "scheduler",
+          "node selector"
+        ]
+      },
+      "scope": {
+        "score": 0.2,
+        "matched": [
+          "one"
+        ]
+      },
+      "evidence": {
+        "score": 0.65,
+        "matched": [
+          "pod spec resource requests/selectors"
+        ],
+        "toolCallCount": 2
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "update"
+        ]
+      }
+    },
+    "durationMs": 30280,
+    "toolCallCount": 2
+  },
+  {
+    "caseId": "c039",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.822,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c039-pending"
+        ]
+      },
+      "mechanism": {
+        "score": 0.8055555555555556,
+        "matched": [
+          "gpu",
+          "label",
+          "nodeselector",
+          "typ",
+          "pending",
+          "scheduler",
+          "node selector"
+        ]
+      },
+      "scope": {
+        "score": 0.2,
+        "matched": [
+          "only"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "FailedScheduling events",
+          "pod spec resource requests/selectors"
+        ],
+        "toolCallCount": 3
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "correct",
+          "configure",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 45811,
+    "toolCallCount": 3
+  },
+  {
+    "caseId": "c040",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.799,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c040-pending"
+        ]
+      },
+      "mechanism": {
+        "score": 0.53125,
+        "matched": [
+          "labels",
+          "pending",
+          "node selector",
+          "taint"
+        ]
+      },
+      "scope": {
+        "score": 0.6,
+        "matched": [
+          "scheduling",
+          "constraint",
+          "only"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "FailedScheduling events",
+          "pod spec resource requests/selectors"
+        ],
+        "toolCallCount": 1
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "replace",
+          "create"
+        ]
+      }
+    },
+    "durationMs": 26903,
+    "toolCallCount": 1
+  },
+  {
+    "caseId": "c041",
+    "status": "completed",
+    "passed": false,
+    "totalScore": 0.544,
+    "dimensions": {
+      "localization": {
+        "score": 0,
+        "matched": []
+      },
+      "mechanism": {
+        "score": 0.78125,
+        "matched": [
+          "gpu",
+          "selector",
+          "type",
+          "pending",
+          "scheduler",
+          "nodeselector",
+          "taint",
+          "toleration",
+          "affinity"
+        ]
+      },
+      "scope": {
+        "score": 0.4,
+        "matched": [
+          "workload",
+          "only"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "FailedScheduling events",
+          "pod spec resource requests/selectors"
+        ],
+        "toolCallCount": 4
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "update",
+          "add",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 68030,
+    "toolCallCount": 4
+  },
+  {
+    "caseId": "c042",
+    "status": "completed",
+    "passed": false,
+    "totalScore": 0.605,
+    "dimensions": {
+      "localization": {
+        "score": 0,
+        "matched": []
+      },
+      "mechanism": {
+        "score": 0.8833333333333333,
+        "matched": [
+          "gpu",
+          "toleration",
+          "selector",
+          "dedicated",
+          "label",
+          "node",
+          "scheduler",
+          "node selector",
+          "nodeselector",
+          "taint",
+          "affinity"
+        ]
+      },
+      "scope": {
+        "score": 0.6,
+        "matched": [
+          "scheduling",
+          "only",
+          "one"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "FailedScheduling events",
+          "pod spec resource requests/selectors"
+        ],
+        "toolCallCount": 3
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct"
+        ]
+      }
+    },
+    "durationMs": 49370,
+    "toolCallCount": 3
+  },
+  {
+    "caseId": "c043",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.871,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c043-pending"
+        ]
+      },
+      "mechanism": {
+        "score": 0.8444444444444444,
+        "matched": [
+          "fake",
+          "pool",
+          "gpu",
+          "nonexistent",
+          "node",
+          "pending",
+          "scheduler",
+          "nodeselector",
+          "taint",
+          "affinity",
+          "unschedulable"
+        ]
+      },
+      "scope": {
+        "score": 0.8,
+        "matched": [
+          "scheduling",
+          "constraint",
+          "single",
+          "one"
+        ]
+      },
+      "evidence": {
+        "score": 0.65,
+        "matched": [
+          "pod spec resource requests/selectors"
+        ],
+        "toolCallCount": 6
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "replace",
+          "correct",
+          "remove",
+          "set",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 25033,
+    "toolCallCount": 6
+  },
+  {
+    "caseId": "c044",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.94,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c044-pending"
+        ]
+      },
+      "mechanism": {
+        "score": 0.9,
+        "matched": [
+          "required",
+          "affinity",
+          "node",
+          "label",
+          "has",
+          "pending",
+          "scheduler",
+          "nodeselector",
+          "taint",
+          "unschedulable"
+        ]
+      },
+      "scope": {
+        "score": 0.8,
+        "matched": [
+          "scheduling",
+          "constraint",
+          "only",
+          "one"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "FailedScheduling events",
+          "pod spec resource requests/selectors"
+        ],
+        "toolCallCount": 8
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "correct",
+          "add",
+          "remove"
+        ]
+      }
+    },
+    "durationMs": 56513,
+    "toolCallCount": 8
+  },
+  {
+    "caseId": "c045",
+    "status": "completed",
+    "passed": false,
+    "totalScore": 0.474,
+    "dimensions": {
+      "localization": {
+        "score": 0,
+        "matched": []
+      },
+      "mechanism": {
+        "score": 0.7208333333333333,
+        "matched": [
+          "arch",
+          "node",
+          "architecture",
+          "selector",
+          "nodeselector",
+          "taint",
+          "toleration"
+        ]
+      },
+      "scope": {
+        "score": 0.4,
+        "matched": [
+          "scheduling",
+          "one"
+        ]
+      },
+      "evidence": {
+        "score": 0.65,
+        "matched": [
+          "pod spec resource requests/selectors"
+        ],
+        "toolCallCount": 4
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "add"
+        ]
+      }
+    },
+    "durationMs": 47642,
+    "toolCallCount": 4
+  },
+  {
+    "caseId": "c046",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.912,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pvc/c046-data"
+        ]
+      },
+      "mechanism": {
+        "score": 0.70625,
+        "matched": [
+          "pvc",
+          "storageclass",
+          "not",
+          "exist",
+          "missing",
+          "unbound"
+        ]
+      },
+      "scope": {
+        "score": 1,
+        "matched": [
+          "blocked",
+          "unbound",
+          "pvc"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "PVC Pending",
+          "pod FailedScheduling due unbound PVC",
+          "storageClassName"
+        ],
+        "toolCallCount": 2
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "update",
+          "create"
+        ]
+      }
+    },
+    "durationMs": 25995,
+    "toolCallCount": 2
+  },
+  {
+    "caseId": "c047",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.82,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pvc/c047-data"
+        ]
+      },
+      "mechanism": {
+        "score": 0.7325,
+        "matched": [
+          "gpu",
+          "local",
+          "ssd",
+          "class",
+          "pvc",
+          "storageclass",
+          "missing",
+          "pending"
+        ]
+      },
+      "scope": {
+        "score": 0.3333333333333333,
+        "matched": [
+          "pvc"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "PVC Pending",
+          "pod FailedScheduling due unbound PVC",
+          "storageClassName"
+        ],
+        "toolCallCount": 3
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "update",
+          "create"
+        ]
+      }
+    },
+    "durationMs": 34329,
+    "toolCallCount": 3
+  },
+  {
+    "caseId": "c048",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.937,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pvc/c048-data"
+        ]
+      },
+      "mechanism": {
+        "score": 0.95625,
+        "matched": [
+          "pvc",
+          "storageclass",
+          "does",
+          "not",
+          "exist",
+          "requests",
+          "missing",
+          "unbound",
+          "volume"
+        ]
+      },
+      "scope": {
+        "score": 0.6666666666666666,
+        "matched": [
+          "unbound",
+          "pvc"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "PVC Pending",
+          "pod FailedScheduling due unbound PVC",
+          "storageClassName"
+        ],
+        "toolCallCount": 3
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "update",
+          "patch",
+          "create"
+        ]
+      }
+    },
+    "durationMs": 33083,
+    "toolCallCount": 3
+  },
+  {
+    "caseId": "c049",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.792,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pvc/c049-data"
+        ]
+      },
+      "mechanism": {
+        "score": 0.7325,
+        "matched": [
+          "gpu",
+          "local",
+          "ssd",
+          "class",
+          "pvc",
+          "storageclass",
+          "missing",
+          "pending"
+        ]
+      },
+      "scope": {
+        "score": 0.3333333333333333,
+        "matched": [
+          "pvc"
+        ]
+      },
+      "evidence": {
+        "score": 0.8166666666666667,
+        "matched": [
+          "PVC Pending",
+          "pod FailedScheduling due unbound PVC"
+        ],
+        "toolCallCount": 3
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "update",
+          "create"
+        ]
+      }
+    },
+    "durationMs": 35038,
+    "toolCallCount": 3
+  },
+  {
+    "caseId": "c050",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.897,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pvc/c050-data"
+        ]
+      },
+      "mechanism": {
+        "score": 0.825,
+        "matched": [
+          "pvc",
+          "storageclass",
+          "exist",
+          "missing",
+          "unbound",
+          "pending"
+        ]
+      },
+      "scope": {
+        "score": 0.6666666666666666,
+        "matched": [
+          "unbound",
+          "pvc"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "PVC Pending",
+          "pod FailedScheduling due unbound PVC",
+          "storageClassName"
+        ],
+        "toolCallCount": 2
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "update",
+          "patch",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 28732,
+    "toolCallCount": 2
+  },
+  {
+    "caseId": "c051",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.891,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pvc/c051-data"
+        ]
+      },
+      "mechanism": {
+        "score": 0.895,
+        "matched": [
+          "gpu",
+          "local",
+          "ssd",
+          "class",
+          "pvc",
+          "storageclass",
+          "missing",
+          "unbound",
+          "pending"
+        ]
+      },
+      "scope": {
+        "score": 0.6666666666666666,
+        "matched": [
+          "unbound",
+          "pvc"
+        ]
+      },
+      "evidence": {
+        "score": 0.8166666666666667,
+        "matched": [
+          "PVC Pending",
+          "pod FailedScheduling due unbound PVC"
+        ],
+        "toolCallCount": 2
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "update",
+          "create"
+        ]
+      }
+    },
+    "durationMs": 24340,
+    "toolCallCount": 2
+  },
+  {
+    "caseId": "c052",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.883,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pvc/c052-data"
+        ]
+      },
+      "mechanism": {
+        "score": 0.86875,
+        "matched": [
+          "pvc",
+          "storageclass",
+          "not",
+          "exist",
+          "missing",
+          "unbound",
+          "volume",
+          "pending"
+        ]
+      },
+      "scope": {
+        "score": 0.6666666666666666,
+        "matched": [
+          "unbound",
+          "pvc"
+        ]
+      },
+      "evidence": {
+        "score": 0.8166666666666667,
+        "matched": [
+          "PVC Pending",
+          "pod FailedScheduling due unbound PVC"
+        ],
+        "toolCallCount": 3
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "update",
+          "create",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 41379,
+    "toolCallCount": 3
+  },
+  {
+    "caseId": "c053",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.918,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pvc/c053-data"
+        ]
+      },
+      "mechanism": {
+        "score": 0.895,
+        "matched": [
+          "gpu",
+          "local",
+          "ssd",
+          "class",
+          "pvc",
+          "storageclass",
+          "missing",
+          "unbound",
+          "pending"
+        ]
+      },
+      "scope": {
+        "score": 0.6666666666666666,
+        "matched": [
+          "unbound",
+          "pvc"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "PVC Pending",
+          "pod FailedScheduling due unbound PVC",
+          "storageClassName"
+        ],
+        "toolCallCount": 2
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "update"
+        ]
+      }
+    },
+    "durationMs": 23427,
+    "toolCallCount": 2
+  },
+  {
+    "caseId": "c054",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.787,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pvc/c054-data"
+        ]
+      },
+      "mechanism": {
+        "score": 0.625,
+        "matched": [
+          "pvc",
+          "storageclass",
+          "not",
+          "exist",
+          "missing"
+        ]
+      },
+      "scope": {
+        "score": 0.3333333333333333,
+        "matched": [
+          "pvc"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "PVC Pending",
+          "pod FailedScheduling due unbound PVC",
+          "storageClassName"
+        ],
+        "toolCallCount": 2
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "update",
+          "create"
+        ]
+      }
+    },
+    "durationMs": 25527,
+    "toolCallCount": 2
+  },
+  {
+    "caseId": "c055",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.792,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pvc/c055-data"
+        ]
+      },
+      "mechanism": {
+        "score": 0.7325,
+        "matched": [
+          "gpu",
+          "local",
+          "ssd",
+          "class",
+          "pvc",
+          "storageclass",
+          "missing",
+          "pending"
+        ]
+      },
+      "scope": {
+        "score": 0.3333333333333333,
+        "matched": [
+          "pvc"
+        ]
+      },
+      "evidence": {
+        "score": 0.8166666666666667,
+        "matched": [
+          "PVC Pending",
+          "pod FailedScheduling due unbound PVC"
+        ],
+        "toolCallCount": 3
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "update",
+          "create"
+        ]
+      }
+    },
+    "durationMs": 36675,
+    "toolCallCount": 3
+  },
+  {
+    "caseId": "c056",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.817,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "deployment/c056-app"
+        ]
+      },
+      "mechanism": {
+        "score": 0.9650000000000001,
+        "matched": [
+          "readiness",
+          "probe",
+          "points",
+          "missing",
+          "health",
+          "endpoint",
+          "endpoints",
+          "not",
+          "ready",
+          "service"
+        ]
+      },
+      "scope": {
+        "score": 0.2,
+        "matched": [
+          "path"
+        ]
+      },
+      "evidence": {
+        "score": 0.65,
+        "matched": [
+          "deployment readiness",
+          "endpoints/endpointslices"
+        ],
+        "toolCallCount": 3
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "update"
+        ]
+      }
+    },
+    "durationMs": 37544,
+    "toolCallCount": 3
+  },
+  {
+    "caseId": "c057",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.77,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "service/c057-svc"
+        ]
+      },
+      "mechanism": {
+        "score": 0.6819444444444445,
+        "matched": [
+          "selector",
+          "match",
+          "labels",
+          "endpoints",
+          "are",
+          "service",
+          "endpoint"
+        ]
+      },
+      "scope": {
+        "score": 0.2,
+        "matched": [
+          "one"
+        ]
+      },
+      "evidence": {
+        "score": 0.9,
+        "matched": [
+          "service selector",
+          "endpoints/endpointslices",
+          "pod events"
+        ],
+        "toolCallCount": 4
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "update"
+        ]
+      }
+    },
+    "durationMs": 62309,
+    "toolCallCount": 4
+  },
+  {
+    "caseId": "c058",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.73,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "service/c058-svc"
+        ]
+      },
+      "mechanism": {
+        "score": 0.9,
+        "matched": [
+          "targetport",
+          "points",
+          "9090",
+          "container",
+          "8080",
+          "service",
+          "endpoint",
+          "port"
+        ]
+      },
+      "scope": {
+        "score": 0,
+        "matched": []
+      },
+      "evidence": {
+        "score": 0.4,
+        "matched": [
+          "endpoints/endpointslices"
+        ],
+        "toolCallCount": 9
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "update",
+          "set"
+        ]
+      }
+    },
+    "durationMs": 77966,
+    "toolCallCount": 9
+  },
+  {
+    "caseId": "c059",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.759,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "deployment/c059-app"
+        ]
+      },
+      "mechanism": {
+        "score": 0.895,
+        "matched": [
+          "readiness",
+          "probe",
+          "missing",
+          "health",
+          "endpoint",
+          "not",
+          "ready",
+          "service",
+          "port"
+        ]
+      },
+      "scope": {
+        "score": 0.2,
+        "matched": [
+          "path"
+        ]
+      },
+      "evidence": {
+        "score": 0.4,
+        "matched": [
+          "deployment readiness"
+        ],
+        "toolCallCount": 5
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "update",
+          "configure"
+        ]
+      }
+    },
+    "durationMs": 51461,
+    "toolCallCount": 5
+  },
+  {
+    "caseId": "c060",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.731,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "service/c060-svc"
+        ]
+      },
+      "mechanism": {
+        "score": 0.7777777777777778,
+        "matched": [
+          "selector",
+          "does",
+          "not",
+          "match",
+          "labels",
+          "endpoints",
+          "empty",
+          "service",
+          "endpoint"
+        ]
+      },
+      "scope": {
+        "score": 0,
+        "matched": []
+      },
+      "evidence": {
+        "score": 0.65,
+        "matched": [
+          "service selector",
+          "endpoints/endpointslices"
+        ],
+        "toolCallCount": 3
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "correct",
+          "update",
+          "configure",
+          "remove"
+        ]
+      }
+    },
+    "durationMs": 38575,
+    "toolCallCount": 3
+  },
+  {
+    "caseId": "c061",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.629,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "service/c061-svc"
+        ]
+      },
+      "mechanism": {
+        "score": 0.6875,
+        "matched": [
+          "targetport",
+          "9090",
+          "container",
+          "8080",
+          "service",
+          "port"
+        ]
+      },
+      "scope": {
+        "score": 0,
+        "matched": []
+      },
+      "evidence": {
+        "score": 0.15,
+        "matched": [],
+        "toolCallCount": 7
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "update",
+          "patch",
+          "configure"
+        ]
+      }
+    },
+    "durationMs": 72811,
+    "toolCallCount": 7
+  },
+  {
+    "caseId": "c062",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.826,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "deployment/c062-app"
+        ]
+      },
+      "mechanism": {
+        "score": 0.895,
+        "matched": [
+          "readiness",
+          "probe",
+          "missing",
+          "health",
+          "endpoint",
+          "not",
+          "ready",
+          "service",
+          "port"
+        ]
+      },
+      "scope": {
+        "score": 0.4,
+        "matched": [
+          "path",
+          "single"
+        ]
+      },
+      "evidence": {
+        "score": 0.65,
+        "matched": [
+          "deployment readiness",
+          "pod events"
+        ],
+        "toolCallCount": 7
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "update",
+          "create",
+          "set",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 63556,
+    "toolCallCount": 7
+  },
+  {
+    "caseId": "c063",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.751,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "service/c063-svc"
+        ]
+      },
+      "mechanism": {
+        "score": 0.7208333333333333,
+        "matched": [
+          "selector",
+          "not",
+          "match",
+          "labels",
+          "endpoints",
+          "are",
+          "service",
+          "endpoint"
+        ]
+      },
+      "scope": {
+        "score": 0,
+        "matched": []
+      },
+      "evidence": {
+        "score": 0.9,
+        "matched": [
+          "service selector",
+          "endpoints/endpointslices",
+          "pod events"
+        ],
+        "toolCallCount": 4
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "update",
+          "configure"
+        ]
+      }
+    },
+    "durationMs": 46734,
+    "toolCallCount": 4
+  },
+  {
+    "caseId": "c064",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.677,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "service/c064-svc"
+        ]
+      },
+      "mechanism": {
+        "score": 0.85,
+        "matched": [
+          "targetport",
+          "9090",
+          "container",
+          "8080",
+          "service",
+          "endpoint",
+          "port"
+        ]
+      },
+      "scope": {
+        "score": 0,
+        "matched": []
+      },
+      "evidence": {
+        "score": 0.15,
+        "matched": [],
+        "toolCallCount": 14
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "update",
+          "patch",
+          "configure"
+        ]
+      }
+    },
+    "durationMs": 154814,
+    "toolCallCount": 14
+  },
+  {
+    "caseId": "c065",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.817,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "deployment/c065-app"
+        ]
+      },
+      "mechanism": {
+        "score": 0.9650000000000001,
+        "matched": [
+          "readiness",
+          "probe",
+          "points",
+          "missing",
+          "health",
+          "endpoint",
+          "endpoints",
+          "not",
+          "ready",
+          "service"
+        ]
+      },
+      "scope": {
+        "score": 0.2,
+        "matched": [
+          "path"
+        ]
+      },
+      "evidence": {
+        "score": 0.65,
+        "matched": [
+          "deployment readiness",
+          "endpoints/endpointslices"
+        ],
+        "toolCallCount": 5
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "update",
+          "create"
+        ]
+      }
+    },
+    "durationMs": 46744,
+    "toolCallCount": 5
+  },
+  {
+    "caseId": "c066",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.794,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "service/c066-svc"
+        ]
+      },
+      "mechanism": {
+        "score": 0.8888888888888888,
+        "matched": [
+          "selector",
+          "does",
+          "not",
+          "match",
+          "labels",
+          "endpoints",
+          "are",
+          "empty",
+          "service",
+          "endpoint"
+        ]
+      },
+      "scope": {
+        "score": 0.2,
+        "matched": [
+          "single"
+        ]
+      },
+      "evidence": {
+        "score": 0.65,
+        "matched": [
+          "service selector",
+          "endpoints/endpointslices"
+        ],
+        "toolCallCount": 4
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "correct",
+          "update",
+          "configure",
+          "set"
+        ]
+      }
+    },
+    "durationMs": 37661,
+    "toolCallCount": 4
+  },
+  {
+    "caseId": "c067",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.798,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "service/c067-svc"
+        ]
+      },
+      "mechanism": {
+        "score": 0.9,
+        "matched": [
+          "targetport",
+          "points",
+          "9090",
+          "container",
+          "8080",
+          "service",
+          "endpoint",
+          "port"
+        ]
+      },
+      "scope": {
+        "score": 0.2,
+        "matched": [
+          "single"
+        ]
+      },
+      "evidence": {
+        "score": 0.65,
+        "matched": [
+          "endpoints/endpointslices",
+          "pod events"
+        ],
+        "toolCallCount": 7
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "update",
+          "configure",
+          "set"
+        ]
+      }
+    },
+    "durationMs": 54372,
+    "toolCallCount": 7
+  },
+  {
+    "caseId": "c068",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.931,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "networkpolicy/c068-deny-egress"
+        ]
+      },
+      "mechanism": {
+        "score": 0.86875,
+        "matched": [
+          "client",
+          "all",
+          "egress",
+          "including",
+          "traffic",
+          "networkpolicy",
+          "policy",
+          "deny"
+        ]
+      },
+      "scope": {
+        "score": 0.8,
+        "matched": [
+          "traffic",
+          "client",
+          "server",
+          "pods"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "NetworkPolicy spec",
+          "pod DNS config",
+          "service endpoints"
+        ],
+        "toolCallCount": 12
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "update",
+          "add",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 155024,
+    "toolCallCount": 12
+  },
+  {
+    "caseId": "c069",
+    "status": "completed",
+    "passed": false,
+    "totalScore": 0.432,
+    "dimensions": {
+      "localization": {
+        "score": 0,
+        "matched": []
+      },
+      "mechanism": {
+        "score": 0.5,
+        "matched": [
+          "server",
+          "all",
+          "client",
+          "dns",
+          "resolve"
+        ]
+      },
+      "scope": {
+        "score": 0.4,
+        "matched": [
+          "client",
+          "server"
+        ]
+      },
+      "evidence": {
+        "score": 0.8166666666666667,
+        "matched": [
+          "NetworkPolicy spec",
+          "pod DNS config"
+        ],
+        "toolCallCount": 8
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "correct",
+          "configure"
+        ]
+      }
+    },
+    "durationMs": 113764,
+    "toolCallCount": 8
+  },
+  {
+    "caseId": "c070",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.832,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c070-client"
+        ]
+      },
+      "mechanism": {
+        "score": 0.7325,
+        "matched": [
+          "client",
+          "dns",
+          "net",
+          "nameserver",
+          "203.0.113.1",
+          "cluster",
+          "resolution",
+          "resolve",
+          "coredns"
+        ]
+      },
+      "scope": {
+        "score": 0.6,
+        "matched": [
+          "traffic",
+          "client",
+          "server"
+        ]
+      },
+      "evidence": {
+        "score": 0.8166666666666667,
+        "matched": [
+          "NetworkPolicy spec",
+          "pod DNS config"
+        ],
+        "toolCallCount": 16
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "update",
+          "configure",
+          "add"
+        ]
+      }
+    },
+    "durationMs": 150761,
+    "toolCallCount": 16
+  },
+  {
+    "caseId": "c071",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.917,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "networkpolicy/c071-deny-egress"
+        ]
+      },
+      "mechanism": {
+        "score": 0.825,
+        "matched": [
+          "client",
+          "all",
+          "egress",
+          "traffic",
+          "networkpolicy",
+          "policy",
+          "deny"
+        ]
+      },
+      "scope": {
+        "score": 0.8,
+        "matched": [
+          "traffic",
+          "client",
+          "server",
+          "pods"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "NetworkPolicy spec",
+          "pod DNS config",
+          "service endpoints"
+        ],
+        "toolCallCount": 5
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "add"
+        ]
+      }
+    },
+    "durationMs": 51483,
+    "toolCallCount": 5
+  },
+  {
+    "caseId": "c072",
+    "status": "completed",
+    "passed": false,
+    "totalScore": 0.445,
+    "dimensions": {
+      "localization": {
+        "score": 0,
+        "matched": []
+      },
+      "mechanism": {
+        "score": 0.44166666666666665,
+        "matched": [
+          "server",
+          "client",
+          "dns",
+          "resolve"
+        ]
+      },
+      "scope": {
+        "score": 0.6,
+        "matched": [
+          "case",
+          "client",
+          "server"
+        ]
+      },
+      "evidence": {
+        "score": 0.8166666666666667,
+        "matched": [
+          "NetworkPolicy spec",
+          "pod DNS config"
+        ],
+        "toolCallCount": 8
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "correct",
+          "set"
+        ]
+      }
+    },
+    "durationMs": 93833,
+    "toolCallCount": 8
+  },
+  {
+    "caseId": "c073",
+    "status": "completed",
+    "passed": false,
+    "totalScore": 0.649,
+    "dimensions": {
+      "localization": {
+        "score": 0,
+        "matched": []
+      },
+      "mechanism": {
+        "score": 0.9299999999999999,
+        "matched": [
+          "client",
+          "dns",
+          "test",
+          "net",
+          "nameserver",
+          "cluster",
+          "resolution",
+          "fails",
+          "egress",
+          "resolve",
+          "coredns",
+          "policy",
+          "deny"
+        ]
+      },
+      "scope": {
+        "score": 0.8,
+        "matched": [
+          "traffic",
+          "client",
+          "server",
+          "pods"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "NetworkPolicy spec",
+          "pod DNS config",
+          "service endpoints"
+        ],
+        "toolCallCount": 4
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "correct",
+          "configure",
+          "set"
+        ]
+      }
+    },
+    "durationMs": 62324,
+    "toolCallCount": 4
+  },
+  {
+    "caseId": "c074",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.903,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "networkpolicy/c074-deny-egress"
+        ]
+      },
+      "mechanism": {
+        "score": 0.86875,
+        "matched": [
+          "client",
+          "all",
+          "egress",
+          "including",
+          "traffic",
+          "networkpolicy",
+          "resolve",
+          "policy",
+          "deny"
+        ]
+      },
+      "scope": {
+        "score": 0.8,
+        "matched": [
+          "traffic",
+          "client",
+          "server",
+          "pods"
+        ]
+      },
+      "evidence": {
+        "score": 0.8166666666666667,
+        "matched": [
+          "pod DNS config",
+          "service endpoints"
+        ],
+        "toolCallCount": 5
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "correct",
+          "configure",
+          "remove",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 46123,
+    "toolCallCount": 5
+  },
+  {
+    "caseId": "c075",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.907,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "networkpolicy/c075-deny-ingress"
+        ]
+      },
+      "mechanism": {
+        "score": 0.8833333333333333,
+        "matched": [
+          "server",
+          "all",
+          "ingress",
+          "client",
+          "networkpolicy",
+          "policy",
+          "deny"
+        ]
+      },
+      "scope": {
+        "score": 0.8,
+        "matched": [
+          "traffic",
+          "client",
+          "server",
+          "pods"
+        ]
+      },
+      "evidence": {
+        "score": 0.8166666666666667,
+        "matched": [
+          "NetworkPolicy spec",
+          "service endpoints"
+        ],
+        "toolCallCount": 10
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "correct",
+          "update",
+          "add",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 105835,
+    "toolCallCount": 10
+  },
+  {
+    "caseId": "c076",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.88,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c076-client"
+        ]
+      },
+      "mechanism": {
+        "score": 0.8,
+        "matched": [
+          "client",
+          "dns",
+          "test",
+          "net",
+          "nameserver",
+          "203.0.113.1",
+          "cluster",
+          "resolution",
+          "policy"
+        ]
+      },
+      "scope": {
+        "score": 0.6,
+        "matched": [
+          "client",
+          "server",
+          "pods"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "NetworkPolicy spec",
+          "pod DNS config",
+          "service endpoints"
+        ],
+        "toolCallCount": 9
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "correct",
+          "update",
+          "configure",
+          "remove",
+          "set"
+        ]
+      }
+    },
+    "durationMs": 99714,
+    "toolCallCount": 9
+  },
+  {
+    "caseId": "c077",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.903,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "networkpolicy/c077-deny-egress"
+        ]
+      },
+      "mechanism": {
+        "score": 0.86875,
+        "matched": [
+          "client",
+          "all",
+          "egress",
+          "including",
+          "traffic",
+          "networkpolicy",
+          "policy",
+          "deny"
+        ]
+      },
+      "scope": {
+        "score": 0.8,
+        "matched": [
+          "traffic",
+          "client",
+          "server",
+          "pods"
+        ]
+      },
+      "evidence": {
+        "score": 0.8166666666666667,
+        "matched": [
+          "NetworkPolicy spec",
+          "service endpoints"
+        ],
+        "toolCallCount": 7
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "add"
+        ]
+      }
+    },
+    "durationMs": 77216,
+    "toolCallCount": 7
+  },
+  {
+    "caseId": "c078",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.698,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "deployment/c078-deploy"
+        ]
+      },
+      "mechanism": {
+        "score": 0.6666666666666666,
+        "matched": [
+          "rollout",
+          "because",
+          "pods",
+          "cannot",
+          "pull",
+          "image",
+          "deployment"
+        ]
+      },
+      "scope": {
+        "score": 0,
+        "matched": []
+      },
+      "evidence": {
+        "score": 0.65,
+        "matched": [
+          "rollout status",
+          "replicas/pods"
+        ],
+        "toolCallCount": 4
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "configure"
+        ]
+      }
+    },
+    "durationMs": 33991,
+    "toolCallCount": 4
+  },
+  {
+    "caseId": "c079",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.768,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "deployment/c079-deploy"
+        ]
+      },
+      "mechanism": {
+        "score": 0.7,
+        "matched": [
+          "pods",
+          "run",
+          "but",
+          "readiness",
+          "probe",
+          "port",
+          "instead",
+          "deployment",
+          "service"
+        ]
+      },
+      "scope": {
+        "score": 0.4,
+        "matched": [
+          "its",
+          "resources"
+        ]
+      },
+      "evidence": {
+        "score": 0.65,
+        "matched": [
+          "rollout status",
+          "replicas/pods"
+        ],
+        "toolCallCount": 6
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "correct",
+          "update",
+          "configure",
+          "set"
+        ]
+      }
+    },
+    "durationMs": 77063,
+    "toolCallCount": 6
+  },
+  {
+    "caseId": "c080",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.716,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "deployment/c080-deploy"
+        ]
+      },
+      "mechanism": {
+        "score": 0.6275000000000001,
+        "matched": [
+          "hpa",
+          "cannot",
+          "target",
+          "has",
+          "deployment",
+          "service"
+        ]
+      },
+      "scope": {
+        "score": 0.2,
+        "matched": [
+          "resources"
+        ]
+      },
+      "evidence": {
+        "score": 0.65,
+        "matched": [
+          "replicas/pods",
+          "HPA conditions"
+        ],
+        "toolCallCount": 4
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "create"
+        ]
+      }
+    },
+    "durationMs": 55038,
+    "toolCallCount": 4
+  },
+  {
+    "caseId": "c081",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.87,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "ingress/c081-ing"
+        ]
+      },
+      "mechanism": {
+        "score": 0.9416666666666667,
+        "matched": [
+          "ingress",
+          "backend",
+          "missing",
+          "c081",
+          "svc",
+          "deployment",
+          "controller",
+          "service"
+        ]
+      },
+      "scope": {
+        "score": 0.6,
+        "matched": [
+          "controller",
+          "its",
+          "resources"
+        ]
+      },
+      "evidence": {
+        "score": 0.65,
+        "matched": [
+          "replicas/pods",
+          "Ingress backend"
+        ],
+        "toolCallCount": 8
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "update",
+          "create",
+          "configure",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 97527,
+    "toolCallCount": 8
+  },
+  {
+    "caseId": "c082",
+    "status": "completed",
+    "passed": false,
+    "totalScore": 0.597,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "deployment/c082-deploy"
+        ]
+      },
+      "mechanism": {
+        "score": 0.3333333333333333,
+        "matched": [
+          "rollout",
+          "pull",
+          "image",
+          "deployment"
+        ]
+      },
+      "scope": {
+        "score": 0,
+        "matched": []
+      },
+      "evidence": {
+        "score": 0.65,
+        "matched": [
+          "rollout status",
+          "replicas/pods"
+        ],
+        "toolCallCount": 4
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "update"
+        ]
+      }
+    },
+    "durationMs": 39928,
+    "toolCallCount": 4
+  },
+  {
+    "caseId": "c083",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.632,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "deployment/c083-deploy"
+        ]
+      },
+      "mechanism": {
+        "score": 0.7,
+        "matched": [
+          "run",
+          "but",
+          "readiness",
+          "probe",
+          "port",
+          "9090",
+          "8080",
+          "deployment"
+        ]
+      },
+      "scope": {
+        "score": 0,
+        "matched": []
+      },
+      "evidence": {
+        "score": 0.15,
+        "matched": [],
+        "toolCallCount": 4
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "update"
+        ]
+      }
+    },
+    "durationMs": 43835,
+    "toolCallCount": 4
+  },
+  {
+    "caseId": "c084",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.723,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "deployment/c084-deploy"
+        ]
+      },
+      "mechanism": {
+        "score": 0.6275000000000001,
+        "matched": [
+          "hpa",
+          "cannot",
+          "target",
+          "has",
+          "deployment",
+          "service"
+        ]
+      },
+      "scope": {
+        "score": 0,
+        "matched": []
+      },
+      "evidence": {
+        "score": 0.9,
+        "matched": [
+          "rollout status",
+          "replicas/pods",
+          "HPA conditions"
+        ],
+        "toolCallCount": 10
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "create",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 92689,
+    "toolCallCount": 10
+  },
+  {
+    "caseId": "c085",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.808,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "ingress/c085-ing"
+        ]
+      },
+      "mechanism": {
+        "score": 0.8333333333333334,
+        "matched": [
+          "ingress",
+          "points",
+          "missing",
+          "c085",
+          "svc",
+          "deployment",
+          "service"
+        ]
+      },
+      "scope": {
+        "score": 0.4,
+        "matched": [
+          "its",
+          "resources"
+        ]
+      },
+      "evidence": {
+        "score": 0.65,
+        "matched": [
+          "replicas/pods",
+          "Ingress backend"
+        ],
+        "toolCallCount": 5
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "create"
+        ]
+      }
+    },
+    "durationMs": 77820,
+    "toolCallCount": 5
+  },
+  {
+    "caseId": "c086",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.866,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "podgroup/c086-pg"
+        ]
+      },
+      "mechanism": {
+        "score": 0.895,
+        "matched": [
+          "minmember",
+          "pods",
+          "podgroup",
+          "has",
+          "but",
+          "only",
+          "exists",
+          "volcano",
+          "gpu"
+        ]
+      },
+      "scope": {
+        "score": 0.5,
+        "matched": [
+          "podgroup"
+        ]
+      },
+      "evidence": {
+        "score": 0.8166666666666667,
+        "matched": [
+          "PodGroup spec/status",
+          "Volcano scheduling events"
+        ],
+        "toolCallCount": 10
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "update",
+          "add",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 118740,
+    "toolCallCount": 10
+  },
+  {
+    "caseId": "c087",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.868,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "podgroup/c087-pg"
+        ]
+      },
+      "mechanism": {
+        "score": 0.9,
+        "matched": [
+          "queue",
+          "not",
+          "exist",
+          "podgroup",
+          "references",
+          "volcano",
+          "gpu"
+        ]
+      },
+      "scope": {
+        "score": 0.5,
+        "matched": [
+          "podgroup"
+        ]
+      },
+      "evidence": {
+        "score": 0.8166666666666667,
+        "matched": [
+          "PodGroup spec/status",
+          "Volcano scheduling events"
+        ],
+        "toolCallCount": 6
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "update"
+        ]
+      }
+    },
+    "durationMs": 56454,
+    "toolCallCount": 6
+  },
+  {
+    "caseId": "c088",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.773,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "job.batch.volcano.sh/c088-vj"
+        ]
+      },
+      "mechanism": {
+        "score": 0.6275000000000001,
+        "matched": [
+          "gpu",
+          "requests",
+          "volcano",
+          "scheduler"
+        ]
+      },
+      "scope": {
+        "score": 0.3333333333333333,
+        "matched": [
+          "pods"
+        ]
+      },
+      "evidence": {
+        "score": 0.9,
+        "matched": [
+          "Volcano Job status",
+          "PodGroup status",
+          "owned pod events"
+        ],
+        "toolCallCount": 8
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "create"
+        ]
+      }
+    },
+    "durationMs": 76495,
+    "toolCallCount": 8
+  },
+  {
+    "caseId": "c089",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.915,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "job.batch.volcano.sh/c089-vj"
+        ]
+      },
+      "mechanism": {
+        "score": 0.8833333333333333,
+        "matched": [
+          "gpu",
+          "type",
+          "selector",
+          "task",
+          "a100",
+          "missing",
+          "volcano",
+          "podgroup",
+          "queue",
+          "scheduler"
+        ]
+      },
+      "scope": {
+        "score": 0.6666666666666666,
+        "matched": [
+          "podgroup",
+          "pods"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "Volcano Job status",
+          "PodGroup status",
+          "owned pod events",
+          "queue"
+        ],
+        "toolCallCount": 16
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "correct",
+          "update",
+          "create",
+          "add",
+          "remove",
+          "set",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 82981,
+    "toolCallCount": 16
+  },
+  {
+    "caseId": "c090",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.788,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "job.batch.volcano.sh/c090-vj"
+        ]
+      },
+      "mechanism": {
+        "score": 0.8,
+        "matched": [
+          "priority",
+          "class",
+          "references",
+          "missing",
+          "volcano",
+          "podgroup",
+          "scheduler"
+        ]
+      },
+      "scope": {
+        "score": 0.3333333333333333,
+        "matched": [
+          "podgroup"
+        ]
+      },
+      "evidence": {
+        "score": 0.65,
+        "matched": [
+          "Volcano Job status",
+          "PodGroup status"
+        ],
+        "toolCallCount": 4
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "update",
+          "create"
+        ]
+      }
+    },
+    "durationMs": 44525,
+    "toolCallCount": 4
+  },
+  {
+    "caseId": "c091",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.924,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "job.batch.volcano.sh/c091-vj"
+        ]
+      },
+      "mechanism": {
+        "score": 0.9125,
+        "matched": [
+          "min",
+          "resources",
+          "high",
+          "task",
+          "cpu",
+          "request",
+          "volcano",
+          "podgroup",
+          "queue",
+          "minresource",
+          "scheduler",
+          "gpu"
+        ]
+      },
+      "scope": {
+        "score": 0.6666666666666666,
+        "matched": [
+          "podgroup",
+          "pods"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "Volcano Job status",
+          "PodGroup status",
+          "owned pod events",
+          "queue"
+        ],
+        "toolCallCount": 23
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "correct",
+          "patch",
+          "create",
+          "set",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 77567,
+    "toolCallCount": 23
+  },
+  {
+    "caseId": "c092",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.622,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "job.batch.volcano.sh/c092-vj"
+        ]
+      },
+      "mechanism": {
+        "score": 0.6666666666666666,
+        "matched": [
+          "missing",
+          "config",
+          "cannot",
+          "start",
+          "env",
+          "references",
+          "volcano"
+        ]
+      },
+      "scope": {
+        "score": 0,
+        "matched": []
+      },
+      "evidence": {
+        "score": 0.15,
+        "matched": [],
+        "toolCallCount": 4
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "create"
+        ]
+      }
+    },
+    "durationMs": 51226,
+    "toolCallCount": 4
+  },
+  {
+    "caseId": "c093",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.905,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "job.batch.volcano.sh/c093-vj"
+        ]
+      },
+      "mechanism": {
+        "score": 0.85,
+        "matched": [
+          "image",
+          "pull",
+          "created",
+          "invalid",
+          "volcano",
+          "podgroup",
+          "queue",
+          "minresource",
+          "scheduler",
+          "gpu"
+        ]
+      },
+      "scope": {
+        "score": 0.6666666666666666,
+        "matched": [
+          "podgroup",
+          "pods"
+        ]
+      },
+      "evidence": {
+        "score": 1,
+        "matched": [
+          "Volcano Job status",
+          "PodGroup status",
+          "owned pod events",
+          "queue"
+        ],
+        "toolCallCount": 29
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "replace",
+          "create",
+          "configure",
+          "increase"
+        ]
+      }
+    },
+    "durationMs": 113189,
+    "toolCallCount": 29
+  },
+  {
+    "caseId": "c094",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.676,
+    "dimensions": {
+      "localization": {
+        "score": 0.5,
+        "matched": [
+          "deployment/c094-compound-app"
+        ]
+      },
+      "mechanism": {
+        "score": 0.86875,
+        "matched": [
+          "selector",
+          "readiness",
+          "probe",
+          "points",
+          "missing",
+          "compound",
+          "and",
+          "config"
+        ]
+      },
+      "scope": {
+        "score": 0.2,
+        "matched": [
+          "compound"
+        ]
+      },
+      "evidence": {
+        "score": 0.9,
+        "matched": [
+          "multiple resources",
+          "events",
+          "spec mismatch"
+        ],
+        "toolCallCount": 4
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "replace",
+          "update",
+          "create",
+          "configure"
+        ]
+      }
+    },
+    "durationMs": 53039,
+    "toolCallCount": 4
+  },
+  {
+    "caseId": "c095",
+    "status": "completed",
+    "passed": false,
+    "totalScore": 0.504,
+    "dimensions": {
+      "localization": {
+        "score": 0,
+        "matched": []
+      },
+      "mechanism": {
+        "score": 0.9222222222222223,
+        "matched": [
+          "gpu",
+          "selector",
+          "missing",
+          "config",
+          "has",
+          "nodeselector",
+          "references",
+          "compound",
+          "and",
+          "scheduler"
+        ]
+      },
+      "scope": {
+        "score": 0.2,
+        "matched": [
+          "compound"
+        ]
+      },
+      "evidence": {
+        "score": 0.65,
+        "matched": [
+          "spec mismatch",
+          "avoid anchoring on first anomaly"
+        ],
+        "toolCallCount": 12
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "correct",
+          "create",
+          "add",
+          "set"
+        ]
+      }
+    },
+    "durationMs": 50932,
+    "toolCallCount": 12
+  },
+  {
+    "caseId": "c096",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.833,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "persistentvolumeclaim/c096-compound-pvc",
+          "deployment/c096-compound-storage",
+          "service/c096-compound-svc"
+        ]
+      },
+      "mechanism": {
+        "score": 0.9192307692307693,
+        "matched": [
+          "pvc",
+          "pending",
+          "mismatch",
+          "uses",
+          "missing",
+          "storageclass",
+          "selector",
+          "not",
+          "match",
+          "app",
+          "compound",
+          "both",
+          "and",
+          "config"
+        ]
+      },
+      "scope": {
+        "score": 0.4,
+        "matched": [
+          "compound",
+          "both"
+        ]
+      },
+      "evidence": {
+        "score": 0.65,
+        "matched": [
+          "events",
+          "spec mismatch"
+        ],
+        "toolCallCount": 3
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "update",
+          "create",
+          "align"
+        ]
+      }
+    },
+    "durationMs": 40855,
+    "toolCallCount": 3
+  },
+  {
+    "caseId": "c097",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.813,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "pod/c097-compound-client",
+          "networkpolicy/c097-compound-deny-egress"
+        ]
+      },
+      "mechanism": {
+        "score": 0.825,
+        "matched": [
+          "network",
+          "deny",
+          "client",
+          "has",
+          "all",
+          "egress",
+          "compound",
+          "and",
+          "two",
+          "selector",
+          "networkpolicy"
+        ]
+      },
+      "scope": {
+        "score": 0.2,
+        "matched": [
+          "compound"
+        ]
+      },
+      "evidence": {
+        "score": 0.9,
+        "matched": [
+          "multiple resources",
+          "events",
+          "spec mismatch"
+        ],
+        "toolCallCount": 4
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "add",
+          "align",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 73626,
+    "toolCallCount": 4
+  },
+  {
+    "caseId": "c098",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.649,
+    "dimensions": {
+      "localization": {
+        "score": 0.5,
+        "matched": [
+          "podgroup/c098-compound-pg"
+        ]
+      },
+      "mechanism": {
+        "score": 0.78125,
+        "matched": [
+          "queue",
+          "gpu",
+          "missing",
+          "compound",
+          "config",
+          "volcano",
+          "scheduler"
+        ]
+      },
+      "scope": {
+        "score": 0.2,
+        "matched": [
+          "compound"
+        ]
+      },
+      "evidence": {
+        "score": 0.9,
+        "matched": [
+          "multiple resources",
+          "events",
+          "spec mismatch"
+        ],
+        "toolCallCount": 10
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "create"
+        ]
+      }
+    },
+    "durationMs": 95380,
+    "toolCallCount": 10
+  },
+  {
+    "caseId": "c099",
+    "status": "completed",
+    "passed": true,
+    "totalScore": 0.881,
+    "dimensions": {
+      "localization": {
+        "score": 1,
+        "matched": [
+          "deployment/c099-compound-deploy",
+          "horizontalpodautoscaler/c099-compound-hpa"
+        ]
+      },
+      "mechanism": {
+        "score": 0.9533333333333334,
+        "matched": [
+          "image",
+          "hpa",
+          "requests",
+          "pods",
+          "cannot",
+          "pull",
+          "its",
+          "compute",
+          "cpu",
+          "utilization",
+          "because",
+          "are",
+          "absent",
+          "compound",
+          "both",
+          "also",
+          "and",
+          "config"
+        ]
+      },
+      "scope": {
+        "score": 0.4,
+        "matched": [
+          "compound",
+          "both"
+        ]
+      },
+      "evidence": {
+        "score": 0.9,
+        "matched": [
+          "multiple resources",
+          "events",
+          "spec mismatch"
+        ],
+        "toolCallCount": 19
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "correct",
+          "update",
+          "configure",
+          "add",
+          "set"
+        ]
+      }
+    },
+    "durationMs": 75617,
+    "toolCallCount": 19
+  },
+  {
+    "caseId": "c100",
+    "status": "completed",
+    "passed": false,
+    "totalScore": 0.567,
+    "dimensions": {
+      "localization": {
+        "score": 0,
+        "matched": []
+      },
+      "mechanism": {
+        "score": 0.9066666666666667,
+        "matched": [
+          "scheduler",
+          "profile",
+          "nccl",
+          "env",
+          "gpu",
+          "container",
+          "command",
+          "would",
+          "fail",
+          "due",
+          "interface",
+          "compound",
+          "both",
+          "and",
+          "two",
+          "config",
+          "volcano"
+        ]
+      },
+      "scope": {
+        "score": 0.4,
+        "matched": [
+          "compound",
+          "both"
+        ]
+      },
+      "evidence": {
+        "score": 0.9,
+        "matched": [
+          "multiple resources",
+          "events",
+          "spec mismatch"
+        ],
+        "toolCallCount": 29
+      },
+      "remediation": {
+        "score": 1,
+        "matched": [
+          "remediation",
+          "fix",
+          "correct",
+          "update",
+          "configure",
+          "add",
+          "remove",
+          "set",
+          "safe"
+        ]
+      }
+    },
+    "durationMs": 123943,
+    "toolCallCount": 29
+  }
+]

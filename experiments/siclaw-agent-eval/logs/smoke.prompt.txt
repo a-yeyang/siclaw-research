@@ -1,0 +1,1 @@
+Use the cks-test cluster. Diagnose pod smoke-busybox in namespace siclaw-eval-yye-20260602. Keep it short: report whether it is healthy and cite the evidence. Do not modify anything.

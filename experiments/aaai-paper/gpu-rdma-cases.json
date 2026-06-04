@@ -1,0 +1,222 @@
+[
+  {
+    "namespace": "siclaw-eval-gpu-rdma",
+    "id": "g01",
+    "category": "gpu-hardware",
+    "difficulty": "hard",
+    "title": "GPU Xid 48 double-bit ECC error causing training crash",
+    "targets": [
+      "pod/g01-training-xid48"
+    ],
+    "symptom": "GPU training pod g01-training-xid48 crashed with exit code 134 (SIGABRT). The pod was running a multi-GPU training job on node fake-node-105.",
+    "groundTruth": {
+      "localization": "pod/g01-training-xid48 on node fake-node-105",
+      "mechanism": "GPU 3 on node fake-node-105 experienced Xid 48 (Double-Bit ECC / DBE uncorrectable memory error), corrupting GPU memory and triggering a CUDA illegal memory access fatal error. The Xid 48 error indicates a hardware-level uncorrectable memory fault (two bits flipped in the same memory word). This requires GPU replacement or row remapping.",
+      "scope": "Single GPU (GPU 3) on fake-node-105; affects all pods using that GPU. Node should be cordoned for GPU health check."
+    },
+    "expectedSignals": [
+      "dmesg xid log",
+      "nvidia-smi ecc errors",
+      "cuda error",
+      "pod exit code",
+      "node events"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-gpu-rdma",
+    "id": "g02",
+    "category": "gpu-hardware",
+    "difficulty": "hard",
+    "title": "NVLink degradation causing training slowdown",
+    "targets": [
+      "pod/g02-nvlink-slow"
+    ],
+    "symptom": "GPU training pod g02-nvlink-slow is running but training throughput has dropped by approximately 40%. The job has not crashed but iteration time increased from 2.3s to 3.8s. Pod is on node fake-node-105.",
+    "groundTruth": {
+      "localization": "pod/g02-nvlink-slow on node fake-node-105, NVLink between GPU 2 and GPU 3",
+      "mechanism": "NVLink connection between GPU 2 and GPU 3 has degraded from NVLink speed (450 GB/s per direction) to PCIe fallback speed (64 GB/s). nvidia-smi topo shows the link as 'PIX' instead of 'NV18'. The NCCL allreduce operations fall back to PCIe path, reducing collective communication throughput and causing ~40% training slowdown.",
+      "scope": "All multi-GPU jobs using GPU 2-3 pair on this node are affected. Single-GPU jobs unaffected."
+    },
+    "expectedSignals": [
+      "nvidia-smi topo",
+      "nvlink error counter",
+      "nccl log",
+      "training throughput"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-gpu-rdma",
+    "id": "g03",
+    "category": "gpu-hardware",
+    "difficulty": "medium",
+    "title": "GPU thermal throttling causing CUDA OOM",
+    "targets": [
+      "pod/g03-thermal-oom"
+    ],
+    "symptom": "GPU training pod g03-thermal-oom crashes with CUDA out-of-memory error, but the model should fit in 80GB VRAM. Pod is on node fake-node-105.",
+    "groundTruth": {
+      "localization": "pod/g03-thermal-oom on node fake-node-105, GPU 6",
+      "mechanism": "GPU 6 temperature reached 103C, triggering thermal throttling that reduces effective VRAM capacity. nvidia-smi shows GPU 6 at 103C with power throttle reason 'HW Thermal Slowdown Active'. The thermal throttling reduces available memory bandwidth, causing the CUDA memory allocator to fail despite nominal 80GB capacity. Root cause is likely inadequate cooling (blocked airflow or fan failure).",
+      "scope": "Single GPU (GPU 6). Other GPUs on the node at normal temperature (42-55C)."
+    },
+    "expectedSignals": [
+      "nvidia-smi temperature",
+      "power throttle reason",
+      "cuda oom error"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-gpu-rdma",
+    "id": "g04",
+    "category": "rdma-network",
+    "difficulty": "hard",
+    "title": "RDMA link flap causing NCCL allreduce timeout",
+    "targets": [
+      "pod/g04-rdma-flap"
+    ],
+    "symptom": "Distributed training pod g04-rdma-flap hangs at NCCL allreduce and eventually times out. The training was running across 2 nodes (fake-node-105 and fake-node-106) using RDMA/RoCEv2.",
+    "groundTruth": {
+      "localization": "pod/g04-rdma-flap on fake-node-105, RDMA HCA mlx5_0 port 1",
+      "mechanism": "InfiniBand port mlx5_0:1 on fake-node-105 is experiencing link flapping (state toggling between Active and Down). ibstat shows port state 'Polling' (attempting to re-establish link). The physical link recovers and drops repeatedly (43 state changes in 10 minutes), causing in-flight RDMA operations to fail and NCCL to timeout waiting for allreduce completion. Root cause: likely a damaged optical cable or dirty transceiver on that port.",
+      "scope": "All inter-node RDMA communication involving fake-node-105 port mlx5_0:1. Intra-node NVLink communication is unaffected. Multi-node training jobs using this node will hang."
+    },
+    "expectedSignals": [
+      "ibstat port state",
+      "link flap count",
+      "nccl timeout",
+      "dmesg rdma"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-gpu-rdma",
+    "id": "g05",
+    "category": "rdma-network",
+    "difficulty": "hard",
+    "title": "PFC storm causing cluster-wide RDMA congestion",
+    "targets": [
+      "pod/g05-pfc-storm"
+    ],
+    "symptom": "Multiple distributed training jobs report slowdown. Pod g05-pfc-storm on fake-node-105 shows RDMA bandwidth dropped from 180 GB/s to 23 GB/s. Other training jobs on different nodes also report 20-30% throughput degradation.",
+    "groundTruth": {
+      "localization": "RDMA fabric congestion originating from fake-node-110 (a noisy-neighbor node running unoptimized all-to-all communication)",
+      "mechanism": "A noisy-neighbor job on fake-node-110 is generating excessive RDMA traffic with poor congestion control, triggering PFC (Priority Flow Control) PAUSE frames. These PFC frames propagate back-pressure through the network fabric ('PFC storm'), congesting switch buffers and causing head-of-line blocking for all RDMA traffic traversing the shared fabric links. ethtool counters show rx_pfc_pause on the leaf switch port spiking to 1.2M frames/sec. The DCQCN rate limiting is insufficient because the offending job bypasses ECN marking.",
+      "scope": "Cluster-wide impact: all multi-node training jobs sharing the same leaf-spine fabric segment. Intra-node NVLink traffic is unaffected."
+    },
+    "expectedSignals": [
+      "rdma bandwidth drop",
+      "pfc pause counters",
+      "ethtool stats",
+      "ecn counters"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-gpu-rdma",
+    "id": "g06",
+    "category": "gpu-hardware",
+    "difficulty": "medium",
+    "title": "GPU row remapping exhausted — persistent ECC errors",
+    "targets": [
+      "pod/g06-ecc-exhausted"
+    ],
+    "symptom": "Pod g06-ecc-exhausted keeps crashing with CUDA errors on node fake-node-105. Restarting the pod does not help. The issue persists across different training jobs on the same node.",
+    "groundTruth": {
+      "localization": "node fake-node-105 GPU 5",
+      "mechanism": "GPU 5 has exhausted its row remapping capacity. nvidia-smi shows 'Row Remap: Pending (reboot required)' with aggregate ECC double-bit errors count of 12. The GPU HBM3 memory has developed persistent faults that exceeded the hardware's self-repair capability (row remapping). Every job allocated GPU 5 will encounter uncorrectable memory errors. The GPU needs replacement.",
+      "scope": "All pods allocated GPU 5 on fake-node-105. Other GPUs on the node are healthy. Node should be cordoned and GPU 5 decommissioned."
+    },
+    "expectedSignals": [
+      "ecc error count",
+      "row remap status",
+      "gpu health",
+      "persistent across restarts"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-gpu-rdma",
+    "id": "g07",
+    "category": "gpu-hardware",
+    "difficulty": "hard",
+    "title": "Silent GPU clock degradation causing NCCL timeout in distributed training",
+    "targets": [
+      "pod/g07-clock-mismatch"
+    ],
+    "symptom": "Distributed training pod g07-clock-mismatch times out intermittently at NCCL barrier synchronization. The issue appears every 15-20 minutes and resolves itself. Training job uses 16 GPUs across 2 nodes.",
+    "groundTruth": {
+      "localization": "node fake-node-105 GPU 7",
+      "mechanism": "GPU 7 on fake-node-105 has a degraded SM (Streaming Multiprocessor) clock that intermittently drops from 1980 MHz to 1200 MHz due to internal power delivery issues. This causes GPU 7's compute kernels to run 40% slower, making rank 7 the straggler in NCCL collective operations. When the allreduce barrier timeout (300s) is hit before GPU 7 completes its gradient computation, NCCL reports a timeout. The clock recovers spontaneously, making the issue intermittent.",
+      "scope": "Any distributed training job that includes GPU 7 on fake-node-105. The straggler effect is proportional to the communication-to-computation ratio."
+    },
+    "expectedSignals": [
+      "gpu clock speed mismatch",
+      "nccl timeout intermittent",
+      "straggler rank"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-gpu-rdma",
+    "id": "g08",
+    "category": "rdma-network",
+    "difficulty": "medium",
+    "title": "RDMA QP error state causing training hang",
+    "targets": [
+      "pod/g08-qp-error"
+    ],
+    "symptom": "Distributed training pod g08-qp-error hangs with no progress. No timeout yet but zero training throughput for 10 minutes. Two nodes: fake-node-105 and fake-node-106.",
+    "groundTruth": {
+      "localization": "RDMA Queue Pair between fake-node-105 and fake-node-106",
+      "mechanism": "An RDMA Queue Pair (QP) transitioned to ERROR state after a transport-layer retry exceeded (IBV_WC_RETRY_EXC_ERR). Once a QP enters ERROR state, all subsequent RDMA operations on that QP silently fail. NCCL does not detect QP ERROR state until the watchdog timer fires (default 300s). The QP error was triggered by a transient network issue (brief packet loss) but the QP cannot self-recover — it must be destroyed and recreated. This is the fundamental problem that SHIFT (2025) addresses.",
+      "scope": "All RDMA communication between the two nodes on the affected QP. Other QPs (if any) are unaffected."
+    },
+    "expectedSignals": [
+      "qp state error",
+      "rdma retry exceeded",
+      "zero throughput",
+      "ibv_wc status"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-gpu-rdma",
+    "id": "g09",
+    "category": "compound-gpu-rdma",
+    "difficulty": "hard",
+    "title": "Compound: GPU ECC errors AND RDMA congestion on same node",
+    "targets": [
+      "pod/g09-compound"
+    ],
+    "symptom": "Training pod g09-compound on fake-node-105 crashes intermittently. Sometimes with CUDA error, sometimes with NCCL timeout. Restarts sometimes succeed briefly before crashing again.",
+    "groundTruth": {
+      "localization": "pod/g09-compound on fake-node-105; two independent root causes: GPU 4 ECC errors AND RDMA port mlx5_0 congestion",
+      "mechanism": "Two independent faults compound on fake-node-105: (1) GPU 4 has developing ECC single-bit errors (847 volatile correctable) with occasional uncorrectable errors causing CUDA failures, AND (2) RDMA port mlx5_0 is experiencing congestion from PFC pause frames (suspected cable degradation on uplink). The GPU ECC errors cause sporadic CUDA crashes, while the RDMA congestion causes NCCL timeouts. Because the faults are independent, the failure mode alternates between CUDA error and NCCL timeout depending on which triggers first.",
+      "scope": "All jobs on fake-node-105 are affected by both issues. GPU 4 needs replacement. RDMA uplink cable needs inspection."
+    },
+    "expectedSignals": [
+      "ecc errors gpu 4",
+      "rdma congestion",
+      "alternating failure modes",
+      "two root causes"
+    ]
+  },
+  {
+    "namespace": "siclaw-eval-gpu-rdma",
+    "id": "g10",
+    "category": "compound-gpu-rdma",
+    "difficulty": "hard",
+    "title": "Volcano gang scheduling failure due to GPU node drain race",
+    "targets": [
+      "vcjob/g10-gang-drain"
+    ],
+    "symptom": "Volcano job g10-gang-drain requires 16 GPUs across 2 nodes (minMember=2 PodGroup) but remains Pending despite available GPU nodes. Some worker pods briefly start then get evicted.",
+    "groundTruth": {
+      "localization": "vcjob/g10-gang-drain, PodGroup g10-gang-drain",
+      "mechanism": "A race condition between Volcano gang scheduling and node cordoning: fake-node-105 is being cordoned (kubectl cordon) for maintenance while Volcano attempts to schedule the 2-node gang. Volcano allocates both nodes, starts pods on fake-node-105, but the kubelet evicts them due to the cordon+drain sequence. The PodGroup then fails minMember check (only 1 of 2 nodes usable), but Volcano does not release the allocation on fake-node-106, creating a deadlock. Meanwhile, the node condition shows 'SchedulingDisabled' on fake-node-105.",
+      "scope": "This specific Volcano job and any other gang-scheduled job competing for the same 2-node allocation. Single-node jobs on fake-node-106 are unaffected."
+    },
+    "expectedSignals": [
+      "podgroup pending",
+      "node cordon",
+      "pod eviction",
+      "gang scheduling",
+      "minMember"
+    ]
+  }
+]

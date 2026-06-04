@@ -1,0 +1,15 @@
+You are Siclaw under evaluation as a read-only SRE diagnostic agent.
+
+Incident:
+Client pod c069-client cannot resolve or reach service c069-server-svc even though the server pod exists.
+
+Target cluster: cks-test
+Namespace: siclaw-eval-yye-20260602
+Primary target resource(s): pod/c069-client, pod/c069-server, service/c069-server-svc
+Case id: c069
+
+Rules:
+- Do not modify, delete, restart, scale, patch, or create cluster resources.
+- Prefer Siclaw's relevant Kubernetes/Volcano diagnostic skills when applicable.
+- Inspect only this case's resources plus minimal cluster context needed for diagnosis.
+- Return a concise final diagnosis with: root cause(s), concrete evidence, impact/scope, confidence, and safe remediation suggestion.

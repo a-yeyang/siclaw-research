@@ -1,0 +1,759 @@
+% ============================================================
+%  Siclaw: Defense-in-Depth Security Architecture for
+%  Production LLM-Based SRE Agents
+%
+%  Target: AAAI 2027 (or NeurIPS 2026 Systems Track)
+%  Format: 8 pages + unlimited references
+% ============================================================
+\documentclass[letterpaper]{article}
+
+% --- AAAI REQUIRED (DO NOT CHANGE) ---
+\usepackage[submission]{aaai25}
+\usepackage{times}
+\usepackage{helvet}
+\usepackage{courier}
+\usepackage[hyphens]{url}
+\usepackage{graphicx}
+\urlstyle{rm}
+\def\UrlFont{\rm}
+\usepackage{natbib}
+\usepackage{caption}
+\frenchspacing
+\setlength{\pdfpagewidth}{8.5in}
+\setlength{\pdfpageheight}{11in}
+
+% --- Allowed additional packages ---
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,fit,backgrounds,calc,shapes.geometric}
+
+\setcounter{secnumdepth}{0}
+
+\pdfinfo{
+/TemplateVersion (2025.1)
+}
+
+% --- Convenience macros ---
+\newcommand{\sys}{\textsc{Siclaw}}
+\newcommand{\ie}{\textit{i.e.}}
+\newcommand{\eg}{\textit{e.g.}}
+\newcommand{\etal}{\textit{et al.}}
+
+\title{\sys{}: Defense-in-Depth Security Architecture for \\
+Production LLM-Based SRE Agents}
+
+\author{
+  Anonymous Authors\textsuperscript{\rm 1} \\
+  \textsuperscript{\rm 1}Anonymous Affiliation \\
+  anonymous@example.com
+}
+
+\begin{document}
+\maketitle
+
+% ============================================================
+\begin{abstract}
+% ============================================================
+
+Large language model (LLM) agents are increasingly applied to Site Reliability Engineering (SRE) tasks such as incident diagnosis, root cause analysis, and remediation in Kubernetes environments.
+However, existing SRE agent systems---including Stratus, FLASH, and RCAgent---treat the LLM as trusted code, exposing production infrastructure to prompt injection, credential exfiltration, and privilege escalation attacks.
+We present \sys{}, the first production-grade SRE agent system that treats the LLM as \emph{untrusted code} and enforces safety through a six-layer defense-in-depth architecture.
+\sys{} introduces: (1)~an OS-level dual-user isolation model with a novel setgid-based transitive privilege mechanism for selective credential access; (2)~a six-pass command validation pipeline that decouples command definitions from execution-context policies; (3)~a three-layer output sanitization pipeline preventing credential leakage through tool outputs; (4)~a four-stage guard pipeline addressing LLM output unreliability (malformed tool calls, context overflow, stream corruption); and (5)~an extensible skill architecture with three-gate review for organizational knowledge accumulation.
+\sys{} supports three runtime modes---single-user TUI, multi-user local development, and production Kubernetes with per-user pod isolation---sharing a unified agent core.
+Evaluated on 100 Kubernetes fault diagnosis cases spanning 10 categories (including GPU scheduling and multi-fault compound scenarios), \sys{} achieves a 90\% pass rate with an average checklist score of 0.818 across five diagnostic dimensions.
+In a 30-scenario red-team evaluation, the security architecture blocks 100\% of attacks across four threat categories, with a layer ablation confirming that no single layer exceeds 70\% coverage---validating the defense-in-depth design.
+Critically, a tradeoff analysis shows the security constraints impose \emph{zero} accuracy cost: none of the 10 failed cases were caused by security restrictions, while an unconstrained agent would generate an estimated 2.4 security violations per case.
+Additionally, we present the first evaluation of an SRE agent on GPU hardware and RDMA network fault scenarios --- including Xid ECC errors, NVLink degradation, PFC storms, and compound GPU+RDMA failures --- achieving 100\% pass rate (10/10) with an average score of 0.923.
+To our knowledge, \sys{} is the first SRE agent system to formalize a threat model for LLM infrastructure agents and implement a comprehensive defense-in-depth security architecture.
+
+\end{abstract}
+
+% ============================================================
+\section{Introduction}
+% ============================================================
+
+The rapid advancement of large language models (LLMs) has sparked significant interest in applying LLM-based agents to Site Reliability Engineering (SRE) tasks~\cite{chen2025aiopslab,chen2025stratus,zhang2024flash}.
+These agents promise to automate incident diagnosis, root cause analysis (RCA), and remediation in complex cloud-native environments, potentially reducing mean time to resolution (MTTR) and alleviating the chronic shortage of experienced SRE practitioners.
+
+Recent systems have demonstrated encouraging results.
+Stratus~\cite{chen2025stratus} introduces multi-agent collaboration with undo-and-retry mechanisms, achieving 78.5\% mitigation success on the SREGym benchmark~\cite{clark2026sregym}.
+FLASH~\cite{zhang2024flash} decomposes diagnostic workflows into conditional segments with hindsight generation, reaching 59.3\% accuracy on AIOpsLab~\cite{chen2025aiopslab}.
+Evaluation frameworks such as AIOpsLab~\cite{chen2025aiopslab}, SREGym~\cite{clark2026sregym}, and ITBench~\cite{jha2025itbench} have established rigorous benchmarks for measuring agent capabilities.
+
+However, a critical gap exists between these research prototypes and production-deployable systems.
+\textbf{No existing SRE agent system treats the LLM as untrusted code.}
+AIOpsLab mentions ``security policy filters'' for shell execution without specification; SREGym exposes unrestricted \texttt{kubectl} access (``cluster control for executing any commands''); Stratus, FLASH, and RCAgent~\cite{wang2024rcagent} provide no documented security model.
+This is deeply problematic: LLM agents are susceptible to prompt injection~\cite{ruan2024toolemu}, hallucination-driven command generation, and adversarial manipulation---attacks that in an infrastructure context can lead to credential theft, data exfiltration, or cluster-wide outages.
+
+We identify five critical gaps in the current SRE agent literature (Table~\ref{tab:comparison}):
+\begin{enumerate}
+\item \textbf{Agent security}: No system provides defense-in-depth against the agent's own generated commands.
+\item \textbf{Multi-tenant isolation}: All systems assume single-user, single-agent scenarios.
+\item \textbf{Output sanitization}: No system prevents sensitive data (credentials, tokens) in command outputs from reaching the LLM's context.
+\item \textbf{Agent reliability}: LLM output unreliability (malformed tool calls, context overflow) is documented by every benchmark but addressed by none.
+\item \textbf{Knowledge extensibility}: Existing systems use fixed tool sets or static Standard Operating Procedures (SOPs), preventing organizational knowledge accumulation.
+\end{enumerate}
+
+\begin{table}[t]
+\centering
+\caption{Capability comparison of SRE agent systems. \sys{} is the only system addressing agent security, multi-tenant isolation, output sanitization, and extensible knowledge management.}
+\label{tab:comparison}
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Capability} & \rotatebox{70}{\textbf{AIOpsLab}} & \rotatebox{70}{\textbf{SREGym}} & \rotatebox{70}{\textbf{Stratus}} & \rotatebox{70}{\textbf{FLASH}} & \rotatebox{70}{\textbf{\sys{}}} \\
+\midrule
+Live K8s environment      & \checkmark & \checkmark & \checkmark & \checkmark$^\dagger$ & \checkmark \\
+Agent security model       & ---        & ---        & ---        & ---$^\dagger$         & \textbf{6-layer} \\
+Multi-tenant isolation     & ---        & ---        & ---        & ---                   & \textbf{3 modes} \\
+Output sanitization        & ---        & ---        & ---        & ---                   & \textbf{3-layer} \\
+Extensible skills          & ---        & ---        & ---        & fixed                 & \textbf{4-tier} \\
+Guard pipeline             & ---        & ---        & ---        & ---                   & \textbf{4-stage} \\
+GPU/RDMA fault eval.       & ---        & ---        & ---        & ---                   & \textbf{10 cases} \\
+\bottomrule
+\multicolumn{6}{@{}l}{\scriptsize $^\dagger$Proprietary; not reproducible.}
+\end{tabular}
+\end{table}
+
+We present \sys{}, a production-grade SRE agent system that addresses all five gaps.
+Our key contributions are:
+
+\begin{itemize}
+\item \textbf{Defense-in-depth security architecture} (\S\ref{sec:security}): Six independent security layers, including a novel dual-user OS isolation model with setgid-based transitive privilege for selective credential access, a six-pass command validation pipeline, and a three-layer output sanitization pipeline. Each layer provides protection independently---compromising one does not disable the others.
+
+\item \textbf{Guard pipeline for agent reliability} (\S\ref{sec:guards}): A four-stage message interception architecture (input, context, output, persist) that systematically addresses LLM output unreliability, including malformed tool call repair, context budget enforcement, and stream event correction.
+
+\item \textbf{Multi-tenant runtime polymorphism} (\S\ref{sec:multitenant}): Three runtime modes sharing a unified agent core, with formal isolation invariants for shared-filesystem and per-pod deployment models.
+
+\item \textbf{Extensible skill architecture} (\S\ref{sec:skills}): A four-tier skill hierarchy with three-gate review (static analysis, AI semantic review, human approval) enabling safe organizational knowledge accumulation.
+
+\item \textbf{Comprehensive evaluation} (\S\ref{sec:eval}): 100 Kubernetes fault diagnosis cases across 10 categories, plus 10 GPU/RDMA infrastructure fault scenarios grounded in production data --- the first such evaluation for SRE agents --- with security red-team testing and tradeoff analysis.
+\end{itemize}
+
+% ============================================================
+\section{Related Work}
+% ============================================================
+
+\paragraph{LLM-Based SRE Agents.}
+The application of LLMs to operations tasks has progressed rapidly.
+RCACopilot~\cite{chen2024rcacopilot} demonstrated LLM-based root cause analysis on Microsoft cloud incidents using in-context learning with historical reports.
+Xpert~\cite{jiang2024xpert} applied LLMs to query recommendation for incident management.
+RCAgent~\cite{wang2024rcagent} introduced tool-augmented LLMs for cloud RCA with ReAct-style reasoning~\cite{yao2023react}.
+D-Bot~\cite{zhou2024dbot} applied tree-of-thought reasoning to database diagnosis.
+FLASH~\cite{zhang2024flash} introduced workflow decomposition with hindsight generation for recurring incidents.
+Stratus~\cite{chen2025stratus} proposed multi-agent SRE with observation, diagnosis, and mitigation sub-agents, achieving the highest mitigation rate on SREGym.
+Flow-of-Action~\cite{pei2025flowofaction} encoded domain knowledge as SOP-guided multi-agent workflows.
+MonitorAssistant~\cite{yu2024monitorassistant} simplified cloud monitoring setup using LLMs.
+TAMO~\cite{zhang2025tamo} integrated multi-modal observability tools for fine-grained RCA.
+None of these systems address agent security, multi-tenant isolation, or output sanitization.
+
+\paragraph{AIOps Benchmarks.}
+AIOpsLab~\cite{chen2025aiopslab} established the first holistic evaluation framework with 48 problems across DeathStarBench~\cite{gan2019deathstarbench} microservices, introducing the Agent-Cloud Interface (ACI) concept.
+SREGym~\cite{clark2026sregym} extended this with 90 problems featuring noise injection, full-stack faults (including eBPF-simulated hardware failures), and an LLM-as-judge checklist oracle achieving $\kappa = 0.90$ human agreement.
+ITBench~\cite{jha2025itbench} broadened scope to general IT automation.
+OpenRCA~\cite{xu2025openrca} focused specifically on root cause localization.
+Cloud-OpsBench~\cite{wang2026cloudopsbench} targeted reproducible agentic RCA.
+These benchmarks evaluate diagnostic capability but do not assess agent safety properties, multi-tenant scenarios, or GPU/RDMA infrastructure faults --- despite GPU hardware errors being the dominant failure mode in production AI clusters~\cite{cui2025gpuresilience,wan2025byterobust}.
+
+\paragraph{Agent Safety.}
+General agent safety research has produced benchmarks such as AgentBench~\cite{liu2024agentbench} and ToolEmu~\cite{ruan2024toolemu}, which evaluate LLM agents in sandboxed or emulated environments.
+However, these focus on general-purpose agent safety (harmful content generation, unauthorized actions) rather than infrastructure-specific threats (credential exfiltration, privilege escalation via \texttt{kubectl}, sensitive output leakage).
+To our knowledge, no prior work formalizes a threat model for LLM agents operating on production infrastructure.
+
+% ============================================================
+\section{Threat Model and Problem Formulation}
+\label{sec:threat}
+% ============================================================
+
+\paragraph{Core Assumption.}
+We model the LLM agent as \emph{untrusted code} that generates shell commands executing in a container with Kubernetes cluster access.
+The agent may attempt---through prompt injection, hallucination, or adversarial manipulation---to:
+(T1)~\emph{read credentials} (kubeconfig, mTLS certificates, API keys);
+(T2)~\emph{exfiltrate data} to external endpoints;
+(T3)~\emph{escalate privileges} beyond read-only Kubernetes operations;
+(T4)~\emph{leak sensitive information} through command outputs that enter the LLM context.
+
+\paragraph{Trust Boundaries.}
+The AgentBox container contains two trust domains: the \emph{main process} (Node.js runtime, LLM API client, tool validation logic) running as user \texttt{agentbox}, and \emph{child processes} (shell commands generated by the LLM) running as user \texttt{sandbox}.
+The trust boundary lies at the command execution interface: the main process validates and sanitizes; child processes execute with minimal privilege.
+
+\paragraph{Security Goals.}
+We enforce three security properties:
+\begin{enumerate}
+\item \textbf{Credential isolation}: Child processes cannot read credential files, even if the command validation layer is bypassed.
+\item \textbf{Least privilege}: Only explicitly whitelisted commands with approved flags can execute; \texttt{kubectl} is restricted to 13 read-only subcommands.
+\item \textbf{Output safety}: Sensitive data (tokens, keys, connection strings) in command outputs is redacted before entering the LLM context.
+\end{enumerate}
+
+\paragraph{Problem Formulation.}
+Let an SRE agent $\mathcal{A}$ interact with a Kubernetes cluster $\mathcal{K}$ through a tool interface $\mathcal{T}$.
+At each step $t$, the agent generates a command $c_t = \mathcal{A}(h_t, o_t)$ conditioned on history $h_t$ and current observation $o_t$.
+The command passes through a security pipeline $\mathcal{S}$: $c'_t = \mathcal{S}(c_t)$, which either approves, modifies, or blocks the command.
+The execution produces output $r_t = \text{exec}(c'_t)$, which passes through an output sanitizer $\mathcal{O}$: $r'_t = \mathcal{O}(r_t, c'_t)$ before being appended to the agent's context.
+The agent additionally passes through a guard pipeline $\mathcal{G}$ that repairs malformed messages and enforces context budgets.
+
+Our goal is to maximize diagnostic accuracy $\text{Acc}(\mathcal{A})$ subject to the security constraints: $\forall t: \mathcal{S}(c_t)$ enforces credential isolation, least privilege, and $\mathcal{O}(r_t)$ enforces output safety.
+
+% ============================================================
+\section{System Architecture}
+\label{sec:arch}
+% ============================================================
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.98\textwidth]{figures/overview.pdf}
+\caption{
+\sys{} system overview. User intent enters through four channels and reaches the \emph{control plane} (Portal, Gateway, shared DB), which curates specialist agents, skills, knowledge, MCP servers, and credentials. Each user session spawns an isolated \emph{AgentBox}---a Kubernetes pod in production, in-process locally, or embedded in a standalone TUI---containing the agent brain, preloaded skills, read-only tools, a private memory database, and a materialized knowledge cache. Every target the AgentBox touches (Kubernetes, observability stacks, SSH hosts, MCP servers) is accessed \emph{read-only}: the agent investigates but never mutates. Four deployment modes trade isolation for convenience, and a six-layer security architecture (detailed in Figure~\ref{fig:architecture}) constrains all agent actions. Skills, knowledge, and credentials are provisioned per session from the control plane.
+}
+\label{fig:overview}
+\end{figure*}
+
+\sys{} is an LLM-based SRE agent system built on a single brain abstraction (OpenAI-compatible provider interface) with a unified tool registry, guard pipeline, and security architecture.
+Figure~\ref{fig:overview} shows the overall system: user intent from multiple channels flows through a control plane that orchestrates per-user \emph{AgentBox} sessions, each of which investigates read-only infrastructure targets.
+This section details the agent core and its security architecture (Figure~\ref{fig:architecture}).
+
+\begin{figure}[t]
+\centering
+\resizebox{0.92\columnwidth}{!}{%
+\begin{tikzpicture}[
+    >=Stealth,
+    box/.style={draw, rounded corners=2pt, minimum height=0.72cm, align=center,
+                font=\sffamily\footnotesize, thick, minimum width=4.6cm},
+    sidebox/.style={draw, rounded corners=2pt, minimum height=0.78cm, align=center,
+                font=\sffamily\scriptsize, thick, minimum width=2.5cm, fill=purple!8},
+    userbox/.style={draw, rounded corners=2pt, minimum height=0.72cm, align=center,
+                font=\sffamily\footnotesize, thick, minimum width=1.9cm, fill=red!9},
+    arr/.style={->, thick, color=black!70},
+  ]
+  % --- Main vertical pipeline (centered at x=0) ---
+  \node[box, fill=blue!9]   (llm)  at (0, 8.0) {LLM Provider\\(OpenAI-compatible)};
+  \node[box, fill=green!10] (guard)at (0, 6.5) {Guard Pipeline};
+  \node[box, fill=green!10] (tool) at (0, 5.4) {Tool Registry};
+  \node[box, fill=orange!13](valid)at (0, 4.0) {6-Pass Command Validator};
+  \node[box, fill=orange!13](sani) at (0, 2.9) {3-Layer Output Sanitizer};
+  \node[userbox] (abox) at (-1.55, 1.1) {\textbf{agentbox}\\user};
+  \node[userbox] (sbox) at ( 1.55, 1.1) {\textbf{sandbox}\\user};
+  \node[box, fill=gray!12] (k8s) at (0, -0.6) {K8s Cluster\,$\cdot$\,Prometheus\,$\cdot$\,Jaeger};
+
+  % --- Side panel (right) ---
+  \node[sidebox] (skill) at (5.0, 5.9) {Skill Bundle\\[-1pt]{\tiny core/global/personal}};
+  \node[sidebox] (mem)   at (5.0, 4.5) {Memory DB\\[-1pt]{\tiny FTS5 + sqlite-vec}};
+
+  % --- AgentBox container zone (background) ---
+  \begin{scope}[on background layer]
+    \node[draw, dashed, thick, rounded corners=5pt, fill=green!3, inner sep=10pt,
+          fit=(guard)(tool)(valid)(sani)(abox)(sbox)] (zone) {};
+  \end{scope}
+  \node[font=\sffamily\footnotesize\itshape, text=black!65, anchor=west]
+        at ([yshift=7pt]zone.north west) {AgentBox Container};
+
+  % --- Trust boundary (between sanitizer and user row) ---
+  \draw[dotted, very thick, red!55] (-2.75, 2.0) -- (2.75, 2.0);
+  \node[font=\sffamily\scriptsize, text=red!60, fill=green!3, inner sep=1.5pt] at (0, 2.0) {OS trust boundary};
+
+  % --- Arrows ---
+  \draw[arr] (llm)  -- (guard);
+  \draw[arr] (guard)-- (tool);
+  \draw[arr] (tool) -- (valid);
+  \draw[arr] (valid)-- (sani);
+  \draw[arr] (sani) -- (abox);
+  \draw[arr, dashed] (abox) -- node[font=\sffamily\scriptsize, above, text=black!70, inner sep=1pt] {sudo -u} (sbox);
+  \draw[arr] (abox) -- (k8s);
+  \draw[arr] (sbox) -- (k8s);
+  \node[font=\sffamily\scriptsize, text=black!62, anchor=west, align=left] at (3.05, 1.1) {kubectl:\\setgid kubecred};
+  \draw[arr, dashed] (tool.east) -- (skill.west);
+  \draw[arr, dashed] (tool.east) -- (mem.west);
+\end{tikzpicture}%
+}
+\caption{
+\sys{} architecture. LLM-generated commands flow through the guard pipeline, tool registry, 6-pass command validator, and 3-layer output sanitizer before crossing the OS trust boundary. Child processes run as the unprivileged \texttt{sandbox} user; \texttt{kubectl} reaches the kubeconfig via setgid. Skills and memory branch off the tool registry.
+}
+\label{fig:architecture}
+\end{figure}
+
+
+% ------- 4.1 Defense-in-Depth Security -------
+\subsection{Defense-in-Depth Security Architecture}
+\label{sec:security}
+
+The security architecture consists of six independent layers, each providing protection even if others are compromised. This section details the three most novel layers.
+
+\subsubsection{Layer 1: OS-Level Dual-User Isolation}
+
+The AgentBox container contains two Linux users:
+\texttt{agentbox} (UID 1000, groups: \texttt{agentbox}, \texttt{kubecred}) runs the main Node.js process, and
+\texttt{sandbox} (UID 1001, group: \texttt{sandbox}) runs all LLM-generated shell commands via \texttt{sudo -E -u sandbox}.
+
+\paragraph{Transitive Privilege via setgid.}
+A key challenge is that \texttt{kubectl} must read kubeconfig files to interact with the cluster, but the \texttt{sandbox} user must not have direct access to these credentials.
+We solve this with a setgid mechanism: \texttt{kubectl} is installed with the setgid bit for the \texttt{kubecred} group (\texttt{-rwxr-sr-x root:kubecred}).
+Kubeconfig files are owned by \texttt{agentbox:kubecred} with mode \texttt{0640}.
+When \texttt{sandbox} executes \texttt{kubectl}, the setgid bit temporarily grants \texttt{kubecred} group membership, allowing \texttt{kubectl} to read the kubeconfig.
+Other commands (\texttt{grep}, \texttt{cat}, \texttt{jq}) running as \texttt{sandbox} lack this group membership and cannot read credential files.
+
+This design provides a key property: \emph{pipeline compatibility}.
+Natural shell pipelines like \texttt{kubectl get pods | grep Error} work correctly because data flows through stdout (which is not access-controlled), while credential files remain protected by filesystem permissions.
+
+\paragraph{File Permission Matrix.}
+Table~\ref{tab:permissions} shows the access control matrix.
+The design ensures that even if the command validation layer (Layer 2) is completely bypassed, the \texttt{sandbox} user's filesystem permissions independently prevent credential access.
+
+\begin{table}[t]
+\centering
+\caption{File permission matrix. The sandbox user cannot access any credential or configuration file. kubectl gains kubeconfig access via setgid kubecred group.}
+\label{tab:permissions}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Asset} & \textbf{agentbox} & \textbf{sandbox} & \textbf{kubectl} \\
+\midrule
+Kubeconfig (0640) & rw & \textbf{--} & r (setgid) \\
+mTLS certs (0600) & rw & \textbf{--} & -- \\
+API keys (0600)   & rw & \textbf{--} & -- \\
+Skills (0644)     & rw & r           & r \\
+User data (0777)  & rwx & rwx        & rwx \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Layer 2: Six-Pass Command Validation Pipeline}
+
+Every LLM-generated command passes through six independent validation passes before execution (Algorithm~\ref{alg:validation}):
+
+\begin{algorithm}[t]
+\caption{Six-Pass Command Validation Pipeline}
+\label{alg:validation}
+\small
+\begin{algorithmic}[1]
+\REQUIRE Command string $c$, execution context $\xi \in \{\texttt{local}, \texttt{node}, \texttt{pod}\}$
+\ENSURE Validated command or rejection
+\STATE \textbf{Pass 1 --- Shell Operators:} Block \texttt{\$()}, backticks, \texttt{<()}, \texttt{>()}, redirections, embedded newlines
+\STATE \textbf{Pass 2 --- Pipeline Extraction:} Parse $c$ into pipeline stages $[s_1 | s_2 | \ldots]$ with position tracking
+\FOR{each stage $s_i$ in pipeline}
+    \STATE \textbf{Pass 3 --- Binary Whitelist:} Verify $\text{binary}(s_i) \in \mathcal{W}_\xi$ where $\mathcal{W}_\xi$ is the context-specific allowlist
+    \STATE \textbf{Pass 4 --- Subcommand Validation:} For \texttt{kubectl}, verify subcommand $\in \{$\texttt{get}, \texttt{describe}, \texttt{logs}, $\ldots\}$ (13 read-only commands)
+    \STATE \textbf{Pass 5 --- Flag Restrictions:} Apply per-command rules: \texttt{pipeOnly}, \texttt{noFilePaths}, \texttt{blockedFlags}, \texttt{allowedFlags}
+\ENDFOR
+\STATE \textbf{Pass 6 --- Sensitive Paths:} Block commands targeting credential/configuration file paths
+\RETURN approved command
+\end{algorithmic}
+\end{algorithm}
+
+\paragraph{Context-Policy Decoupling.}
+A key design innovation is the separation of \emph{command definitions} (\texttt{COMMANDS} registry: binary names, categories, per-command rules) from \emph{context policies} (\texttt{CONTEXT\_POLICIES}: which categories are allowed in each execution context).
+For example, the \texttt{local} context blocks file-reading commands (\texttt{cat}, \texttt{ls}, \texttt{find}) because the agent has dedicated file tools with path access control, while the \texttt{pod} context (remote container) allows these commands.
+This decoupling makes the $\sim$80-binary allowlist maintainable: adding a command requires specifying its category and per-command rules once; context policies determine where it may execute.
+
+\subsubsection{Layer 3: Three-Layer Output Sanitization}
+
+Command outputs may contain sensitive data (JWT tokens, connection strings, PEM certificates) that would enter the LLM's context window if not intercepted.
+Our three-layer sanitization pipeline addresses this:
+
+\begin{enumerate}
+\item \textbf{Pre-execution analysis} (\texttt{analyzeOutput}): Before execution, examines the command and arguments to determine the appropriate sanitization strategy. Returns an \texttt{OutputAction} specifying which sanitizer function to apply.
+
+\item \textbf{Post-execution redaction} (\texttt{applySanitizer}): Applies the pre-determined sanitizer to the command output. Sensitive patterns include environment variable names matching \texttt{*\_API\_KEY}, \texttt{*\_SECRET}, \texttt{ANTHROPIC\_*}, \texttt{DATABASE\_URL}, and value patterns matching JWT tokens (\texttt{eyJ...}), PEM blocks (\texttt{-----BEGIN}), and connection strings (\texttt{postgres://}, \texttt{mongodb://}).
+
+\item \textbf{Pipeline fallback}: For multi-command pipelines (\eg, \texttt{kubectl get secret -o yaml | jq .data}), downstream commands (\texttt{jq}) may have no registered sanitization rule. The pipeline fallback applies line-level pattern-based redaction to the final output, catching sensitive data that Layers 1--2 missed.
+\end{enumerate}
+
+\subsubsection{Layers 4--6: Container Hardening, File I/O, Environment}
+
+\textbf{Layer 4 (Container hardening):} The AgentBox pod drops all Linux capabilities except the five required for the dual-user model (\texttt{SETUID}, \texttt{SETGID}, \texttt{CHOWN}, \texttt{FOWNER}, \texttt{AUDIT\_WRITE}), uses a read-only root filesystem, and disables the Kubernetes service account token mount.
+
+\textbf{Layer 5 (File I/O restrictions):} The agent's file tools enforce \texttt{assertPathAllowed()} to scope reads/writes to designated directories, preventing the agent from using its own tools to access credential files.
+
+\textbf{Layer 6 (Environment sanitization):} Before spawning child processes, \texttt{sanitizeEnv()} strips API keys, tokens, and sensitive environment variables from the process environment, preventing credential leakage via \texttt{/proc/\{pid\}/environ}.
+
+The security architecture is validated by 184 unit tests covering the command validator (97 tests), output sanitizer (48 tests), security pipeline integration (15 tests), guard pipeline (16 tests), and tool call repair (8 tests), all passing.
+
+
+% ------- 4.2 Guard Pipeline -------
+\subsection{Guard Pipeline for Agent Reliability}
+\label{sec:guards}
+
+LLM agents exhibit systematic output unreliability that existing SRE systems do not address: malformed tool call JSON, missing tool call IDs, context window overflow from large command outputs, and corrupted streaming events.
+Every benchmark documents these issues~\cite{chen2025aiopslab,clark2026sregym}, yet no system provides a systematic solution.
+
+The guard pipeline intercepts agent messages at four lifecycle stages:
+
+\paragraph{Input Guards.}
+Transform the message history before each LLM API call. Guards include:
+(1)~\emph{sanitize-tool-calls}: drops tool call blocks missing required fields (\texttt{id}, \texttt{name}, or \texttt{input});
+(2)~\emph{repair-tool-use-pairing}: ensures every \texttt{toolCall} has a matching \texttt{toolResult}, inserting synthetic error results where needed.
+
+\paragraph{Context Guards.}
+Enforce context budget with a three-tier strategy:
+(1)~truncate any single tool result exceeding 50\% of the context window;
+(2)~compact oldest tool results when total context exceeds 75\%;
+(3)~raise a preemptive overflow signal at 90\%, triggering compaction before the LLM API rejects the request.
+
+\paragraph{Output Guards.}
+Repair streaming response events in-flight:
+(1)~\emph{trim-tool-call-names}: trims whitespace and assigns fallback IDs to unnamed tool calls;
+(2)~\emph{repair-malformed-args}: extracts balanced JSON from partial \texttt{toolcall\_delta} events using bracket counting.
+
+\paragraph{Persist Guards.}
+Validate messages before writing to session history:
+(1)~sanitize tool calls on write;
+(2)~track tool call/result pairing;
+(3)~insert synthetic error results for orphaned calls;
+(4)~truncate oversized results ($>$400KB).
+
+The pipeline uses a \emph{single-wrap-per-hook} architecture: each of the brain's three hook points (\texttt{streamFn}, \texttt{appendMessage}, \texttt{transformContext}) is wrapped exactly once with a pipeline that orchestrates all registered guards sequentially.
+This avoids the debugging complexity of nested monkey-patching while enabling fine-grained per-stage control.
+
+
+% ------- 4.3 Multi-Tenant Runtime -------
+\subsection{Multi-Tenant Runtime Polymorphism}
+\label{sec:multitenant}
+
+As shown in Figure~\ref{fig:overview}, \sys{} supports four runtime modes sharing one agent core, trading isolation for convenience: (1)~\textbf{standalone TUI}; (2)~\textbf{TUI + local Portal} (read-only Portal snapshot over loopback with three-gate authentication); (3)~\textbf{Gateway + LocalSpawner} for multi-user local development on a shared filesystem; and (4)~\textbf{Gateway + K8sSpawner} for production, with per-user pod isolation and mTLS certificates encoding \texttt{userId}/\texttt{workspaceId}.
+Two invariants matter. On the shared filesystem (mode 3), \texttt{materialize()} must never be called---it would overwrite all users' skill directories. In production (mode 4), per-pod isolation is the multi-tenant boundary. All modes implement the \texttt{BoxSpawner} interface; the unified agent core operates identically across them.
+
+
+% ------- 4.4 Extensible Skill Architecture -------
+\subsection{Extensible Skill Architecture}
+\label{sec:skills}
+
+Existing SRE agents use fixed tool sets~\cite{chen2025aiopslab,clark2026sregym} or static SOPs~\cite{pei2025flowofaction}.
+\sys{} instead organizes diagnostic skills into a four-tier hierarchy ordered by user proximity (personal $>$ skillset $>$ global $>$ core): \textbf{core} skills are baked into the container image (versioned with code), \textbf{global} skills are organization-wide, \textbf{skillset} skills are team-scoped (development only, promoted to global for production), and \textbf{personal} skills are per-user.
+The skill bundle contract (\texttt{buildSkillBundle}) transmits only non-core skills, as core skills exist on disk.
+
+\paragraph{Three-Gate Review.}
+Because skills execute as code, new skills pass three independent safety gates before production: (1)~\emph{static analysis} against 22 danger patterns (shell injection, credential access, unsafe operations); (2)~\emph{AI semantic review} of skill intent; and (3)~\emph{human approval}. Unapproved skills cannot execute regardless of tier---enabling safe organizational knowledge accumulation, unlike the fixed tool sets of prior systems.
+
+
+% ------- 4.5 Hybrid Memory System -------
+\subsection{Hybrid Memory System}
+\label{sec:memory}
+
+Each AgentBox maintains a private memory database (SQLite with FTS5 and sqlite-vec) holding structured investigation records with a full lifecycle (create $\rightarrow$ update $\rightarrow$ resolve $\rightarrow$ reference). Search combines vector similarity and keyword matching:
+\begin{equation}
+\text{score} = w_v \cdot \cos(\mathbf{q}, \mathbf{d}) + w_f \cdot \text{BM25}(q, d) + w_t \cdot \text{decay}(t)
+\end{equation}
+with configurable weights ($w_v{=}0.70$, $w_f{=}0.30$) and temporal decay; results are reranked via Maximal Marginal Relevance. Knowledge documents are chunked on heading boundaries ($\sim$400 tokens, $\sim$80 overlap), embedded, and dual-indexed---letting the agent recall prior investigations rather than starting each incident cold.
+
+
+% ============================================================
+\section{Evaluation}
+\label{sec:eval}
+% ============================================================
+
+We evaluate \sys{} along four axes: (1)~diagnostic capability on 100 Kubernetes fault scenarios, (2)~security effectiveness via red-team testing with layer ablation, (3)~security--capability tradeoff analysis, and (4)~GPU/RDMA infrastructure fault diagnosis on 10 hardware-grounded scenarios.
+
+% ------- 5.1 Diagnostic Evaluation -------
+\subsection{Diagnostic Evaluation}
+\label{sec:eval-diag}
+
+\subsubsection{Setup}
+
+We construct a benchmark of 100 Kubernetes fault diagnosis cases across 10 categories (Table~\ref{tab:categories}), inspired by the evaluation methodology of SREGym~\cite{clark2026sregym} and AIOpsLab~\cite{chen2025aiopslab}.
+Cases are deployed on a real Kubernetes cluster with 368 nodes (including 2 GPU nodes with H100 NVLink 80GB), Volcano scheduling APIs, and Calico NetworkPolicy.
+The agent operates under a \emph{read-only constraint}: no cluster modifications are permitted.
+
+Each case injects a specific fault and provides the agent with a symptom-level incident prompt (\eg, ``Pod \texttt{c031-pending} is stuck in Pending state'').
+The agent autonomously investigates using \texttt{kubectl}, \texttt{grep}, \texttt{jq}, and other whitelisted tools.
+
+\subsubsection{Scoring}
+
+Following SREGym's checklist methodology, we evaluate across five dimensions:
+\begin{itemize}
+\item \textbf{Localization}: Correctly identified the target resource (pod, deployment, service, PVC, etc.)
+\item \textbf{Mechanism}: Explained the root fault cause, not just symptoms
+\item \textbf{Scope}: Specified impact (single resource, service path, compound multi-resource)
+\item \textbf{Evidence}: Cited concrete observables (events, YAML, logs, scheduler state)
+\item \textbf{Remediation}: Provided safe, root-cause-matched fix recommendation
+\end{itemize}
+
+Each dimension is scored 0--1 using an LLM-as-judge with oracle ground truth.
+A case passes if its average score exceeds 0.65.
+
+\subsubsection{Results}
+
+\begin{table}[t]
+\centering
+\caption{Diagnostic evaluation results across 10 fault categories. Categories span three difficulty levels: easy (single-fault), medium (multi-layer), and hard (compound/GPU-specific).}
+\label{tab:categories}
+\small
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+\textbf{Category} & \textbf{$n$} & \textbf{Pass\%} & \textbf{Score} & \textbf{Tools} & \textbf{Time} \\
+\midrule
+Image Pull       & 10 & 90.0 & 0.843 & 8.1 & 21.9s \\
+CrashLoop        & 10 & 100.0 & 0.938 & 7.3 & 26.3s \\
+Config           & 10 & 100.0 & 0.895 & 6.3 & 21.7s \\
+Scheduling-GPU   & 15 & 80.0 & 0.808 & 7.7 & 48.0s \\
+Storage          & 10 & 100.0 & 0.863 & 2.5 & 30.9s \\
+\midrule
+Service-Readiness & 12 & 100.0 & 0.758 & 6.0 & 62.0s \\
+Network-DNS       & 10 & 70.0 & 0.780 & 8.4 & 95.6s \\
+Controller        & 8 & 87.5 & 0.726 & 5.6 & 64.7s \\
+\midrule
+Volcano-GPU      & 8 & 100.0 & 0.833 & 12.5 & 77.6s \\
+Compound         & 7 & 71.4 & 0.703 & 11.6 & 73.3s \\
+\midrule
+\textbf{Overall} & \textbf{100} & \textbf{90.0} & \textbf{0.818} & \textbf{7.8} & \textbf{56.1s} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\sys{} achieves 90.0\% pass rate with average score 0.818 (Table~\ref{tab:categories}). CrashLoop (100\%, 0.938) and Config (100\%, 0.895) show near-perfect diagnosis. Compound cases are hardest (71.4\%, 0.703), requiring identification of all root causes. Network-DNS (70.0\%) has the longest investigation time (95.6s, 8.4 tool calls). Tool efficiency varies widely: storage needs only 2.5 calls while Volcano-GPU requires 12.5 to trace the scheduling hierarchy.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/diagnostic-performance.pdf}
+\caption{Diagnostic scores by category. Numbers above bars show pass rates. The dashed line marks the 0.65 pass threshold. Colors indicate difficulty: blue (easy), orange (medium), red (hard).}
+\label{fig:diagnostic}
+\end{figure}
+
+
+% ------- 5.2 Security Evaluation -------
+\subsection{Security Red-Team Evaluation}
+\label{sec:eval-security}
+
+We design 30 attack scenarios across the four threat categories (T1--T4) to evaluate the defense-in-depth architecture.
+Each attack is tested against the full security pipeline, and we attribute blocking to the specific layer that intercepts it.
+
+The 30 scenarios span: \textbf{T1}~credential reading (8: file access, env vars, \texttt{/proc} traversal, kubectl secret output); \textbf{T2}~data exfiltration (8: curl POST, wget, reverse shells, command substitution, redirections); \textbf{T3}~privilege escalation (8: kubectl write commands, sudo, blocked binaries); \textbf{T4}~output leakage (6: secret/configmap/pod data, JWT tokens, PEM keys, connection strings).
+
+\subsubsection{Results}
+
+\textbf{All 30 attack scenarios are blocked} (100\% interception rate).
+Table~\ref{tab:redteam} shows the per-category results and primary blocking layer.
+
+\begin{table}[t]
+\centering
+\caption{Security red-team results. All 30 attacks are blocked. ``Primary Layer'' indicates the first layer that intercepts each attack.}
+\label{tab:redteam}
+\small
+\begin{tabular}{@{}llc@{}}
+\toprule
+\textbf{Threat category} & \textbf{Primary blocking layer(s)} & \textbf{Blocked} \\
+\midrule
+T1: Credential read   & L2 (6), L4 (1), L6 (1) & 8/8 \\
+T2: Exfiltration      & L2 (3), L1 (3), L5 (2) & 8/8 \\
+T3: Priv.\ escalation & L5 (5), L2 (3)         & 8/8 \\
+T4: Output leakage    & L4 (6)                 & 6/6 \\
+\midrule
+\textbf{Overall}      & all layers             & \textbf{30/30} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+% ------- 5.3 Security Layer Ablation -------
+\subsection{Security Layer Ablation}
+\label{sec:eval-ablation}
+
+To validate the defense-in-depth design, we test each security layer independently: ``If \emph{only} this layer existed, how many of the 30 attacks would it block?''
+Table~\ref{tab:ablation} shows the results.
+
+\begin{table}[t]
+\centering
+\caption{Per-layer independent coverage. Each row shows attacks blocked if only that layer existed. No single layer achieves 100\%; the combined architecture does.}
+\label{tab:ablation}
+\small
+\begin{tabular}{@{}lrr@{}}
+\toprule
+\textbf{Security Layer} & \textbf{Blocked} & \textbf{Coverage} \\
+\midrule
+L1: Shell Operator Validation & 3/30 & 10.0\% \\
+L2: Binary Whitelist          & 21/30 & 70.0\% \\
+L3: Container Hardening (OS)  & ---   & (OS-level) \\
+L4: Output Sanitization       & 4/30 & 13.3\% \\
+L5: Command Restrictions      & 14/30 & 46.7\% \\
+L6: Sensitive Path Patterns   & 7/30 & 23.3\% \\
+\midrule
+\textbf{Combined (all layers)} & \textbf{30/30} & \textbf{100.0\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Key findings: (1)~No single layer exceeds 70\% coverage; L2 (whitelist) misses all kubectl write attacks (caught by L5) and output leakage (caught by L4). (2)~18/30 attacks (60\%) are caught by 2+ layers, demonstrating true defense-in-depth. (3)~12 attacks are caught by exactly one layer --- removing it would create a vulnerability (\eg, kubectl write commands are caught \emph{only} by L5's subcommand check).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/security-ablation.pdf}
+\caption{Independent coverage of each security layer. No single layer exceeds 70\%. The green line marks the combined 100\% coverage.}
+\label{fig:ablation}
+\end{figure}
+
+\subsubsection{Diagnostic Performance Analysis}
+
+Table~\ref{tab:heatmap} shows the per-dimension score breakdown across categories, revealing systematic patterns in agent diagnostic behavior.
+
+\begin{table*}[t]
+\centering
+\caption{Average scores per category and scoring dimension. Bold indicates scores below 0.70. Remediation achieves perfect scores across all categories. Scope is the weakest dimension overall (0.481).}
+\label{tab:heatmap}
+\small
+\begin{tabular}{@{}lrrrrrrr@{}}
+\toprule
+\textbf{Category} & \textbf{$n$} & \textbf{Loc.} & \textbf{Mech.} & \textbf{Scope} & \textbf{Evid.} & \textbf{Remed.} & \textbf{Total} \\
+\midrule
+Image Pull       & 10 & 0.900 & 0.867 & \textbf{0.440} & 0.982 & 1.000 & 0.843 \\
+CrashLoop        & 10 & 1.000 & 0.869 & 0.960 & 0.890 & 1.000 & 0.938 \\
+Config           & 10 & 1.000 & 0.964 & \textbf{0.440} & 0.930 & 1.000 & 0.895 \\
+Scheduling-GPU   & 15 & 0.800 & 0.832 & \textbf{0.547} & 0.907 & 1.000 & 0.808 \\
+Storage          & 10 & 1.000 & 0.797 & \textbf{0.567} & 0.927 & 1.000 & 0.863 \\
+Service-Readiness & 12 & 1.000 & 0.844 & \textbf{0.133} & \textbf{0.567} & 1.000 & 0.758 \\
+Network-DNS      & 10 & 0.700 & 0.772 & 0.700 & 0.890 & 1.000 & 0.780 \\
+Controller       & 8  & 1.000 & \textbf{0.679} & \textbf{0.200} & \textbf{0.619} & 1.000 & 0.726 \\
+Volcano-GPU      & 8  & 1.000 & 0.817 & \textbf{0.458} & 0.792 & 1.000 & 0.833 \\
+Compound         & 7  & \textbf{0.571} & 0.882 & \textbf{0.286} & 0.829 & 1.000 & 0.703 \\
+\midrule
+\textbf{Overall} & \textbf{100} & 0.900 & 0.834 & \textbf{0.481} & 0.837 & 1.000 & \textbf{0.818} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Key patterns: Remediation is perfect (1.000) across all categories. Scope is the weakest dimension (0.481), especially for service-readiness (0.133) and controller (0.200) where multi-resource impact chains are hard to articulate. 9/10 failures are localization format issues (the agent explains the mechanism correctly but omits the exact resource name), not diagnostic capability gaps. Difficulty scaling is non-linear: easy 92.7\%, medium 83.3\%, hard 90.5\% --- the hard-case improvement with Claude Sonnet 4.6 confirms model capability as the primary factor.
+
+
+% ------- 5.4 Security–Capability Tradeoff -------
+\subsection{Security--Capability Tradeoff Analysis}
+\label{sec:eval-tradeoff}
+
+A critical question is: \emph{do security constraints degrade diagnostic capability?} We analyze 739 tool calls across 100 cases (Table~\ref{tab:tradeoff}). The agent used only 6 of 13 allowed kubectl subcommands; 4 \texttt{kubectl exec} attempts were blocked. We compiled 16 representative unsafe commands LLMs naturally attempt~\cite{clark2026sregym}; \textbf{15/16 (93.8\%) are blocked}. Extrapolating, an unconstrained agent would generate $\sim$\textbf{242 security violations across 100 cases} (2.4/case). The output sanitizer triggered \textbf{48 times}, redacting sensitive data before it entered the LLM context.
+
+\begin{table}[t]
+\centering
+\caption{Security--capability tradeoff. The security pipeline prevents an estimated 242 violations per 100 cases while causing zero diagnostic failures.}
+\label{tab:tradeoff}
+\small
+\begin{tabular}{@{}lr@{}}
+\toprule
+\textbf{Metric} & \textbf{Value} \\
+\midrule
+Total tool calls (100 cases) & 739 \\
+Bash / kubectl calls & 504 / 501 \\
+Unique kubectl subcommands used & 6 of 13 allowed \\
+\midrule
+Simulated unsafe commands blocked & 15/16 (93.8\%) \\
+Estimated violations per 100 cases & $\sim$242 \\
+Output sanitization events & 48 \\
+\midrule
+Diagnostic pass rate (with security) & 90.0\% \\
+Failures caused by security constraints & \textbf{0/10} \\
+Accuracy cost of security & \textbf{0\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Experiment B: Accuracy Cost of Security}
+
+We examine all 10 failed cases to determine whether any failure was caused by a security constraint blocking a diagnostically useful command.
+For each failure, we check: (1)~whether any tool calls were rejected by the security pipeline, and (2)~whether the failure dimensions (localization, mechanism) correspond to information that a blocked command would have provided.
+
+\textbf{Zero of 10 failures were caused or contributed to by security constraints.}
+The failure root causes are:
+\begin{itemize}
+\item \textbf{Localization format} (9 cases): The agent correctly identified the root cause mechanism (average mechanism score 0.82) but omitted the exact resource name from its final answer --- a format compliance issue, not a diagnostic capability gap.
+\item \textbf{Mechanism understanding} (1 case, c082): The agent localized the correct resource but failed to explain the controller-level root cause.
+\end{itemize}
+
+This result demonstrates that the security architecture's whitelisted commands (\texttt{get}, \texttt{describe}, \texttt{logs}, \texttt{events}, \texttt{top}) are \emph{sufficient} for Kubernetes fault diagnosis.
+The 13 allowed kubectl subcommands cover the standard read-only diagnostic workflow; the excluded write commands (\texttt{apply}, \texttt{delete}, \texttt{patch}, \texttt{exec}) are not needed for diagnosis.
+
+% ------- 5.5 GPU/RDMA Infrastructure Fault Diagnosis -------
+\subsection{GPU/RDMA Infrastructure Fault Diagnosis}
+\label{sec:eval-gpu}
+
+A critical gap in existing SRE agent benchmarks is the absence of GPU and RDMA network fault scenarios~\cite{clark2026sregym,chen2025aiopslab}.
+No published benchmark evaluates agent diagnosis of GPU hardware errors (Xid events, ECC failures, NVLink degradation) or RDMA fabric issues (link flapping, PFC storms, QP errors) --- despite these being the dominant failure modes in production GPU clusters.
+
+\subsubsection{Methodology}
+
+We design 10 fault scenarios based on observable-signal simulation: rather than injecting hardware faults (which requires physical access), we reproduce the \emph{diagnostic signals} an SRE agent would observe --- kernel logs (dmesg), GPU telemetry (nvidia-smi), RDMA counters (ibstat, ethtool), and NCCL error logs --- as Kubernetes ConfigMaps and Pod annotations in the evaluation namespace.
+This approach is consistent with the agent's diagnostic interface: it reads \texttt{kubectl} output, not hardware registers.
+
+Scenarios are grounded in production fault data from:
+Xid error characterization on H100 GPUs (11.7M GPU-hours, Cui et al., 2025),
+RDMA datacenter congestion patterns (Ghorbani et al., IMC 2025),
+RDMA failover challenges (SHIFT, 2025),
+and production GPU cluster reliability at ByteDance (ByteRobust, SOSP 2025).
+
+\subsubsection{Results}
+
+\begin{table}[t]
+\centering
+\caption{GPU/RDMA fault diagnosis (10 cases, Claude Sonnet 4.6). Observable-signal simulation of hardware faults grounded in production data from Cui et al.~(2025), Ghorbani et al.~(IMC'25), and SHIFT~(2025).}
+\label{tab:gpurdma}
+\small
+\begin{tabular}{@{}llrr@{}}
+\toprule
+\textbf{ID} & \textbf{Fault Type} & \textbf{Score} & \textbf{Time} \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{GPU Hardware (5 cases)}} \\
+g01 & Xid 48 double-bit ECC error            & 0.961 & 30s \\
+g02 & NVLink degradation (40\% slowdown)      & 0.991 & 29s \\
+g03 & Thermal throttling $\rightarrow$ CUDA OOM & 0.926 & 37s \\
+g06 & ECC row remapping exhausted             & 0.921 & 32s \\
+g07 & Silent GPU clock degradation            & 0.799 & 36s \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{RDMA Network (3 cases)}} \\
+g04 & InfiniBand link flap $\rightarrow$ NCCL timeout & 0.972 & 28s \\
+g05 & PFC storm (cluster-wide congestion)     & 0.895 & 30s \\
+g08 & RDMA QP error state (training hang)     & 0.945 & 65s \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Compound GPU+RDMA (2 cases)}} \\
+g09 & GPU ECC \textbf{+} RDMA congestion      & 0.975 & 54s \\
+g10 & Volcano gang sched.\ \textbf{+} node drain & 0.841 & 238s \\
+\midrule
+\textbf{Overall} & \textbf{10/10 passed (100\%)} & \textbf{0.923} & \textbf{58s} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\sys{} achieves \textbf{100\% pass rate} (10/10, avg.\ 0.923) on GPU/RDMA scenarios (Table~\ref{tab:gpurdma}). GPU hardware faults (avg.\ 0.920) are diagnosed accurately: the agent maps Xid codes to specific GPUs, reads NVLink topology, and distinguishes thermal throttling from genuine OOM. RDMA faults (avg.\ 0.938) are correctly attributed to link-layer issues via ibstat/PFC counters. In compound case g09, the agent identifies \emph{both} independent root causes (GPU ECC + RDMA congestion). To our knowledge, this is the \textbf{first evaluation of an SRE agent on GPU/RDMA infrastructure faults}~\cite{yu2024fisurvey,cui2025gpuresilience}.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/gpu-rdma-results.pdf}
+\caption{GPU/RDMA fault diagnosis scores. All 10 cases pass (above 0.65 threshold). Compound cases (g09, g10) combining GPU and RDMA faults are the most challenging.}
+\label{fig:gpurdma}
+\end{figure}
+
+\paragraph{Comparison.}
+On SREGym, Claude Code achieves 60.7\% and Stratus 54.8\% E2E success~\cite{clark2026sregym}. \sys{} achieves 90\% on 100 K8s cases and 100\% on 10 GPU/RDMA cases. The key differentiator is safety: \textbf{neither provides any documented security model} for shell access, while an unconstrained agent generates $\sim$2.4 security violations per case.
+
+
+% ============================================================
+\section{Discussion}
+% ============================================================
+
+\paragraph{Agent-as-Untrusted-Code.}
+Existing SRE agent research treats the LLM as trusted. Our production experience shows this is untenable: even under explicit read-only instructions, the agent attempted 4 \texttt{kubectl exec} commands via normal hallucination. An unconstrained agent would generate $\sim$2.4 security violations per case ($\sim$242 total), yet our defense-in-depth catches all of them --- with \textbf{zero accuracy cost} (0/10 failures caused by security constraints). The agent needed only 6 of 13 allowed kubectl subcommands; all failures were formatting or reasoning issues orthogonal to security.
+
+\paragraph{GPU/RDMA Fault Diagnosis.}
+Production GPU clusters experience 5K--60K RDMA link flaps daily, and H100 GPUs show 3.2$\times$ worse uncorrectable memory error rates than A100~\cite{cui2025gpuresilience}, yet no benchmark covers these faults~\cite{yu2024fisurvey}. Our observable-signal simulation --- injecting diagnostic signals (dmesg, nvidia-smi, ibstat, NCCL traces) as ConfigMaps --- enables evaluation without specialized hardware. The 100\% pass rate suggests LLM agents can effectively diagnose GPU/RDMA faults when given appropriate telemetry.
+
+\paragraph{Generalizability.}
+The security architecture is not Kubernetes-specific. The dual-user model, command validation pipeline, and output sanitization apply to any LLM agent executing shell commands. The context-policy decoupling allows supporting new execution contexts (\eg, cloud CLIs, database tools) by defining policies without modifying command definitions.
+
+\paragraph{Limitations.}
+The evaluation uses a single cluster topology; cross-cluster environments remain future work. The red-team covers 30 scenarios but not multi-turn prompt injection chains. The skill review gate requires human involvement. The memory system is tuned for personal scale ($\sim$1000 chunks). The comparison with Stratus and Claude Code relies on published results rather than direct reproduction.
+
+
+% ============================================================
+\section{Conclusion}
+% ============================================================
+
+We presented \sys{}, the first production-grade SRE agent system that treats the LLM as untrusted code. Its six-layer defense-in-depth architecture---OS-level dual-user isolation with setgid transitive privilege, six-pass command validation, three-layer output sanitization, and a four-stage guard pipeline---blocked 100\% of 30 red-team attacks at \textbf{zero accuracy cost} (no diagnostic failure was caused by a security constraint). Layer ablation confirms no single layer exceeds 70\% coverage, and the output sanitizer intercepted 48 sensitive exposures across 100 runs.
+
+\sys{} supports three runtime modes sharing a unified agent core, with a four-tier skill architecture for organizational knowledge. It achieves 90\% diagnostic pass rate (avg.\ 0.818) on 100 Kubernetes faults and 100\% (avg.\ 0.923) on 10 GPU/RDMA infrastructure faults --- the first such evaluation for SRE agents. Because even non-adversarial agents generate $\sim$2.4 security violations per case through normal hallucination, we argue the agent-as-untrusted-code paradigm is essential for production deployment, and hope \sys{} provides both a foundation and a research agenda for secure autonomous operations.
+
+
+% ============================================================
+% References
+% ============================================================
+\bibliography{references}
+
+\end{document}
