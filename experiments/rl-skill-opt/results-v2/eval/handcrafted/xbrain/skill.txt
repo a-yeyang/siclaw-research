@@ -1,0 +1,61 @@
+SKILL: Diagnosing pod-to-service connectivity and DNS-resolution failures
+
+WHEN TO APPLY
+A client pod cannot resolve or reach a Service even though the backing
+server pod exists and looks Running. The client may be CrashLooping or
+restarting because its application exits after each failed connection — treat
+those restarts as a SYMPTOM, not the root cause. Connectivity failures in
+Kubernetes are almost always caused by one of three controllable layers, and
+you must positively rule each in or out before concluding:
+
+  (A) NetworkPolicy blocking egress from the client
+  (B) NetworkPolicy blocking ingress to the server
+  (C) Client-side DNS override (custom nameserver / dnsConfig / dnsPolicy)
+
+PROCEDURE (do these before blaming CNI, nodes, firewalls, or "one-shot containers")
+
+1. ENUMERATE NETWORKPOLICIES IN THE NAMESPACE FIRST.
+   - `kubectl get networkpolicy -n <ns>` then `describe`/`get -o yaml` each one.
+   - For every policy, read its `spec.podSelector` and `spec.policyTypes`.
+     A policy whose podSelector matches the CLIENT and lists `Egress` (often
+     with an empty/absent egress rule list) DENIES ALL egress from the client,
+     including DNS (UDP/TCP 53) — this breaks both name resolution and traffic.
+     A policy whose podSelector matches the SERVER and lists `Ingress` (with no
+     rule that admits the client) DENIES ingress from the client.
+   - Match the policy's podSelector labels against the actual pod labels
+     (`kubectl get pod <client>/<server> --show-labels`). If a deny-egress or
+     deny-ingress policy selects the relevant pod, THAT NetworkPolicy is the
+     root cause. Name it explicitly as the faulting resource
+     (e.g. networkpolicy/<name>).
+
+2. INSPECT THE CLIENT POD'S DNS CONFIGURATION.
+   - Read `spec.dnsPolicy` and especially `spec.dnsConfig.nameservers` of the
+     client pod (`kubectl get pod <client> -o yaml`). A pod that overrides DNS
+     with a non-cluster nameserver — particularly a documentation/TEST-NET
+     address such as 192.0.2.x, 198.51.100.x, or 203.0.113.x — cannot reach the
+     real cluster DNS (kube-dns/CoreDNS), so every in-cluster name fails to
+     resolve. If present, the client pod itself is the faulting resource and
+     the mechanism is the overridden nameserver; name the specific bad IP.
+   - If you can read it, `/etc/resolv.conf` inside the client confirms the
+     effective nameserver.
+
+3. ONLY AFTER (1) and (2) are both ruled out should you consider Service
+   selector/endpoint mismatches, then cluster-level CNI / node / firewall
+   issues. Do not jump to inter-node CNI, iptables, or "DNS infrastructure is
+   down" when a namespace-local NetworkPolicy or a client dnsConfig override
+   fully explains the symptom and affects only this client/server path.
+
+OUTPUT REQUIREMENTS
+- LOCALIZATION must name the actual controllable resource: the specific
+  NetworkPolicy (kind/name) for (A)/(B), or the client pod for (C) — not the
+  client's restart loop and not a healthy downstream resource.
+- MECHANISM must state the concrete mutated detail: which selector the policy
+  matches and that it denies egress/ingress, or the exact overriding nameserver
+  IP — not a vague "DNS timeout" or "network issue".
+- SCOPE: a single NetworkPolicy or a single client's DNS override affects only
+  the selected pod / this one client→service path; do not overstate it as a
+  node-wide or cluster-wide outage.
+- REMEDIATION must address that root cause (amend/scope the NetworkPolicy to
+  permit the required egress to UDP/TCP 53 + the server, or admit the client on
+  ingress; or remove the client's bad dnsConfig nameserver) — not generic
+  "check CNI / restart the pod" steps that would not fix it.

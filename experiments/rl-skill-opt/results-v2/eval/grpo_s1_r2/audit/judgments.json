@@ -1,0 +1,302 @@
+[
+  {
+    "caseId": "ca1",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis explicitly identifies 'NetworkPolicy/ca1-deny-egress' as the root cause, matching the ground-truth localization exactly.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis correctly notes that service/ca1-server-svc and pod/ca1-server are healthy and not the fault origin; the NetworkPolicy is identified as the primary fault.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis explains that ca1-deny-egress selects app=ca1-client with policyTypes:Egress and no egress allow rules, blocking all egress including DNS (UDP/TCP 53) to CoreDNS and TCP to the server — matching the ground-truth mechanism exactly.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Concrete details cited: PodSelector app=ca1-client, Policy Types: Egress, 'Allowing egress traffic: <none>', which are the specific YAML fields causing the issue.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis states impact is limited to 'ca1-client pods selected by ca1-deny-egress', consistent with the ground-truth scope of traffic involving the client/server pods.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis neither overstates (no claim of cluster-wide impact) nor understates (correctly identifies both DNS and direct TCP connectivity as blocked).",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Cites observed YAML fields: pod labels (app=ca1-client), NetworkPolicy spec (PodSelector, Policy Types, no egress rules), service selector, and endpoints (172.16.36.245:8080), plus pod/ca1-server Running status.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "All cited evidence is consistent: the NetworkPolicy selecting the client pod with egress isolation directly explains the DNS and connectivity failures described in the symptom.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation suggests modifying ca1-deny-egress to explicitly allow egress to CoreDNS (UDP/TCP 53) and to ca1-server TCP 8080, which directly addresses the root cause of the blanket egress denial.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation recommends minimal necessary egress rules rather than deleting the policy, which is appropriately scoped and non-destructive.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 32094,
+    "toolCallCount": 6,
+    "judgeModel": "claude-sonnet-4-6"
+  },
+  {
+    "caseId": "ca2",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis explicitly names 'NetworkPolicy ca2-deny-ingress' as the root cause, matching the ground-truth localization of networkpolicy/ca2-deny-ingress.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis correctly identifies the NetworkPolicy as the primary fault and explicitly states 'Service ca2-server-svc 本身的 selector/endpoints 异常' was not found, avoiding mislabeling healthy resources as the fault origin.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis explains that ca2-deny-ingress selects app=ca2-server with 'Allowing ingress traffic: <none>', meaning all ingress to the server is denied — exactly the ground-truth mechanism of policyTypes:[Ingress] with no ingress rules.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis cites the concrete detail: PodSelector app=ca2-server, 'Allowing ingress traffic: <none> (Selected pods are isolated for ingress connectivity)', which is the specific mutated configuration causing the fault.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis states the impact affects 'all inbound connections to app=ca2-server pods, not just ca2-client', and specifically identifies the ca2-client -> ca2-server-svc -> ca2-server path, consistent with the ground-truth scope.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis neither over-states (e.g., claiming cluster-wide DNS failure) nor under-states (it correctly notes all ingress to ca2-server is blocked, not just one client). The scope is appropriately described.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The diagnosis cites observed evidence: Service selector/port/clusterIP, Endpoints showing 172.16.36.247:8080, NetworkPolicy describe output showing 'Allowing ingress traffic: <none>', and pod/ca2-client dnsPolicy configuration.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "All cited evidence is consistent with the root cause: the NetworkPolicy deny-ingress output directly explains why TCP connections to ca2-server are blocked, and the healthy endpoints confirm the issue is not a service misconfiguration.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation suggests modifying or removing ca2-deny-ingress to allow traffic from ca2-client to ca2-server on port 8080, which directly addresses the NetworkPolicy blocking all ingress.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation is appropriately scoped — it targets only the specific NetworkPolicy and suggests allowing only the necessary ports/clients rather than a destructive blanket change. It also includes a verification step.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 33735,
+    "toolCallCount": 5,
+    "judgeModel": "claude-sonnet-4-6"
+  },
+  {
+    "caseId": "ca3",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Diagnosis explicitly identifies 'service/ca3-server-svc' as the fault origin, matching the ground-truth localization exactly.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis correctly focuses on ca3-server-svc as the primary fault; ca3-client and ca3-server are mentioned as affected/healthy resources, not as fault origins.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Diagnosis explains that the Service selector 'app=ca3-srv' does not match the pod label 'app=ca3-server', resulting in zero endpoints and connection failure — identical to the ground-truth mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Concrete mismatch is specified: selector is 'app=ca3-srv' vs pod label 'app=ca3-server', with exact kubectl output cited as evidence.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Diagnosis states impact is on all clients accessing ca3-server via ca3-server-svc, specifically confirming ca3-client is affected, consistent with ground-truth scope of traffic involving these pods.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Diagnosis correctly scopes the issue to the Service-level selector mismatch affecting ca3-client→ca3-server-svc path, neither overstating (e.g., cluster-wide) nor understating (e.g., single request).",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Cites 'kubectl get endpoints/ca3-server-svc' returning '<none>', jsonpath output of selector '{'app':'ca3-srv'}', and pod label '{'app':'ca3-server'}' as concrete observed evidence.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The cited evidence (empty endpoints, mismatched selector vs pod label) is directly consistent with and supports the identified root cause of selector mismatch.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Recommends changing the Service selector to 'app=ca3-server' to match the pod label, which directly fixes the selector mismatch root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation is targeted (change selector or relabel pod), non-destructive, and appropriately scoped to the identified fault without broader impact.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 50840,
+    "toolCallCount": 12,
+    "judgeModel": "claude-sonnet-4-6"
+  }
+]

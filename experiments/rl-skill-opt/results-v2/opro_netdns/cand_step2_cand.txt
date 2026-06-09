@@ -1,0 +1,13 @@
+1. **Classify the symptom before chasing DNS**: record the exact source Pod/namespace, destination string the app used, and failure mode from logs/events: **NXDOMAIN/SERVFAIL/timeout on lookup**, **resolved to an IP but connect timed out/refused**, or **intermittent**. Distinguish service discovery failure from transport failure; “cannot reach Service” is not itself a DNS diagnosis.
+
+2. **Verify name-construction rules in the client Pod**: inspect the Pod spec and `/etc/resolv.conf` (`nameserver`, `search`, `ndots`) and compare with the queried name. Check whether a short name should resolve from that namespace, whether the app should have used `<svc>.<ns>` or FQDN, and whether `dnsPolicy`/`dnsConfig`, hostNetwork, or custom nameservers/search domains override cluster defaults. Wrong namespace/name/FQDN or bad Pod DNS settings are common root causes.
+
+3. **Validate the target object exists and matches the intended destination**: inspect Service/Headless Service/ExternalName objects in the expected namespace: type, ClusterIP/None, ports, selectors, and for ExternalName the target DNS name. Wrong Service name, namespace, port, or malformed ExternalName is a root cause.
+
+4. **Check discovery backing data, not just the Service**: inspect EndpointSlices/Endpoints for ready addresses and correct ports. If empty/wrong, inspect backend Pod labels, readiness conditions, and relevant events. Empty endpoints explain “name resolves but traffic fails”; backend readiness is the root cause, DNS symptoms are downstream.
+
+5. **Test cluster DNS control plane health**: inspect CoreDNS/kube-dns Pods, restarts, readiness, logs, ConfigMap, Service, and EndpointSlices. Look for widespread resolver timeouts, upstream-forwarder errors, or broken DNS Service endpoints. If external names fail but internal Service names work, focus on CoreDNS upstream/forwarding config.
+
+6. **Only then inspect network isolation/path**: review NetworkPolicies affecting client, DNS Pods, and backends for egress/ingress on UDP/TCP 53 and the application port. Also note CNI/kube-proxy related warning events if DNS objects are correct but traffic still fails.
+
+**A correct diagnosis must name**: the exact queried name and namespace context, whether the first failure is lookup or post-resolution connection, the first broken object in the chain (client DNS config/name usage, Service/ExternalName spec, EndpointSlice population/backend readiness, DNS control plane, or NetworkPolicy), and evidence from read-only checks. **Safe remediation direction**: correct the queried name/namespace or Pod DNS settings, fix Service/ports/selectors/ExternalName, restore backend readiness/labels, repair CoreDNS config/endpoints, or adjust NetworkPolicies.

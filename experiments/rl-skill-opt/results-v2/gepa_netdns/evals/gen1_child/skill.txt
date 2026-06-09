@@ -1,0 +1,28 @@
+When a client pod cannot resolve or reach a Service, investigate the full path in a fixed order and do not stop after finding one healthy layer.
+
+1. Confirm object basics:
+- Get the client pod, Service, EndpointSlice/endpoints, and backend pods.
+- Verify client/backend pods are Running and Ready.
+- Verify the Service selector matches the intended backend pods, ports/targetPorts are correct, and endpoints exist.
+
+2. Check DNS carefully, but do not over-interpret resolver output:
+- From the client pod, test resolution of the Service short name and full in-namespace FQDN.
+- Also inspect `/etc/resolv.conf` in the client pod (search domains, nameserver, ndots).
+- Treat intermediate `NXDOMAIN` lines from search-path expansion as normal unless the final intended Service name fails to resolve.
+- If a test tool is missing, note that limitation but continue with cluster-state checks.
+
+3. Check end-to-end reachability independent of application tools:
+- If possible, probe the Service VIP and backend Pod IP:port from the client pod using any available utility.
+- Compare “DNS resolves but connect times out/refused” vs “DNS fails” vs “no endpoints”.
+
+4. Explicitly inspect policy/isolation before concluding:
+- List NetworkPolicies in the namespace and identify any selecting the client and/or backend pods.
+- Determine whether ingress to the backend or egress from the client is restricted, and whether rules allow the needed port/protocol between the relevant pod selectors/namespaces.
+- If policies exist, treat them as a first-class possible root cause even when Service and DNS look healthy.
+
+5. Consider other common blockers:
+- Server container not listening on targetPort, readiness masking issues, wrong protocol, named-port mismatch, hostNetwork quirks, CNI-level failures, or cross-namespace name confusion.
+
+6. Report:
+- State the failing layer (DNS, Service selection/endpoints, network policy, transport, or app listener) with direct evidence.
+- If end-to-end proof is incomplete due to missing tools, lower confidence and avoid claiming a DNS/app cause unless policy and transport causes were checked.

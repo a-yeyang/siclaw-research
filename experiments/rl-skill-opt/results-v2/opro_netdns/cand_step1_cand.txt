@@ -1,0 +1,15 @@
+1. **Frame the failing path precisely**: identify the client Pod, the target name used (`svc`, FQDN, or external host), target namespace, and whether the symptom is **DNS resolution failure**, **connectivity failure after resolution**, or both. Do not treat “cannot reach Service” as proof of a DNS issue.
+
+2. **Check client-side evidence first**: inspect the client Pod’s status, recent events, and logs for resolver errors, timeouts, or connection-refused messages. Read its `/etc/resolv.conf` (search domains, nameserver, `ndots`) and confirm whether the queried name should resolve from that namespace. Many incidents are wrong namespace/FQDN usage rather than broken DNS.
+
+3. **Validate the Service object**: get the Service type, ClusterIP, ports, selectors, and namespace. Confirm the client is using the correct Service name/namespace and port. A missing/wrong Service, wrong port, or wrong namespace is a root cause; DNS and app errors are downstream symptoms.
+
+4. **Check EndpointSlice/Endpoints population**: verify the Service has ready endpoints and that they match the intended backend Pod IPs/ports. If endpoints are empty or wrong, inspect backend Pod labels, readiness, and container ports. Empty endpoints often explain “name resolves but connection fails.”
+
+5. **Verify backend Pod health and placement**: ensure backend Pods are Running/Ready, not crash-looping, and listening on the expected port (from pod spec/logs). Distinguish backend unavailability from DNS failure.
+
+6. **Inspect cluster DNS health**: check CoreDNS/kube-dns Pods, readiness, restarts, logs, Service (`kube-dns`), and endpoints. If many Pods/names fail similarly, suspect DNS service/component failure rather than one Service.
+
+7. **Check network controls only after DNS objects look correct**: inspect NetworkPolicies affecting client, DNS Pods, or backend Pods; ensure egress to DNS (UDP/TCP 53) and to backend port is allowed. Also verify no host/network plugin incident is evident from Pod events.
+
+**A correct diagnosis must state**: exact failing lookup/connection, whether failure is at name resolution or post-resolution routing, the first broken object in the chain (client config, Service spec, endpoints, backend readiness, DNS component, or NetworkPolicy), and the evidence from read-only checks. Include a safe remediation direction: e.g., correct Service/namespace/port/labels, restore backend readiness, or repair DNS/NetworkPolicy configuration.

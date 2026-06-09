@@ -1,0 +1,126 @@
+# AgentBox Docker Image — multi-stage build
+# Stage 1: build (tsc)
+# Stage 2: production runtime
+#
+# Security: dual-user model (ADR-010, docs/design/security.md)
+#   agentbox — main Node.js process, owns credentials
+#   sandbox  — all child processes (shell commands), reads credentials via shared groups
+#   kubectl  — setgid kubecred group, reads kubeconfig via group permission
+#   ssh (future host_exec) — will be setgid hostcred group, reads SSH credentials via group permission
+
+# ── Build stage ──────────────────────────────────────────────────
+FROM node:22-slim AS builder
+
+WORKDIR /app
+
+# Dependencies layer (cached unless package*.json changes)
+COPY package*.json ./
+RUN npm ci
+
+# Copy backend source only (AgentBox + core + tools + minimal gateway modules)
+COPY tsconfig.json tsconfig.agentbox.json ./
+COPY src/agentbox-main.ts ./src/
+COPY src/agentbox/ ./src/agentbox/
+COPY src/core/ ./src/core/
+COPY src/cron/ ./src/cron/
+COPY src/memory/ ./src/memory/
+COPY src/shared/ ./src/shared/
+COPY src/tools/ ./src/tools/
+COPY src/gateway/config.ts src/gateway/jwt.ts \
+     src/gateway/metrics-aggregator.ts src/gateway/ws-protocol.ts ./src/gateway/
+COPY src/gateway/agentbox/ ./src/gateway/agentbox/
+COPY src/gateway/security/ ./src/gateway/security/
+# Type-only file consumed by core/agent-factory.ts and core/extensions/* —
+# keeps Portal runtime code (db, rest-router) out of the agentbox tsc graph.
+COPY src/portal/cli-snapshot-types.ts ./src/portal/
+
+# Backend build (agentbox-specific tsconfig, excludes gateway server/portal/channel code)
+RUN npx tsc -p tsconfig.agentbox.json
+
+# ── Production stage ─────────────────────────────────────────────
+FROM node:22-slim
+
+# System deps + kubectl in one layer
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl jq python3 ca-certificates sudo \
+    && curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
+    && chmod +x kubectl && mv kubectl /usr/local/bin/ \
+    && rm -rf /var/lib/apt/lists/*
+
+# User & group setup (dual-user isolation) — single layer
+# node:22-slim has UID 1000 (node user) — remove it first to avoid conflicts
+RUN userdel -r node 2>/dev/null || true \
+    && groupadd --gid 1002 kubecred \
+    && groupadd --gid 1003 hostcred \
+    && useradd --uid 1000 -m -s /bin/bash -G kubecred,hostcred agentbox \
+    && useradd --uid 1001 -M -s /bin/false -G kubecred,hostcred sandbox \
+    && echo 'agentbox ALL=(sandbox) NOPASSWD:SETENV: ALL' > /etc/sudoers.d/sandbox-exec \
+    && chmod 440 /etc/sudoers.d/sandbox-exec \
+    && chgrp kubecred /usr/local/bin/kubectl \
+    && chmod 2755 /usr/local/bin/kubectl
+
+WORKDIR /app
+
+# Production deps (cached unless package*.json changes)
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+# Copy compiled JS + skills + entrypoint (knowledge synced at runtime via bundle API)
+COPY --from=builder /app/dist/ ./dist/
+COPY skills/core/ ./skills/core/
+COPY skills/extension/ ./skills/extension/
+COPY skills/platform/ ./skills/platform/
+COPY docker/agentbox-entrypoint.sh /usr/local/bin/agentbox-entrypoint.sh
+
+# Build every stdio MCP listed in mcp/MCP_LIST.txt and symlink each into PATH.
+# To add a new MCP: drop a new mcp/<name>/ directory (standalone npm package
+# with bin -> ./dist/index.js) and append its name to MCP_LIST.txt.
+COPY mcp/ /opt/mcp-staging/
+RUN set -eu \
+    && grep -v '^[[:space:]]*#' /opt/mcp-staging/MCP_LIST.txt | grep -v '^[[:space:]]*$' | tr -d ' \t' | while IFS= read -r name; do \
+         [ -n "$name" ] || continue; \
+         echo "=== Building mcp-$name ==="; \
+         src="/opt/mcp-staging/$name"; dst="/opt/mcp-$name"; \
+         test -d "$src" || { echo "MCP_LIST.txt names '$name' but $src is missing"; exit 1; }; \
+         mkdir -p "$dst"; \
+         cp "$src/package.json" "$src/package-lock.json" "$src/tsconfig.json" "$dst/"; \
+         cp -r "$src/src" "$dst/src"; \
+         cd "$dst"; \
+         npm ci; \
+         npx tsc; \
+         npm prune --omit=dev; \
+         chmod +x dist/index.js; \
+         chown -R agentbox:agentbox "$dst"; \
+         ln -sf "$dst/dist/index.js" "/usr/local/bin/mcp-$name"; \
+         cd /; \
+       done \
+    && rm -rf /opt/mcp-staging
+
+# Directory structure, permissions, SUID/SGID cleanup — single layer
+RUN chmod +x /usr/local/bin/agentbox-entrypoint.sh \
+    && mkdir -p ./.siclaw/skills ./.siclaw/credentials/clusters ./.siclaw/credentials/hosts ./.siclaw/config ./.siclaw/user-data \
+    && chown -R agentbox:agentbox . \
+    && chown agentbox:agentbox ./.siclaw/credentials \
+    && chmod 0750 ./.siclaw/credentials \
+    && chown agentbox:kubecred ./.siclaw/credentials/clusters \
+    && chmod 2750 ./.siclaw/credentials/clusters \
+    && chown agentbox:hostcred ./.siclaw/credentials/hosts \
+    && chmod 2750 ./.siclaw/credentials/hosts \
+    && chmod 0700 ./.siclaw/config \
+    && chmod 0755 ./.siclaw/skills \
+    && chmod 0777 ./.siclaw/user-data \
+    && chmod -R o+rX ./dist/ ./skills/ ./node_modules/ \
+    && find / -perm /4000 -type f ! -path '/proc/*' 2>/dev/null | while read -r f; do \
+         case "$f" in /usr/bin/sudo) ;; *) chmod u-s "$f" ;; esac; done \
+    && find / -perm /2000 -type f ! -path '/proc/*' 2>/dev/null | while read -r f; do \
+         case "$f" in /usr/local/bin/kubectl) ;; *) chmod g-s "$f" ;; esac; done
+
+ENV NODE_ENV=production
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -fk https://localhost:3000/health || curl -f http://localhost:3000/health || exit 1
+
+EXPOSE 3000
+
+ENTRYPOINT ["/usr/local/bin/agentbox-entrypoint.sh"]
+CMD ["node", "dist/agentbox-main.js"]

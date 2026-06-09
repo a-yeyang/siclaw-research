@@ -1,0 +1,45 @@
+{
+  "runDir": "experiments/rl-skill-opt/results/heldout_handcrafted",
+  "provider": "kimi",
+  "judgeModel": "claude-sonnet-4-6",
+  "skillFile": "experiments/rl-skill-opt/skills/network-dns-handcrafted.txt",
+  "skillChars": 3690,
+  "cases": [
+    "c074",
+    "c075",
+    "c076",
+    "c077"
+  ],
+  "reward": 1,
+  "passRate": 1,
+  "perCase": {
+    "c074": 1,
+    "c075": 1,
+    "c076": 1,
+    "c077": 1
+  },
+  "advantage": 0.3,
+  "perCaseAdvantage": {
+    "c074": 0,
+    "c075": 0.9,
+    "c076": 0.3,
+    "c077": 0
+  },
+  "baselineMeanScore": 0.7,
+  "tokens": {
+    "input": 38054,
+    "output": 4998,
+    "total": 323884,
+    "toolCalls": 22,
+    "completed": 4,
+    "cases": 4
+  },
+  "runStatuses": {
+    "c074": "completed",
+    "c075": "completed",
+    "c076": "completed",
+    "c077": "completed"
+  },
+  "notGraded": [],
+  "durationSec": 59
+}

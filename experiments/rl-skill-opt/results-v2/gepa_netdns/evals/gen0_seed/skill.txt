@@ -1,0 +1,5 @@
+When a client pod cannot reach a Service, investigate the connectivity path.
+Check the client pod status, the Service, and the server pod. Look at DNS
+resolution from the client and whether the Service has endpoints. Identify the
+component that is broken and report the root cause with evidence and a
+remediation.

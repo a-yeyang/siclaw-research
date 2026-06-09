@@ -1,0 +1,23 @@
+{
+  "models": [
+    "kimi",
+    "deepseek",
+    "qwen"
+  ],
+  "queued": 297,
+  "tally": {
+    "kimi": {
+      "completed": 99,
+      "failed": 0
+    },
+    "deepseek": {
+      "completed": 99,
+      "failed": 0
+    },
+    "qwen": {
+      "completed": 99,
+      "failed": 0
+    }
+  },
+  "durationSec": 1909
+}

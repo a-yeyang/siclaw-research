@@ -1,0 +1,135 @@
+{{- if eq (include "siclaw.runtime.enabled" .) "true" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "siclaw.fullname" . }}-runtime
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "siclaw.labels" (dict "ctx" . "component" "runtime") | nindent 4 }}
+spec:
+  # Singleton — see comment in values.yaml. Recreate (not RollingUpdate) so
+  # the old pod is torn down before the new one starts, avoiding the brief
+  # two-pod overlap that would evict each other on the upstream WS map.
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "siclaw.selectorLabels" (dict "ctx" . "component" "runtime") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "siclaw.selectorLabels" (dict "ctx" . "component" "runtime") | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "siclaw.fullname" . }}-gateway
+      containers:
+        - name: runtime
+          image: {{ include "siclaw.image" (dict "component" "runtime" "ctx" .) }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 3001
+              protocol: TCP
+            - name: https-internal
+              containerPort: 3002
+              protocol: TCP
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: SICLAW_PORT
+              value: "3001"
+            - name: SICLAW_INTERNAL_PORT
+              value: "3002"
+            - name: SICLAW_HOST
+              value: "0.0.0.0"
+            - name: SICLAW_K8S_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: SICLAW_AGENTBOX_IMAGE
+              value: {{ include "siclaw.agentboxImage" . }}
+            - name: SICLAW_GATEWAY_HOSTNAME
+              value: "{{ include "siclaw.fullname" . }}-runtime.{{ .Release.Namespace }}.svc.cluster.local"
+            - name: SICLAW_MEMORY_ENABLED
+              value: {{ ternary "true" "false" .Values.runtime.memory.enabled | quote }}
+            {{- if .Values.runtime.subagentConcurrency }}
+            # Forwarded by the runtime spawner into each AgentBox pod; if unset the
+            # agentbox falls back to its built-in default (5).
+            - name: SICLAW_SUBAGENT_CONCURRENCY
+              value: {{ .Values.runtime.subagentConcurrency | quote }}
+            {{- end }}
+            {{- if .Values.agentbox.persistence.enabled }}
+            - name: SICLAW_PERSISTENCE_ENABLED
+              value: "true"
+            - name: SICLAW_PERSISTENCE_CLAIM_NAME
+              value: {{ include "siclaw.dataPvcName" . | quote }}
+            {{- end }}
+            {{- if .Values.agentbox.debugImage }}
+            - name: SICLAW_DEBUG_IMAGE
+              value: {{ .Values.agentbox.debugImage | quote }}
+            {{- end }}
+            - name: SICLAW_SKILLS_DIR
+              value: ".siclaw/skills"
+            # Phone-home upstream — auto-discover Portal if enabled, else use configured URL
+            - name: SICLAW_SERVER_URL
+              {{- if .Values.portal.enabled }}
+              value: "http://{{ include "siclaw.fullname" . }}-portal:{{ .Values.portal.service.port }}"
+              {{- else }}
+              value: {{ .Values.runtime.serverUrl | quote }}
+              {{- end }}
+            - name: SICLAW_PORTAL_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "siclaw.fullname" . }}-runtime
+                  key: portal-secret
+            {{- $caSecret := include "siclaw.runtimeCaSecretRef" . }}
+            {{- if $caSecret }}
+            # mTLS CA — persisted so existing AgentBox client certs survive
+            # Runtime restarts. See runtime-ca-secret.yaml.
+            - name: SICLAW_CA_CERT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $caSecret }}
+                  key: tls.crt
+            - name: SICLAW_CA_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $caSecret }}
+                  key: tls.key
+            {{- end }}
+            # User-supplied env entries come last so callers can override any
+            # of the values above (e.g. swap in SICLAW_CA_CERT_FILE).
+            {{- range $key, $value := .Values.runtime.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          resources:
+            {{- toYaml .Values.runtime.resources | nindent 12 }}
+          volumeMounts:
+            - name: skills
+              mountPath: /app/.siclaw/skills
+            {{- if .Values.agentbox.persistence.enabled }}
+            - name: user-data
+              mountPath: /app/.siclaw/user-data
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      volumes:
+        - name: skills
+          emptyDir: {}
+        {{- if .Values.agentbox.persistence.enabled }}
+        - name: user-data
+          persistentVolumeClaim:
+            claimName: {{ include "siclaw.dataPvcName" . }}
+        {{- end }}
+{{- end }}

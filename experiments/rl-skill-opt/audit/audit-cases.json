@@ -1,0 +1,59 @@
+[
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "ca1",
+    "category": "network-dns",
+    "audit": true,
+    "trap": "dns-tunnel-vision",
+    "rootCauseClass": "networkpolicy",
+    "title": "AUDIT: NetworkPolicy selects the client and denies all egress (looks like DNS, is NetworkPolicy)",
+    "targets": ["pod/ca1-client", "pod/ca1-server", "service/ca1-server-svc"],
+    "symptom": "Client pod ca1-client cannot resolve or reach service ca1-server-svc even though the server pod exists.",
+    "groundTruth": {
+      "localization": "networkpolicy/ca1-deny-egress",
+      "mechanism": "NetworkPolicy ca1-deny-egress selects the client (app=ca1-client) and lists policyTypes:[Egress] with no egress rules, denying ALL egress from the client including DNS (UDP/TCP 53) to CoreDNS. This is NOT a client DNS override; the pod uses ClusterFirst DNS with no dnsConfig.",
+      "scope": "traffic involving this case's client/server pods"
+    },
+    "expectedSignals": ["NetworkPolicy spec", "pod DNS config (to rule OUT a DNS override)", "service endpoints"]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "ca2",
+    "category": "network-dns",
+    "audit": true,
+    "trap": "dns-tunnel-vision",
+    "rootCauseClass": "networkpolicy",
+    "title": "AUDIT: NetworkPolicy selects the server and denies all ingress (looks like DNS, is NetworkPolicy)",
+    "targets": ["pod/ca2-client", "pod/ca2-server", "service/ca2-server-svc"],
+    "symptom": "Client pod ca2-client cannot resolve or reach service ca2-server-svc even though the server pod exists.",
+    "groundTruth": {
+      "localization": "networkpolicy/ca2-deny-ingress",
+      "mechanism": "NetworkPolicy ca2-deny-ingress selects the server (app=ca2-server) and lists policyTypes:[Ingress] with no ingress rules, denying ALL ingress to the server including from the client. This is NOT a DNS fault; cluster DNS resolves the service normally.",
+      "scope": "traffic involving this case's client/server pods"
+    },
+    "expectedSignals": ["NetworkPolicy spec", "pod DNS config (to rule OUT a DNS override)", "service endpoints"]
+  },
+  {
+    "namespace": "siclaw-eval-yye-20260602",
+    "difficulty": "medium",
+    "noise": false,
+    "id": "ca3",
+    "category": "network-dns",
+    "audit": true,
+    "trap": "dns-tunnel-vision",
+    "rootCauseClass": "selector",
+    "title": "AUDIT: Service selector typo yields zero endpoints (looks like DNS, is a selector mismatch)",
+    "targets": ["pod/ca3-client", "pod/ca3-server", "service/ca3-server-svc"],
+    "symptom": "Client pod ca3-client cannot resolve or reach service ca3-server-svc even though the server pod exists.",
+    "groundTruth": {
+      "localization": "service/ca3-server-svc",
+      "mechanism": "Service ca3-server-svc has spec.selector app=ca3-srv but the server pod is labeled app=ca3-server, so the Service matches NO pods and has ZERO endpoints. DNS resolves the service to its ClusterIP normally (it is NOT a DNS fault and NOT a NetworkPolicy); connections are refused because there are no backing endpoints.",
+      "scope": "traffic involving this case's client/server pods"
+    },
+    "expectedSignals": ["service selector", "service endpoints (empty)", "server pod labels", "DNS resolves (to rule OUT a DNS override)"]
+  }
+]

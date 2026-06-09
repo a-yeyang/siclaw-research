@@ -1,0 +1,4 @@
+[
+  "Client pod c074-client cannot resolve or reach service c074-server-svc even though the server pod exists.",
+  "Client pod c075-client cannot resolve or reach service c075-server-svc even though the server pod exists."
+]

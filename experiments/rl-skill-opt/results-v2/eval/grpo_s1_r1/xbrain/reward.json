@@ -1,0 +1,130 @@
+{
+  "runDir": "experiments/rl-skill-opt/results-v2/eval/grpo_s1_r1/xbrain",
+  "provider": "kimi",
+  "judgeModel": "claude-sonnet-4-6",
+  "skillFile": "experiments/rl-skill-opt/results-v2/eval/grpo_s1_r1/xbrain/skill.txt",
+  "skillChars": 2946,
+  "cases": [
+    "c074",
+    "c075",
+    "c076",
+    "c077"
+  ],
+  "rewardMode": "composite",
+  "reward": 1.167,
+  "judgeReward": 0.875,
+  "passRate": 0.75,
+  "perCase": {
+    "c074": 1,
+    "c075": 1,
+    "c076": 0.5,
+    "c077": 1
+  },
+  "composite": {
+    "n": 4,
+    "composite": 1.167,
+    "judgeMean": 0.875,
+    "rubricMean": 0.584,
+    "rewardTruthGap": 0.292,
+    "mislabelRate": 0.25,
+    "spuriousMean": 0,
+    "perCase": {
+      "c074": {
+        "judgeScore": 1,
+        "rubric": {
+          "enumeratedNetworkPolicies": 1,
+          "inspectedDnsConfig": 0,
+          "rootCauseClassCorrect": 1,
+          "predictedClass": "networkpolicy",
+          "trueClass": "networkpolicy",
+          "score": 0.667
+        },
+        "spuriousPenalty": {
+          "value": 0,
+          "reason": "diagnosis is not a DNS-override claim"
+        },
+        "composite": 1.333,
+        "rewardTruthGap": 0.333,
+        "mislabeled": 0
+      },
+      "c075": {
+        "judgeScore": 1,
+        "rubric": {
+          "enumeratedNetworkPolicies": 1,
+          "inspectedDnsConfig": 0,
+          "rootCauseClassCorrect": 1,
+          "predictedClass": "networkpolicy",
+          "trueClass": "networkpolicy",
+          "score": 0.667
+        },
+        "spuriousPenalty": {
+          "value": 0,
+          "reason": "diagnosis is not a DNS-override claim"
+        },
+        "composite": 1.333,
+        "rewardTruthGap": 0.333,
+        "mislabeled": 0
+      },
+      "c076": {
+        "judgeScore": 0.5,
+        "rubric": {
+          "enumeratedNetworkPolicies": 1,
+          "inspectedDnsConfig": 0,
+          "rootCauseClassCorrect": 0,
+          "predictedClass": "networkpolicy",
+          "trueClass": "dns",
+          "score": 0.333
+        },
+        "spuriousPenalty": {
+          "value": 0,
+          "reason": "diagnosis is not a DNS-override claim"
+        },
+        "composite": 0.667,
+        "rewardTruthGap": 0.167,
+        "mislabeled": 1
+      },
+      "c077": {
+        "judgeScore": 1,
+        "rubric": {
+          "enumeratedNetworkPolicies": 1,
+          "inspectedDnsConfig": 0,
+          "rootCauseClassCorrect": 1,
+          "predictedClass": "networkpolicy",
+          "trueClass": "networkpolicy",
+          "score": 0.667
+        },
+        "spuriousPenalty": {
+          "value": 0,
+          "reason": "diagnosis is not a DNS-override claim"
+        },
+        "composite": 1.333,
+        "rewardTruthGap": 0.333,
+        "mislabeled": 0
+      }
+    }
+  },
+  "advantage": 0.45,
+  "perCaseAdvantage": {
+    "c074": 0,
+    "c075": 0.7,
+    "c076": 0.2,
+    "c077": 0.9
+  },
+  "baselineMeanScore": 0.425,
+  "tokens": {
+    "input": 26666,
+    "output": 5873,
+    "total": 291803,
+    "toolCalls": 27,
+    "completed": 4,
+    "cases": 4
+  },
+  "runStatuses": {
+    "c074": "completed",
+    "c075": "completed",
+    "c076": "completed",
+    "c077": "completed"
+  },
+  "notGraded": [],
+  "durationSec": 98
+}

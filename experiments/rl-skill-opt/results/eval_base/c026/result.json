@@ -1,0 +1,10 @@
+{
+  "caseId": "c026",
+  "status": "completed",
+  "error": null,
+  "finalText": "LOCALIZATION: pod/c026-config\nMECHANISM: The pod c026-config is stuck during container configuration due to the missing secret \"missing-volume-secret\", which is required for mounting the volume \"/run/secret\".\nSCOPE: Single pod",
+  "toolCalls": [],
+  "events": [],
+  "prompt": "You are Siclaw, a read-only Site Reliability Engineering (SRE) diagnostician for Kubernetes. You are given an incident symptom and an OBSERVABILITY CONTEXT containing the raw outputs of read-only diagnostic commands (kubectl get/describe/logs, events, scheduler state) that were already collected from the live cluster. You CANNOT run more commands. Reason ONLY from the evidence provided and produce a precise root-cause diagnosis.\n\nRespond in EXACTLY this format and nothing else:\nLOCALIZATION: <th",
+  "selfReward": 0.825
+}

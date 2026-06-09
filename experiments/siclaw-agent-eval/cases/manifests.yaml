@@ -1,0 +1,3692 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c001-image
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c001
+spec:
+  restartPolicy: Always
+  containers:
+    - name: main
+      image: registry.invalid/scitix/missing-trainer:v404
+      imagePullPolicy: Always
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c002-image
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c002
+spec:
+  restartPolicy: Always
+  containers:
+    - name: main
+      image: docker.io/library/siclaw-does-not-exist:v1
+      imagePullPolicy: Always
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c003-image
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c003
+spec:
+  restartPolicy: Always
+  containers:
+    - name: main
+      image: private.invalid.local/gpu/train:v1
+      imagePullPolicy: Always
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c004-image
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c004
+spec:
+  restartPolicy: Always
+  containers:
+    - name: main
+      image: nvcr.io/nvidia/pytroch:24.01-py3
+      imagePullPolicy: Always
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c005-image
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c005
+spec:
+  restartPolicy: Always
+  containers:
+    - name: main
+      image: registry.invalid/scitix/model-loader:v404
+      imagePullPolicy: Always
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c006-image
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c006
+spec:
+  restartPolicy: Always
+  containers:
+    - name: main
+      image: busybox:1.36
+      imagePullPolicy: Always
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+  initContainers:
+    - name: init
+      image: registry.invalid/scitix/init-gpu:v404
+      command:
+        - sh
+        - '-c'
+        - echo init
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c007-image
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c007
+spec:
+  restartPolicy: Always
+  containers:
+    - name: main
+      image: registry.invalid/scitix/dcgm-exporter:v0
+      imagePullPolicy: Always
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c008-image
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c008
+spec:
+  restartPolicy: Always
+  containers:
+    - name: main
+      image: >-
+        busybox@sha256:0000000000000000000000000000000000000000000000000000000000000000
+      imagePullPolicy: Always
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c009-image
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c009
+spec:
+  restartPolicy: Always
+  containers:
+    - name: main
+      image: private.invalid.local/team/train:v2
+      imagePullPolicy: Always
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+  imagePullSecrets:
+    - name: c009-missing-pull-secret
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c010-image
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c010
+spec:
+  restartPolicy: Always
+  containers:
+    - name: main
+      image: mirror.invalid.local/scitix/busybox:1.36
+      imagePullPolicy: Always
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c011-crash
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c011
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - >-
+          test -n "$MODEL_PATH" || { echo 'fatal: MODEL_PATH missing'; exit 42;
+          }; sleep 3600
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c012-crash
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c012
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - >-
+          test "$CUDA_VISIBLE_DEVICES" = all || { echo 'cuda devices masked';
+          exit 43; }
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c013-crash
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c013
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - echo 'unknown flag --tensor-parallel'; exit 2
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c014-crash
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c014
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - echo 'checkpoint /models/ckpt.pt not found'; exit 44
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c015-crash
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c015
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - echo 'NCCL_SOCKET_IFNAME=eth9 not found'; exit 45
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c016-crash
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c016
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - echo 'allocator failed before training loop'; exit 137
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c017-crash
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c017
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - 'echo ''permission denied: /models''; exit 13'
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c018-crash
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c018
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - echo 'YAML parse error in trainer-config.yaml'; exit 46
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c019-crash
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c019
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - test -n "$LICENSE_TOKEN" || { echo 'license token missing'; exit 47; }
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c020-crash
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c020
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - 'echo ''listen tcp :8080: bind: address already in use''; exit 48'
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c021-config
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c021
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      env:
+        - name: MODEL_BUCKET
+          valueFrom:
+            configMapKeyRef:
+              name: missing-model-config
+              key: bucket
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c022-config
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c022
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      env:
+        - name: REGISTRY_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: missing-registry-secret
+              key: token
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c023-config
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c023
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      envFrom:
+        - configMapRef:
+            name: missing-env-config
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c024-config
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c024
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      envFrom:
+        - secretRef:
+            name: missing-env-secret
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c025-config
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c025
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      volumeMounts:
+        - name: cfg
+          mountPath: /etc/trainer
+  volumes:
+    - name: cfg
+      configMap:
+        name: missing-volume-config
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c026-config
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c026
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      volumeMounts:
+        - name: secret
+          mountPath: /run/secret
+  volumes:
+    - name: secret
+      secret:
+        secretName: missing-volume-secret
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c027-config
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c027
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      volumeMounts:
+        - name: data
+          mountPath: /data
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: missing-data-pvc
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c028-config
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c028
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      volumeMounts:
+        - name: projected
+          mountPath: /projected
+  volumes:
+    - name: projected
+      projected:
+        sources:
+          - secret:
+              name: missing-projected-secret
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c029-config
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c029
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      volumeMounts:
+        - name: cfg
+          mountPath: /etc/trainer/config.yaml
+          subPath: config.yaml
+  volumes:
+    - name: cfg
+      configMap:
+        name: missing-subpath-config
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c030-config
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c030
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      env:
+        - name: TRAINING_CONFIG
+          valueFrom:
+            configMapKeyRef:
+              name: missing-training-config
+              key: config.yaml
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c031-pending
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c031
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      resources:
+        requests:
+          cpu: 20m
+          memory: 32Mi
+        limits:
+          cpu: 50m
+          memory: 64Mi
+  nodeSelector:
+    scitix.ai/gpu-type: h100-pcie-80gb
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c032-pending
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c032
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      resources:
+        limits:
+          nvidia.com/gpu: '999'
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c033-pending
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c033
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      resources:
+        requests:
+          cpu: '100000'
+          memory: 64Mi
+        limits:
+          cpu: '100000'
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c034-pending
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c034
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      resources:
+        requests:
+          cpu: 20m
+          memory: 20Ti
+        limits:
+          cpu: 50m
+          memory: 20Ti
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c035-pending
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c035
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      resources:
+        requests:
+          cpu: 20m
+          memory: 32Mi
+        limits:
+          cpu: 50m
+          memory: 64Mi
+  schedulerName: gpu-scheduler-does-not-exist
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c036-pending
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c036
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      resources:
+        requests:
+          cpu: 20m
+          memory: 32Mi
+        limits:
+          cpu: 50m
+          memory: 64Mi
+  schedulerName: gpu-scheduler-profile-missing
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c037-pending
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c037
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      resources:
+        requests:
+          cpu: 20m
+          memory: 32Mi
+        limits:
+          cpu: 50m
+          memory: 64Mi
+  nodeSelector:
+    topology.kubernetes.io/zone: zone-does-not-exist
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c038-pending
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c038
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      resources:
+        requests:
+          cpu: 20m
+          memory: 32Mi
+        limits:
+          cpu: 50m
+          memory: 64Mi
+  nodeSelector:
+    kubernetes.io/hostname: node-does-not-exist
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c039-pending
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c039
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      resources:
+        requests:
+          cpu: 20m
+          memory: 32Mi
+        limits:
+          cpu: 50m
+          memory: 64Mi
+  nodeSelector:
+    scitix.ai/gpu-typ: h20nvlink141
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c040-pending
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c040
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      resources:
+        requests:
+          cpu: 20m
+          memory: 32Mi
+        limits:
+          cpu: 50m
+          memory: 64Mi
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: siclaw.ai/eval-run
+                operator: Exists
+          topologyKey: kubernetes.io/hostname
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c041-pending
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c041
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      resources:
+        limits:
+          nvidia.com/gpu: '1'
+  nodeSelector:
+    scitix.ai/gpu-type: l40s-does-not-exist
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c042-pending
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c042
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      resources:
+        requests:
+          cpu: 20m
+          memory: 32Mi
+        limits:
+          cpu: 50m
+          memory: 64Mi
+  nodeSelector:
+    node-role.kubernetes.io/gpu-dedicated: 'true'
+  tolerations: []
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c043-pending
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c043
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      resources:
+        limits:
+          nvidia.com/gpu: '1'
+  nodeSelector:
+    scitix.ai/nodepool: nonexistent-gpu-pool
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c044-pending
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c044
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      resources:
+        requests:
+          cpu: 20m
+          memory: 32Mi
+        limits:
+          cpu: 50m
+          memory: 64Mi
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: siclaw.ai/nonexistent-affinity
+                operator: In
+                values:
+                  - 'true'
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c045-pending
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c045
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      resources:
+        requests:
+          cpu: 20m
+          memory: 32Mi
+        limits:
+          cpu: 50m
+          memory: 64Mi
+  nodeSelector:
+    kubernetes.io/arch: arm64-does-not-exist
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: c046-data
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c046
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: missing-storageclass
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c046-storage
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c046
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      volumeMounts:
+        - name: data
+          mountPath: /data
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: c046-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: c047-data
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c047
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: gpu-local-ssd-missing
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c047-storage
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c047
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      volumeMounts:
+        - name: data
+          mountPath: /data
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: c047-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: c048-data
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c048
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: missing-storageclass
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c048-storage
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c048
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      volumeMounts:
+        - name: data
+          mountPath: /data
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: c048-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: c049-data
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c049
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: gpu-local-ssd-missing
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c049-storage
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c049
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      volumeMounts:
+        - name: data
+          mountPath: /data
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: c049-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: c050-data
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c050
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: missing-storageclass
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c050-storage
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c050
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      volumeMounts:
+        - name: data
+          mountPath: /data
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: c050-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: c051-data
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c051
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: gpu-local-ssd-missing
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c051-storage
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c051
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      volumeMounts:
+        - name: data
+          mountPath: /data
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: c051-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: c052-data
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c052
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: missing-storageclass
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c052-storage
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c052
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      volumeMounts:
+        - name: data
+          mountPath: /data
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: c052-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: c053-data
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c053
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: gpu-local-ssd-missing
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c053-storage
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c053
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      volumeMounts:
+        - name: data
+          mountPath: /data
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: c053-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: c054-data
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c054
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: missing-storageclass
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c054-storage
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c054
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      volumeMounts:
+        - name: data
+          mountPath: /data
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: c054-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: c055-data
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c055
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: gpu-local-ssd-missing
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c055-storage
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c055
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      volumeMounts:
+        - name: data
+          mountPath: /data
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: c055-data
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c056-app
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c056
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c056-app
+  template:
+    metadata:
+      labels:
+        siclaw.ai/eval-run: '20260602'
+        siclaw.ai/eval-case: c056
+        app: c056-app
+    spec:
+      containers:
+        - name: http
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - '-c'
+            - >-
+              mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h
+              /www
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /missing-healthz
+              port: 8080
+            initialDelaySeconds: 1
+            periodSeconds: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c056-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c056
+spec:
+  selector:
+    app: c056-app
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c057-app
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c057
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c057-app
+  template:
+    metadata:
+      labels:
+        siclaw.ai/eval-run: '20260602'
+        siclaw.ai/eval-case: c057
+        app: c057-app
+    spec:
+      containers:
+        - name: http
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - '-c'
+            - >-
+              mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h
+              /www
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c057-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c057
+spec:
+  selector:
+    app: c057-app-typo
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c058-app
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c058
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c058-app
+  template:
+    metadata:
+      labels:
+        siclaw.ai/eval-run: '20260602'
+        siclaw.ai/eval-case: c058
+        app: c058-app
+    spec:
+      containers:
+        - name: http
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - '-c'
+            - >-
+              mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h
+              /www
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c058-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c058
+spec:
+  selector:
+    app: c058-app
+  ports:
+    - name: http
+      port: 80
+      targetPort: 9090
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c059-app
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c059
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c059-app
+  template:
+    metadata:
+      labels:
+        siclaw.ai/eval-run: '20260602'
+        siclaw.ai/eval-case: c059
+        app: c059-app
+    spec:
+      containers:
+        - name: http
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - '-c'
+            - >-
+              mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h
+              /www
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /missing-healthz
+              port: 8080
+            initialDelaySeconds: 1
+            periodSeconds: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c059-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c059
+spec:
+  selector:
+    app: c059-app
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c060-app
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c060
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c060-app
+  template:
+    metadata:
+      labels:
+        siclaw.ai/eval-run: '20260602'
+        siclaw.ai/eval-case: c060
+        app: c060-app
+    spec:
+      containers:
+        - name: http
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - '-c'
+            - >-
+              mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h
+              /www
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c060-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c060
+spec:
+  selector:
+    app: c060-app-typo
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c061-app
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c061
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c061-app
+  template:
+    metadata:
+      labels:
+        siclaw.ai/eval-run: '20260602'
+        siclaw.ai/eval-case: c061
+        app: c061-app
+    spec:
+      containers:
+        - name: http
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - '-c'
+            - >-
+              mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h
+              /www
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c061-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c061
+spec:
+  selector:
+    app: c061-app
+  ports:
+    - name: http
+      port: 80
+      targetPort: 9090
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c062-app
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c062
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c062-app
+  template:
+    metadata:
+      labels:
+        siclaw.ai/eval-run: '20260602'
+        siclaw.ai/eval-case: c062
+        app: c062-app
+    spec:
+      containers:
+        - name: http
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - '-c'
+            - >-
+              mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h
+              /www
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /missing-healthz
+              port: 8080
+            initialDelaySeconds: 1
+            periodSeconds: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c062-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c062
+spec:
+  selector:
+    app: c062-app
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c063-app
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c063
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c063-app
+  template:
+    metadata:
+      labels:
+        siclaw.ai/eval-run: '20260602'
+        siclaw.ai/eval-case: c063
+        app: c063-app
+    spec:
+      containers:
+        - name: http
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - '-c'
+            - >-
+              mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h
+              /www
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c063-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c063
+spec:
+  selector:
+    app: c063-app-typo
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c064-app
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c064
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c064-app
+  template:
+    metadata:
+      labels:
+        siclaw.ai/eval-run: '20260602'
+        siclaw.ai/eval-case: c064
+        app: c064-app
+    spec:
+      containers:
+        - name: http
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - '-c'
+            - >-
+              mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h
+              /www
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c064-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c064
+spec:
+  selector:
+    app: c064-app
+  ports:
+    - name: http
+      port: 80
+      targetPort: 9090
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c065-app
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c065
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c065-app
+  template:
+    metadata:
+      labels:
+        siclaw.ai/eval-run: '20260602'
+        siclaw.ai/eval-case: c065
+        app: c065-app
+    spec:
+      containers:
+        - name: http
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - '-c'
+            - >-
+              mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h
+              /www
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /missing-healthz
+              port: 8080
+            initialDelaySeconds: 1
+            periodSeconds: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c065-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c065
+spec:
+  selector:
+    app: c065-app
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c066-app
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c066
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c066-app
+  template:
+    metadata:
+      labels:
+        siclaw.ai/eval-run: '20260602'
+        siclaw.ai/eval-case: c066
+        app: c066-app
+    spec:
+      containers:
+        - name: http
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - '-c'
+            - >-
+              mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h
+              /www
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c066-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c066
+spec:
+  selector:
+    app: c066-app-typo
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c067-app
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c067
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c067-app
+  template:
+    metadata:
+      labels:
+        siclaw.ai/eval-run: '20260602'
+        siclaw.ai/eval-case: c067
+        app: c067-app
+    spec:
+      containers:
+        - name: http
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - '-c'
+            - >-
+              mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h
+              /www
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c067-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c067
+spec:
+  selector:
+    app: c067-app
+  ports:
+    - name: http
+      port: 80
+      targetPort: 9090
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c068-server
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c068
+    app: c068-server
+spec:
+  restartPolicy: Always
+  containers:
+    - name: http
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h /www
+      ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c068-client
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c068
+    app: c068-client
+spec:
+  restartPolicy: Always
+  containers:
+    - name: client
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c068-server-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c068
+spec:
+  selector:
+    app: c068-server
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: c068-deny-egress
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c068
+spec:
+  podSelector:
+    matchLabels:
+      app: c068-client
+  policyTypes:
+    - Egress
+  ingress: []
+  egress: []
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c069-server
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c069
+    app: c069-server
+spec:
+  restartPolicy: Always
+  containers:
+    - name: http
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h /www
+      ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c069-client
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c069
+    app: c069-client
+spec:
+  restartPolicy: Always
+  containers:
+    - name: client
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c069-server-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c069
+spec:
+  selector:
+    app: c069-server
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: c069-deny-ingress
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c069
+spec:
+  podSelector:
+    matchLabels:
+      app: c069-server
+  policyTypes:
+    - Ingress
+  ingress: []
+  egress: []
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c070-server
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c070
+    app: c070-server
+spec:
+  restartPolicy: Always
+  containers:
+    - name: http
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h /www
+      ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c070-client
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c070
+    app: c070-client
+spec:
+  restartPolicy: Always
+  containers:
+    - name: client
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+  dnsPolicy: None
+  dnsConfig:
+    nameservers:
+      - 203.0.113.1
+    searches:
+      - bad.local
+    options:
+      - name: ndots
+        value: '5'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c070-server-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c070
+spec:
+  selector:
+    app: c070-server
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c071-server
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c071
+    app: c071-server
+spec:
+  restartPolicy: Always
+  containers:
+    - name: http
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h /www
+      ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c071-client
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c071
+    app: c071-client
+spec:
+  restartPolicy: Always
+  containers:
+    - name: client
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c071-server-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c071
+spec:
+  selector:
+    app: c071-server
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: c071-deny-egress
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c071
+spec:
+  podSelector:
+    matchLabels:
+      app: c071-client
+  policyTypes:
+    - Egress
+  ingress: []
+  egress: []
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c072-server
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c072
+    app: c072-server
+spec:
+  restartPolicy: Always
+  containers:
+    - name: http
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h /www
+      ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c072-client
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c072
+    app: c072-client
+spec:
+  restartPolicy: Always
+  containers:
+    - name: client
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c072-server-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c072
+spec:
+  selector:
+    app: c072-server
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: c072-deny-ingress
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c072
+spec:
+  podSelector:
+    matchLabels:
+      app: c072-server
+  policyTypes:
+    - Ingress
+  ingress: []
+  egress: []
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c073-server
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c073
+    app: c073-server
+spec:
+  restartPolicy: Always
+  containers:
+    - name: http
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h /www
+      ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c073-client
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c073
+    app: c073-client
+spec:
+  restartPolicy: Always
+  containers:
+    - name: client
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+  dnsPolicy: None
+  dnsConfig:
+    nameservers:
+      - 203.0.113.1
+    searches:
+      - bad.local
+    options:
+      - name: ndots
+        value: '5'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c073-server-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c073
+spec:
+  selector:
+    app: c073-server
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c074-server
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c074
+    app: c074-server
+spec:
+  restartPolicy: Always
+  containers:
+    - name: http
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h /www
+      ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c074-client
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c074
+    app: c074-client
+spec:
+  restartPolicy: Always
+  containers:
+    - name: client
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c074-server-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c074
+spec:
+  selector:
+    app: c074-server
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: c074-deny-egress
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c074
+spec:
+  podSelector:
+    matchLabels:
+      app: c074-client
+  policyTypes:
+    - Egress
+  ingress: []
+  egress: []
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c075-server
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c075
+    app: c075-server
+spec:
+  restartPolicy: Always
+  containers:
+    - name: http
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h /www
+      ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c075-client
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c075
+    app: c075-client
+spec:
+  restartPolicy: Always
+  containers:
+    - name: client
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c075-server-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c075
+spec:
+  selector:
+    app: c075-server
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: c075-deny-ingress
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c075
+spec:
+  podSelector:
+    matchLabels:
+      app: c075-server
+  policyTypes:
+    - Ingress
+  ingress: []
+  egress: []
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c076-server
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c076
+    app: c076-server
+spec:
+  restartPolicy: Always
+  containers:
+    - name: http
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h /www
+      ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c076-client
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c076
+    app: c076-client
+spec:
+  restartPolicy: Always
+  containers:
+    - name: client
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+  dnsPolicy: None
+  dnsConfig:
+    nameservers:
+      - 203.0.113.1
+    searches:
+      - bad.local
+    options:
+      - name: ndots
+        value: '5'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c076-server-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c076
+spec:
+  selector:
+    app: c076-server
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c077-server
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c077
+    app: c077-server
+spec:
+  restartPolicy: Always
+  containers:
+    - name: http
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h /www
+      ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c077-client
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c077
+    app: c077-client
+spec:
+  restartPolicy: Always
+  containers:
+    - name: client
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c077-server-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c077
+spec:
+  selector:
+    app: c077-server
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: c077-deny-egress
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c077
+spec:
+  podSelector:
+    matchLabels:
+      app: c077-client
+  policyTypes:
+    - Egress
+  ingress: []
+  egress: []
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c078-deploy
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c078
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c078-deploy
+  template:
+    metadata:
+      labels:
+        siclaw.ai/eval-run: '20260602'
+        siclaw.ai/eval-case: c078
+        app: c078-deploy
+    spec:
+      containers:
+        - name: app
+          image: registry.invalid/scitix/rollout:v404
+          imagePullPolicy: Always
+          command:
+            - sh
+            - '-c'
+            - sleep 3600
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c079-deploy
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c079
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c079-deploy
+  template:
+    metadata:
+      labels:
+        siclaw.ai/eval-run: '20260602'
+        siclaw.ai/eval-case: c079
+        app: c079-deploy
+    spec:
+      containers:
+        - name: app
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - '-c'
+            - >-
+              mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h
+              /www
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 9090
+            initialDelaySeconds: 1
+            periodSeconds: 3
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c080-deploy
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c080
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c080-deploy
+  template:
+    metadata:
+      labels:
+        siclaw.ai/eval-run: '20260602'
+        siclaw.ai/eval-case: c080
+        app: c080-deploy
+    spec:
+      containers:
+        - name: app
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - '-c'
+            - while true; do :; done
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: c080-hpa
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c080
+spec:
+  minReplicas: 1
+  maxReplicas: 3
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: c080-deploy
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 60
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: c081-ing
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c081
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: c081.eval.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: c081-missing-svc
+                port:
+                  number: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c082-deploy
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c082
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c082-deploy
+  template:
+    metadata:
+      labels:
+        siclaw.ai/eval-run: '20260602'
+        siclaw.ai/eval-case: c082
+        app: c082-deploy
+    spec:
+      containers:
+        - name: app
+          image: registry.invalid/scitix/rollout:v404
+          imagePullPolicy: Always
+          command:
+            - sh
+            - '-c'
+            - sleep 3600
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c083-deploy
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c083
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c083-deploy
+  template:
+    metadata:
+      labels:
+        siclaw.ai/eval-run: '20260602'
+        siclaw.ai/eval-case: c083
+        app: c083-deploy
+    spec:
+      containers:
+        - name: app
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - '-c'
+            - >-
+              mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h
+              /www
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 9090
+            initialDelaySeconds: 1
+            periodSeconds: 3
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c084-deploy
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c084
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c084-deploy
+  template:
+    metadata:
+      labels:
+        siclaw.ai/eval-run: '20260602'
+        siclaw.ai/eval-case: c084
+        app: c084-deploy
+    spec:
+      containers:
+        - name: app
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - '-c'
+            - while true; do :; done
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: c084-hpa
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c084
+spec:
+  minReplicas: 1
+  maxReplicas: 3
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: c084-deploy
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 60
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: c085-ing
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c085
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: c085.eval.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: c085-missing-svc
+                port:
+                  number: 80
+---
+apiVersion: scheduling.volcano.sh/v1beta1
+kind: PodGroup
+metadata:
+  name: c086-pg
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c086
+spec:
+  minMember: 2
+  queue: default
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c086-vcpod
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c086
+  annotations:
+    scheduling.k8s.io/group-name: c086-pg
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - echo trainer-started; sleep 3600
+      resources:
+        requests:
+          cpu: 20m
+          memory: 32Mi
+        limits:
+          cpu: 50m
+          memory: 64Mi
+  schedulerName: volcano
+---
+apiVersion: scheduling.volcano.sh/v1beta1
+kind: PodGroup
+metadata:
+  name: c087-pg
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c087
+spec:
+  minMember: 1
+  queue: siclaw-missing-queue
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c087-vcpod
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c087
+  annotations:
+    scheduling.k8s.io/group-name: c087-pg
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - echo trainer-started; sleep 3600
+      resources:
+        requests:
+          cpu: 20m
+          memory: 32Mi
+        limits:
+          cpu: 50m
+          memory: 64Mi
+  schedulerName: volcano
+---
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: c088-vj
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c088
+spec:
+  schedulerName: volcano
+  queue: default
+  minAvailable: 1
+  maxRetry: 0
+  tasks:
+    - replicas: 1
+      name: trainer
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: trainer
+              image: busybox:1.36
+              imagePullPolicy: IfNotPresent
+              command:
+                - sh
+                - '-c'
+                - sleep 3600
+              resources:
+                limits:
+                  nvidia.com/gpu: '999'
+---
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: c089-vj
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c089
+spec:
+  schedulerName: volcano
+  queue: default
+  minAvailable: 1
+  maxRetry: 0
+  tasks:
+    - replicas: 1
+      name: trainer
+      template:
+        spec:
+          restartPolicy: Never
+          nodeSelector:
+            scitix.ai/gpu-type: a100-missing
+          containers:
+            - name: trainer
+              image: busybox:1.36
+              imagePullPolicy: IfNotPresent
+              command:
+                - sh
+                - '-c'
+                - sleep 3600
+              resources:
+                limits:
+                  nvidia.com/gpu: '1'
+---
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: c090-vj
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c090
+spec:
+  schedulerName: volcano
+  queue: default
+  minAvailable: 1
+  maxRetry: 0
+  tasks:
+    - replicas: 1
+      name: trainer
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: trainer
+              image: busybox:1.36
+              imagePullPolicy: IfNotPresent
+              command:
+                - sh
+                - '-c'
+                - echo trainer-started; sleep 3600
+              resources:
+                requests:
+                  cpu: 20m
+                  memory: 32Mi
+                limits:
+                  cpu: 50m
+                  memory: 64Mi
+  priorityClassName: missing-volcano-priority
+---
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: c091-vj
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c091
+spec:
+  schedulerName: volcano
+  queue: default
+  minAvailable: 1
+  maxRetry: 0
+  tasks:
+    - replicas: 1
+      name: trainer
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: trainer
+              image: busybox:1.36
+              imagePullPolicy: IfNotPresent
+              command:
+                - sh
+                - '-c'
+                - sleep 3600
+              resources:
+                requests:
+                  cpu: '100000'
+                  memory: 64Mi
+                limits:
+                  cpu: '100000'
+                  memory: 64Mi
+---
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: c092-vj
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c092
+spec:
+  schedulerName: volcano
+  queue: default
+  minAvailable: 1
+  maxRetry: 0
+  tasks:
+    - replicas: 1
+      name: trainer
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: trainer
+              image: busybox:1.36
+              imagePullPolicy: IfNotPresent
+              command:
+                - sh
+                - '-c'
+                - sleep 3600
+              env:
+                - name: MODEL
+                  valueFrom:
+                    configMapKeyRef:
+                      name: missing-volcano-config
+                      key: model
+---
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: c093-vj
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c093
+spec:
+  schedulerName: volcano
+  queue: default
+  minAvailable: 1
+  maxRetry: 0
+  tasks:
+    - replicas: 1
+      name: trainer
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: trainer
+              image: registry.invalid/scitix/volcano:v404
+              imagePullPolicy: Always
+              command:
+                - sh
+                - '-c'
+                - sleep 3600
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c094-compound-app
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c094
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c094-compound-app
+  template:
+    metadata:
+      labels:
+        siclaw.ai/eval-run: '20260602'
+        siclaw.ai/eval-case: c094
+        app: c094-compound-app
+    spec:
+      containers:
+        - name: http
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - '-c'
+            - >-
+              mkdir -p /www && echo ok >/www/index.html && httpd -f -p 8080 -h
+              /www
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /missing
+              port: 8080
+            initialDelaySeconds: 1
+            periodSeconds: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c094-compound-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c094
+spec:
+  selector:
+    app: c094-compound-app-typo
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c095-compound-gpu
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c095
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      resources:
+        limits:
+          nvidia.com/gpu: '1'
+      env:
+        - name: MODEL
+          valueFrom:
+            configMapKeyRef:
+              name: missing-compound-config
+              key: model
+  nodeSelector:
+    scitix.ai/gpu-type: h100-missing
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: c096-compound-pvc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c096
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: missing-fast-gpu-ssd
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c096-compound-storage
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c096
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c096-compound-storage
+  template:
+    metadata:
+      labels:
+        siclaw.ai/eval-run: '20260602'
+        siclaw.ai/eval-case: c096
+        app: c096-compound-storage
+    spec:
+      containers:
+        - name: http
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - '-c'
+            - sleep 3600
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: c096-compound-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: c096-compound-svc
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c096
+spec:
+  selector:
+    app: c096-compound-storage-typo
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c097-compound-client
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c097
+    app: c097-compound-client
+spec:
+  restartPolicy: Always
+  containers:
+    - name: client
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+  dnsPolicy: None
+  dnsConfig:
+    nameservers:
+      - 203.0.113.1
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: c097-compound-deny-egress
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c097
+spec:
+  podSelector:
+    matchLabels:
+      app: c097-compound-client
+  policyTypes:
+    - Egress
+  ingress: []
+  egress: []
+---
+apiVersion: scheduling.volcano.sh/v1beta1
+kind: PodGroup
+metadata:
+  name: c098-compound-pg
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c098
+spec:
+  minMember: 1
+  queue: siclaw-missing-queue
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c098-compound-vcpod
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c098
+  annotations:
+    scheduling.k8s.io/group-name: c098-compound-pg
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - sleep 3600
+      resources:
+        limits:
+          nvidia.com/gpu: '1'
+  schedulerName: volcano
+  nodeSelector:
+    scitix.ai/gpu-type: a100-missing
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c099-compound-deploy
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c099
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c099-compound-deploy
+  template:
+    metadata:
+      labels:
+        siclaw.ai/eval-run: '20260602'
+        siclaw.ai/eval-case: c099
+        app: c099-compound-deploy
+    spec:
+      containers:
+        - name: app
+          image: registry.invalid/scitix/compound:v404
+          imagePullPolicy: Always
+          command:
+            - sh
+            - '-c'
+            - sleep 3600
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: c099-compound-hpa
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c099
+spec:
+  minReplicas: 1
+  maxReplicas: 3
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: c099-compound-deploy
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 60
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: c100-compound-runtime
+  namespace: siclaw-eval-yye-20260602
+  labels:
+    siclaw.ai/eval-run: '20260602'
+    siclaw.ai/eval-case: c100
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - echo 'NCCL_SOCKET_IFNAME=eth9 not found'; exit 45
+  schedulerName: gpu-scheduler-profile-missing

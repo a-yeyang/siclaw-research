@@ -1,0 +1,39 @@
+SKILL: Diagnosing pod-to-service connectivity and DNS-resolution failures
+
+WHEN TO APPLY
+When a client pod (e.g., c074-client) is unable to resolve or connect to a server pod's service (e.g., c074-server-svc), despite the service's pod existing and being Running. Client pods that crashloop or restart might do so due to failed attempts to communicate, leading you to treat those restarts as symptoms rather than the root cause of failure.
+
+CONNECTIVITY ISSUES ARE COMMONLY CAUSED BY THREE DISTINCT CONTROLLABLE FACTORS:
+
+  (A) NetworkPolicy blocking egress from the client
+  (B) NetworkPolicy blocking ingress to the server
+  (C) Client-side DNS override (using custom nameservers, modifying DNS config, or altering the DNS policy)
+
+ORDER OF CHECKS
+
+1. **CHECK CLIENT NETWORK POLICY**
+   - `kubectl get networkpolicy -o wide`
+   - For each policy in the namespace, examine its `podSelector` and `policyTypes`. Policies targeting the client pod with an egress directive block the client's connection to the service, causing resolution issues. Use `kubectl describe networkpolicy` or `kubectl get networkpolicy NAME` to review details. Look for a client-specific policy denying egress.
+   
+2. **CHECK SERVER NETWORK POLICY** 
+   - Repeat the same network policy inspection for the server pod.
+   - Verify if any server-specific policies are preventing ingress. Such policies would prevent connections from the client.
+
+3. **EXAMINE CLIENT'S DNS CONFIG**
+   - `kubectl describe pod c074-client`
+   - Check the client's pod's `spec.dnsPolicy` and `spec.dnsConfig`. Custom nameservers, `dnsPolicy`, or modifications to the `configMap` or `secret` used to configure DNS could impact resolution.
+   - Ensure there are no DNS-related custom annotations like `networking.k8s.io/dns-zone`.
+
+FINAL DIAGNOSIS MUST NAME
+
+- The faulty component (i.e., the kind and name of the affected network policy)
+- The mechanism through which the client is denied access
+- The scope of the issue affecting the pod (client or server)
+- Concrete evidence showing how each policy denies access
+- A clear, actionable step to remedy the problem, such as disabling network policy, correcting DNS configuration, or replacing the client's Pod's DNS setup
+
+SAFE REMEDIACTIONS INCLUDE
+  - Disabling the problematic NetworkPolicy for troubleshooting or a temporary fix,
+  - Resetting client Pod's DNS configuration,
+  - Updating client images or scripts if using DNS overrides,
+  - Ensuring proper service discovery configuration in the client's application code.

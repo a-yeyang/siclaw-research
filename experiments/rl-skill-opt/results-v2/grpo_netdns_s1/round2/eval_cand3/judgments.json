@@ -1,0 +1,238 @@
+[
+  {
+    "caseId": "c068",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Agent identifies 'c068-deny-egress' NetworkPolicy as the fault origin, matching ground truth localization 'networkpolicy/c068-deny-egress'. Also references c068-client, c068-server-svc, and c068-server.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Agent correctly identifies the NetworkPolicy as the primary fault origin, not the server pod or service (which are noted as correctly configured/healthy).",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Agent explains that c068-deny-egress selects c068-client and denies all egress, preventing DNS queries and TCP connections to c068-server-svc — matching the ground truth mechanism exactly.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Agent cites concrete details: selector 'app=c068-client', policyTypes=[Egress], and 'Allowing egress traffic: <none> (Selected pods are isolated for egress connectivity)', confirming full egress isolation.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Agent states affected scope is pods matching 'app=c068-client' in the namespace, consistent with ground truth scope of traffic involving c068-client/c068-server pods.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Agent correctly scopes impact to DNS resolution failure and TCP connectivity failure from c068-client, without overstating to cluster-wide or understating to a single symptom.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Agent cites observed YAML fields: service selector, endpoint IP, dnsPolicy, dnsConfig, NetworkPolicy selector and policyTypes, and the egress isolation message from describe output.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "All cited evidence is consistent: the NetworkPolicy with Egress type and no egress rules directly explains why DNS and TCP traffic from c068-client fails.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Agent recommends updating c068-deny-egress to allow DNS (UDP/TCP 53 to CoreDNS) and TCP to c068-server pods, which directly addresses the egress isolation causing the fault.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation is appropriately scoped — modifying the specific NetworkPolicy with least-privilege additions rather than removing all isolation or making cluster-wide changes.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 25092,
+    "toolCallCount": 4,
+    "judgeModel": "claude-sonnet-4-6"
+  },
+  {
+    "caseId": "c069",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Agent explicitly names 'NetworkPolicy/c069-deny-ingress', 'pod/c069-server', 'pod/c069-client', and 'service/c069-server-svc' — matching all ground-truth target resources.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The agent correctly identifies the NetworkPolicy as the primary fault origin, not any downstream or healthy resource like DNS or the service selector.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Agent states 'c069-deny-ingress selects app=c069-server, Policy Types: Ingress, Allowing ingress traffic: <none>' — correctly describing a deny-all ingress NetworkPolicy blocking client-to-server traffic.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Agent provides the concrete detail: the policy selects 'app=c069-server', has 'Policy Types: Ingress', and allows no ingress traffic, isolating the server pod from all inbound connections.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Agent scopes impact to 'pod/c069-server and any client trying to reach it through service/c069-server-svc', consistent with the ground-truth scope of traffic involving the client/server pods.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The agent neither overstates (e.g., claiming cluster-wide impact) nor understates (e.g., claiming only DNS is affected); the scope is appropriately bounded to the affected pod and its service path.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Agent cites observed YAML fields: selector 'app=c069-server', port mapping '80->8080', endpoint IP '172.16.36.207', and NetworkPolicy spec showing no ingress allow rules.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "All cited evidence is consistent with the root cause: the NetworkPolicy isolating the server pod explains why the client cannot reach the server despite correct service wiring and DNS configuration.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Agent recommends adding an explicit ingress allow rule for 'app=c069-client' to TCP 8080, or removing the deny policy — both directly address the NetworkPolicy blocking the traffic.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation is appropriately scoped (modify or remove the specific NetworkPolicy), not destructive, and includes verification step after the change.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 28925,
+    "toolCallCount": 8,
+    "judgeModel": "claude-sonnet-4-6"
+  },
+  {
+    "caseId": "c070",
+    "status": "judge-error",
+    "error": "Error: User daily cost limit exceeded (30.02/30.00). Please contact your administrator.",
+    "passed": false,
+    "totalScore": 0,
+    "dimensions": {},
+    "judgeModel": "claude-sonnet-4-6"
+  },
+  {
+    "caseId": "c071",
+    "status": "judge-error",
+    "error": "Error: User daily cost limit exceeded (30.02/30.00). Please contact your administrator.",
+    "passed": false,
+    "totalScore": 0,
+    "dimensions": {},
+    "judgeModel": "claude-sonnet-4-6"
+  },
+  {
+    "caseId": "c072",
+    "status": "judge-error",
+    "error": "Error: User daily cost limit exceeded (30.04/30.00). Please contact your administrator.",
+    "passed": false,
+    "totalScore": 0,
+    "dimensions": {},
+    "judgeModel": "claude-sonnet-4-6"
+  },
+  {
+    "caseId": "c073",
+    "status": "judge-error",
+    "error": "Error: User daily cost limit exceeded (30.04/30.00). Please contact your administrator.",
+    "passed": false,
+    "totalScore": 0,
+    "dimensions": {},
+    "judgeModel": "claude-sonnet-4-6"
+  }
+]

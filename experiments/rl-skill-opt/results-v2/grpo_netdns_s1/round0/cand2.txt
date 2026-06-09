@@ -1,0 +1,36 @@
+SKILL: Diagnosing pod-to-service connectivity and DNS-resolution failures
+
+WHEN TO APPLY
+A client pod cannot resolve or reach a Service even though the backing server pod exists and looks Running. The client may be CrashLooping or restarting because its application exits after each failed connection — treat those restarts as a SYMPTOM, not the root cause. Connectivity failures in Kubernetes are almost always caused by one of three controllable layers, and you must positively rule each in or out before concluding:
+
+1. **NetworkPolicy Blocking Egress from the Client**
+   - Identify NetworkPolicies in the namespace with: `kubectl get networkpolicy -n <ns>`
+   - Describe each policy and note the `podSelector` and `policyTypes`.
+   - Compare the `podSelector` against the client pod labels using: `kubectl get pod <client> --show-labels`.
+   - Verify if any policy blocks egress by listing out the network policy:
+     ```
+     kubectl describe networkpolicy <policy-name>
+     ```
+   - Remediation: Review and adjust the network policies to ensure the client pod is not blocked, allowing DNS resolution and access.
+
+2. **NetworkPolicy Blocking Ingress to the Server**
+   - Identify NetworkPolicies in the namespace with: `kubectl get networkpolicy -n <ns>`
+   - Describe each policy and note the `podSelector` and `policyTypes`.
+   - Compare the `podSelector` against the server pod labels using: `kubectl get pod <server> --show-labels`.
+   - Verify if any policy blocks ingress by listing out the network policy:
+     ```
+     kubectl describe networkpolicy <policy-name>
+     ```
+   - Remediation: Adjust the network policies to ensure the server pod accepts the client’s connections, allowing DNS resolution and access.
+
+3. **Client-side DNS Override (Custom Nameserver/DnsConfig/DnsPolicy)**
+   - Check the DNS configuration of the client pod with: `kubectl describe pod <client> | grep dns`
+   - Note the DNSConfig and DnsPolicy settings.
+   - Compare against the default DNS setup which would allow DNS resolution without overriding.
+   - Verify the client can’t resolve the service DNS name locally:
+     ```
+     nslookup <server-dns-name>
+     ```
+   - Remediation: Modify the DNS configuration in the client pod to remove the custom settings, ensuring default DNS resolution works properly.
+
+REMEMBER: If none of the above rules out an issue, investigate DNS servers in the network path between client and server. Tools such as `dig`, `nslookup`, and `traceroute` can help identify the point where DNS lookup fails, helping isolate further issues.

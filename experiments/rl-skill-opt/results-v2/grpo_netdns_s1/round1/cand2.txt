@@ -1,0 +1,35 @@
+SKILL: Diagnosing network-dns connectivity and DNS-resolution failures
+
+WHEN TO APPLY
+A client pod fails to resolve or reach a Service despite the backend server pod being Running and healthy. The client pod may be crashing due to unresolvable DNS lookups or network issues. Treat these DNS-related client-side failures as symptoms to be investigated, rather than the root cause itself. Root causes in Kubernetes often stem from controllable layers; positively ruling in/out each layer is essential to pinpoint the exact issue.
+
+PRESCRIBED CHECKS
+To diagnose network-dns connectivity and DNS resolution issues, follow these steps:
+
+1. ENUMERATE CLIENT-SIDE DNS CONFIGURATIONS
+   - List all pods in the client namespace: `kubectl get pods -n <client-namespace>`
+   - Examine their DNS configurations using `describe pod <client-pod-name>` or `kubectl get pod <client-pod-name> -o yaml`
+   - Note any explicit DNS config like `dnsConfig`: `env.DNSConfig`
+   - Assess if DNS policies such as `dnsPolicy: Default` or custom policies exist: `kubectl get pod <client-pod-name> -o yaml`
+
+2. REVIEW CLIENT NETWORK POLICY FOR DNS INTERFERENCE
+   - Identify network policies affecting the client namespace: `kubectl get networkpolicy -n <client-namespace>`
+   - Carefully examine each policy’s selector and policy types, specifically looking for deny rules related to DNS: `describe networkpolicy <network-policy-name>`
+   - Compare the policy selectors against the client pods' labels: `kubectl get pod <client-pod-name> -o yaml`
+
+3. CHECK SERVER ENDPOINT ACCESS
+   - Verify whether the client can reach the server endpoint using port-forwarding or direct DNS resolution: `kubectl exec <client-pod-name> nslookup <server-service-name>.<namespace>.svc.cluster.local`
+   - Confirm server-side network policies allow necessary access: `kubectl get svc <server-service-name> -n <namespace> -o yaml` and check its networkPolicyName
+
+CORRECTIVE STEPS
+A precise diagnosis requires identifying the root cause among the potential issues enumerated above. Here’s what constitutes a correct diagnosis:
+
+- Identify the specific resource (pod/service/namespace/network policy) and the exact mechanism causing DNS resolution failure (e.g., denied egress/ingress rules).
+- Clearly describe the scope of the problem, mentioning affected clients/pods/services.
+- Present evidence from your checks, such as DNS configuration details, network policy definitions, and access logs.
+- Suggest a remediation action based on the diagnosed issue:
+  - Modify DNS configurations if misconfigured.
+  - Adjust network policies to permit necessary network flows.
+  - Ensure correct DNS resolution and service accessibility.
+
+REMEMBER, the goal is to restore proper DNS resolution and communication without disrupting other services. Always opt for modifications that align closely with the observed issues without making broad, potentially harmful changes.

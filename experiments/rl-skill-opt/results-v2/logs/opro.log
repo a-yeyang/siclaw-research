@@ -1,0 +1,214 @@
+=== OPRO  category=network-dns provider=gpt optimizer=gpt-5.4 steps=5 train=c068,c069,c070,c071,c072,c073 ===
+[opro] seeding trajectory from experiments/rl-skill-opt/skills/minimal-seed.txt (313 chars)
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/opro_netdns/evals/step0_seed/skill.txt skillChars=313
+[reward] agent c070 -> completed
+[reward] agent c069 -> completed
+[reward] agent c068 -> completed
+[reward] agent c071 -> completed
+[reward] agent c072 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 90s | tokens in=193260 out=8458 total=467574 toolCalls=44 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 33.3%   mean total = 0.433
+  localization  0.333
+  mechanism     0.083
+  scope         0.667
+  evidence      0.667
+  remediation   0.417
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.433   (delta -0.268)
+  largest disagreements (id  keyword -> llm):
+    c071  0.92 -> 0.20  (-0.72)
+    c068  0.93 -> 0.50  (-0.43)
+    c072  0.45 -> 0.10  (-0.34)
+    c069  0.43 -> 0.20  (-0.23)
+    c070  0.83 -> 0.90  (+0.07)
+    c073  0.65 -> 0.70  (+0.05)
+
+wrote experiments/rl-skill-opt/results-v2/opro_netdns/evals/step0_seed/judgments.json
+[reward] judge meanScore=0.433 passRate=33% graded=6/6
+[reward] composite=0.295 rubric=0.222 rewardTruthGap=0.211 mislabelRate=0.833 spurious=0.5
+{"reward":0.295,"judgeReward":0.433,"composite":0.295,"rubricMean":0.222,"rewardTruthGap":0.211,"mislabelRate":0.833,"advantage":-0.05,"passRate":0.3333333333333333,"tokensTotal":467574,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/opro_netdns/evals/step0_seed"}
+[opro] step0 seed: composite=0.295 judge=0.433 perCase={"c068":0,"c069":0.2,"c070":1.233,"c071":-0.133,"c072":-0.233,"c073":0.7}
+
+[opro] step1: optimizer proposing from trajectory of 1 (best so far=0.295)
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/opro_netdns/evals/step1_cand/skill.txt skillChars=2454
+[reward] agent c070 -> completed
+[reward] agent c069 -> completed
+[reward] agent c068 -> completed
+[reward] agent c071 -> completed
+[reward] agent c072 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 102s | tokens in=205856 out=7519 total=612863 toolCalls=44 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 33.3%   mean total = 0.483
+  localization  0.333
+  mechanism     0.333
+  scope         0.583
+  evidence      0.750
+  remediation   0.417
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.483   (delta -0.218)
+  largest disagreements (id  keyword -> llm):
+    c071  0.92 -> 0.10  (-0.82)
+    c068  0.93 -> 0.30  (-0.63)
+    c073  0.65 -> 1.00  (+0.35)
+    c069  0.43 -> 0.20  (-0.23)
+    c070  0.83 -> 1.00  (+0.17)
+    c072  0.45 -> 0.30  (-0.15)
+
+wrote experiments/rl-skill-opt/results-v2/opro_netdns/evals/step1_cand/judgments.json
+[reward] judge meanScore=0.483 passRate=33% graded=6/6
+[reward] composite=0.678 rubric=0.556 rewardTruthGap=-0.072 mislabelRate=0.333 spurious=0.167
+{"reward":0.678,"judgeReward":0.483,"composite":0.678,"rubricMean":0.556,"rewardTruthGap":-0.072,"mislabelRate":0.333,"advantage":0,"passRate":0.3333333333333333,"tokensTotal":612863,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/opro_netdns/evals/step1_cand"}
+[opro] step1 cand: composite=0.678 judge=0.483 perCase={"c068":0.633,"c069":-0.133,"c070":1.333,"c071":0.433,"c072":0.467,"c073":1.333}
+
+[opro] step2: optimizer proposing from trajectory of 2 (best so far=0.678)
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/opro_netdns/evals/step2_cand/skill.txt skillChars=2733
+[reward] agent c069 -> completed
+[reward] agent c070 -> completed
+[reward] agent c068 -> completed
+[reward] agent c072 -> completed
+[reward] agent c073 -> completed
+[reward] agent c071 -> completed
+[reward] agent done in 97s | tokens in=106528 out=8476 total=609724 toolCalls=48 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 33.3%   mean total = 0.467
+  localization  0.333
+  mechanism     0.333
+  scope         0.417
+  evidence      0.833
+  remediation   0.417
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.467   (delta -0.234)
+  largest disagreements (id  keyword -> llm):
+    c068  0.93 -> 0.20  (-0.73)
+    c071  0.92 -> 0.30  (-0.62)
+    c073  0.65 -> 1.00  (+0.35)
+    c072  0.45 -> 0.10  (-0.34)
+    c069  0.43 -> 0.20  (-0.23)
+    c070  0.83 -> 1.00  (+0.17)
+
+wrote experiments/rl-skill-opt/results-v2/opro_netdns/evals/step2_cand/judgments.json
+[reward] judge meanScore=0.467 passRate=33% graded=6/6
+[reward] composite=0.606 rubric=0.444 rewardTruthGap=0.022 mislabelRate=0.667 spurious=0.167
+{"reward":0.606,"judgeReward":0.467,"composite":0.606,"rubricMean":0.444,"rewardTruthGap":0.022,"mislabelRate":0.667,"advantage":-0.016,"passRate":0.3333333333333333,"tokensTotal":609724,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/opro_netdns/evals/step2_cand"}
+[opro] step2 cand: composite=0.606 judge=0.467 perCase={"c068":-0.133,"c069":0.367,"c070":1.333,"c071":0.467,"c072":0.267,"c073":1.333}
+
+[opro] step3: optimizer proposing from trajectory of 3 (best so far=0.678)
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/opro_netdns/evals/step3_cand/skill.txt skillChars=2743
+[reward] agent c069 -> completed
+[reward] agent c068 -> completed
+[reward] agent c070 -> completed
+[reward] agent c072 -> completed
+[reward] agent c073 -> completed
+[reward] agent c071 -> completed
+[reward] agent done in 70s | tokens in=85201 out=6564 total=428661 toolCalls=29 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 33.3%   mean total = 0.500
+  localization  0.333
+  mechanism     0.333
+  scope         0.500
+  evidence      0.833
+  remediation   0.500
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.500   (delta -0.201)
+  largest disagreements (id  keyword -> llm):
+    c068  0.93 -> 0.30  (-0.63)
+    c071  0.92 -> 0.30  (-0.62)
+    c073  0.65 -> 1.00  (+0.35)
+    c069  0.43 -> 0.10  (-0.33)
+    c070  0.83 -> 1.00  (+0.17)
+    c072  0.45 -> 0.30  (-0.15)
+
+wrote experiments/rl-skill-opt/results-v2/opro_netdns/evals/step3_cand/judgments.json
+[reward] judge meanScore=0.5 passRate=33% graded=6/6
+[reward] composite=0.5 rubric=0.5 rewardTruthGap=0 mislabelRate=0.5 spurious=0.5
+{"reward":0.5,"judgeReward":0.5,"composite":0.5,"rubricMean":0.5,"rewardTruthGap":0,"mislabelRate":0.5,"advantage":0.017,"passRate":0.3333333333333333,"tokensTotal":428661,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/opro_netdns/evals/step3_cand"}
+[opro] step3 cand: composite=0.5 judge=0.5 perCase={"c068":-0.033,"c069":-0.233,"c070":1.333,"c071":0.633,"c072":-0.033,"c073":1.333}
+
+[opro] step4: optimizer proposing from trajectory of 4 (best so far=0.678)
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/opro_netdns/evals/step4_cand/skill.txt skillChars=2893
+[reward] agent c070 -> completed
+[reward] agent c068 -> completed
+[reward] agent c069 -> completed
+[reward] agent c072 -> completed
+[reward] agent c073 -> completed
+[reward] agent c071 -> completed
+[reward] agent done in 86s | tokens in=116227 out=7482 total=559933 toolCalls=38 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 50.0%   mean total = 0.600
+  localization  0.333
+  mechanism     0.417
+  scope         1.000
+  evidence      0.750
+  remediation   0.500
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.600   (delta -0.101)
+  largest disagreements (id  keyword -> llm):
+    c071  0.92 -> 0.30  (-0.62)
+    c073  0.65 -> 1.00  (+0.35)
+    c068  0.93 -> 0.70  (-0.23)
+    c070  0.83 -> 1.00  (+0.17)
+    c072  0.45 -> 0.30  (-0.15)
+    c069  0.43 -> 0.30  (-0.13)
+
+wrote experiments/rl-skill-opt/results-v2/opro_netdns/evals/step4_cand/judgments.json
+[reward] judge meanScore=0.6 passRate=50% graded=6/6
+[reward] composite=0.878 rubric=0.556 rewardTruthGap=0.044 mislabelRate=0.333 spurious=0
+{"reward":0.878,"judgeReward":0.6,"composite":0.878,"rubricMean":0.556,"rewardTruthGap":0.044,"mislabelRate":0.333,"advantage":0.117,"passRate":0.5,"tokensTotal":559933,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/opro_netdns/evals/step4_cand"}
+[opro] step4 cand: composite=0.878 judge=0.6 perCase={"c068":1.033,"c069":0.467,"c070":1.333,"c071":0.467,"c072":0.633,"c073":1.333}
+
+[opro] step5: optimizer proposing from trajectory of 5 (best so far=0.878)
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/opro_netdns/evals/step5_cand/skill.txt skillChars=2836
+[reward] agent c069 -> completed
+[reward] agent c070 -> completed
+[reward] agent c068 -> completed
+[reward] agent c071 -> completed
+[reward] agent c073 -> completed
+[reward] agent c072 -> completed
+[reward] agent done in 66s | tokens in=128886 out=6772 total=430442 toolCalls=36 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 33.3%   mean total = 0.517
+  localization  0.333
+  mechanism     0.333
+  scope         0.667
+  evidence      0.833
+  remediation   0.417
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.517   (delta -0.184)
+  largest disagreements (id  keyword -> llm):
+    c068  0.93 -> 0.20  (-0.73)
+    c071  0.92 -> 0.50  (-0.42)
+    c073  0.65 -> 1.00  (+0.35)
+    c072  0.45 -> 0.10  (-0.34)
+    c070  0.83 -> 1.00  (+0.17)
+    c069  0.43 -> 0.30  (-0.13)
+
+wrote experiments/rl-skill-opt/results-v2/opro_netdns/evals/step5_cand/judgments.json
+[reward] judge meanScore=0.517 passRate=33% graded=6/6
+[reward] composite=0.683 rubric=0.5 rewardTruthGap=0.017 mislabelRate=0.5 spurious=0.167
+{"reward":0.683,"judgeReward":0.517,"composite":0.683,"rubricMean":0.5,"rewardTruthGap":0.017,"mislabelRate":0.5,"advantage":0.034,"passRate":0.3333333333333333,"tokensTotal":430442,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/opro_netdns/evals/step5_cand"}
+[opro] step5 cand: composite=0.683 judge=0.517 perCase={"c068":0.533,"c069":0.467,"c070":1.333,"c071":0.167,"c072":0.267,"c073":1.333}
+
+=== OPRO done. trajectory=6. best mean composite=0.878 (step4_cand) -> BEST_SKILL.txt
+rollouts=36 optimizerTokens=10990 optimizerCalls=5
+{"runRoot":"experiments/rl-skill-opt/results-v2/opro_netdns","bestSkill":"experiments/rl-skill-opt/results-v2/opro_netdns/BEST_SKILL.txt","bestMean":0.878,"trajLen":6,"rollouts":36,"optimizerTokens":10990}

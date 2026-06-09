@@ -1,0 +1,579 @@
+=== GRPO-v2 skill-proposer  category=network-dns rounds=3 k=4 provider=gpt seed=s1 prior=experiments/rl-skill-opt/skills/network-dns-handcrafted.txt ===
+
+$ cp experiments/rl-skill-opt/proposer_v2.py -> pod
+  kubectl -n siclaw-rl-yye cp experiments/rl-skill-opt/proposer_v2.py siclaw-rl-yye/rl-skill-trainer-2:/workspace/rl/proposer_v2.py
+
+$ cp experiments/rl-skill-opt/update_v2.py -> pod
+  kubectl -n siclaw-rl-yye cp experiments/rl-skill-opt/update_v2.py siclaw-rl-yye/rl-skill-trainer-2:/workspace/rl/update_v2.py
+
+$ cp experiments/rl-skill-opt/results-v2/grpo_netdns_s1/examples.json -> pod
+  kubectl -n siclaw-rl-yye cp experiments/rl-skill-opt/results-v2/grpo_netdns_s1/examples.json siclaw-rl-yye/rl-skill-trainer-2:/workspace/rl/examples_s1.json
+
+$ cp experiments/rl-skill-opt/skills/network-dns-handcrafted.txt -> pod
+  kubectl -n siclaw-rl-yye cp experiments/rl-skill-opt/skills/network-dns-handcrafted.txt siclaw-rl-yye/rl-skill-trainer-2:/workspace/rl/prior_s1.txt
+
+$ mkdir pod out
+  kubectl -n siclaw-rl-yye exec rl-skill-trainer-2 -- bash -lc mkdir -p /workspace/out/skillprop_v2/s1
+
+########## s1 ROUND 0 ##########
+
+$ round0: proposer_v2.py
+  kubectl -n siclaw-rl-yye exec rl-skill-trainer-2 -- bash -lc cd /workspace/rl && HF_HOME=/workspace/hf python proposer_v2.py --model Qwen/Qwen2.5-3B-Instruct  --prior-skill /workspace/rl/prior_s1.txt --category network-dns --examples-file /workspace/rl/examples_s1.json --k 4 --out /workspace/out/skillprop_v2/s1/round0/candidates.json --temperature 1.05 --max-new-tokens 700 --seed 100
+[proposer_v2] loading Qwen/Qwen2.5-3B-Instruct adapter=None prior=/workspace/rl/prior_s1.txt
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.88s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.07s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.19s/it]
+[proposer_v2] candidate 0: 3041 chars coverage={'networkpolicy': True, 'dnsconfig': True, 'endpoints_selector': True, 'ordered_checks': True}
+[proposer_v2] candidate 1: 2994 chars coverage={'networkpolicy': True, 'dnsconfig': True, 'endpoints_selector': True, 'ordered_checks': True}
+[proposer_v2] candidate 2: 2564 chars coverage={'networkpolicy': True, 'dnsconfig': True, 'endpoints_selector': True, 'ordered_checks': False}
+[proposer_v2] candidate 3: 2528 chars coverage={'networkpolicy': True, 'dnsconfig': True, 'endpoints_selector': True, 'ordered_checks': True}
+[proposer_v2] wrote 4 candidates -> /workspace/out/skillprop_v2/s1/round0/candidates.json diversity={'mean_edit': 0.8624, 'token_entropy': 7.993} in 41s
+
+$ cp pod /workspace/out/skillprop_v2/s1/round0/candidates.json -> experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round0/candidates.json
+  kubectl -n siclaw-rl-yye cp siclaw-rl-yye/rl-skill-trainer-2:/workspace/out/skillprop_v2/s1/round0/candidates.json experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round0/candidates.json
+tar: Removing leading `/' from member names
+[orchestrate_v2] round 0 diversity: {"mean_edit":0.8624,"token_entropy":7.993}
+
+--- s1 round 0 candidate 0 (3041 chars, cov={"networkpolicy":true,"dnsconfig":true,"endpoints_selector":true,"ordered_checks":true}): scoring ---
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round0/cand0.txt skillChars=3041
+[reward] agent c069 -> completed
+[reward] agent c068 -> completed
+[reward] agent c070 -> completed
+[reward] agent c072 -> completed
+[reward] agent c071 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 109s | tokens in=234795 out=6305 total=471500 toolCalls=37 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 100.0%   mean total = 1.000
+  localization  1.000
+  mechanism     1.000
+  scope         1.000
+  evidence      1.000
+  remediation   1.000
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 1.000   (delta 0.299)
+  largest disagreements (id  keyword -> llm):
+    c069  0.43 -> 1.00  (+0.57)
+    c072  0.45 -> 1.00  (+0.55)
+    c073  0.65 -> 1.00  (+0.35)
+    c070  0.83 -> 1.00  (+0.17)
+    c071  0.92 -> 1.00  (+0.08)
+    c068  0.93 -> 1.00  (+0.07)
+
+wrote experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round0/eval_cand0/judgments.json
+[reward] judge meanScore=1 passRate=100% graded=6/6
+[reward] composite=1.472 rubric=0.945 rewardTruthGap=0.056 mislabelRate=0 spurious=0
+{"reward":1.472,"judgeReward":1,"composite":1.472,"rubricMean":0.945,"rewardTruthGap":0.056,"mislabelRate":0,"advantage":0.517,"passRate":1,"tokensTotal":471500,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round0/eval_cand0"}
+  -> composite=1.472 judge=1 mislabel=0 tokens=471500
+
+--- s1 round 0 candidate 1 (2994 chars, cov={"networkpolicy":true,"dnsconfig":true,"endpoints_selector":true,"ordered_checks":true}): scoring ---
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round0/cand1.txt skillChars=2994
+[reward] agent c068 -> completed
+[reward] agent c069 -> completed
+[reward] agent c070 -> completed
+[reward] agent c071 -> completed
+[reward] agent c073 -> completed
+[reward] agent c072 -> completed
+[reward] agent done in 119s | tokens in=303051 out=8222 total=541033 toolCalls=41 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 100.0%   mean total = 1.000
+  localization  1.000
+  mechanism     1.000
+  scope         1.000
+  evidence      1.000
+  remediation   1.000
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 1.000   (delta 0.299)
+  largest disagreements (id  keyword -> llm):
+    c069  0.43 -> 1.00  (+0.57)
+    c072  0.45 -> 1.00  (+0.55)
+    c073  0.65 -> 1.00  (+0.35)
+    c070  0.83 -> 1.00  (+0.17)
+    c071  0.92 -> 1.00  (+0.08)
+    c068  0.93 -> 1.00  (+0.07)
+
+wrote experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round0/eval_cand1/judgments.json
+[reward] judge meanScore=1 passRate=100% graded=6/6
+[reward] composite=1.5 rubric=1 rewardTruthGap=0 mislabelRate=0 spurious=0
+{"reward":1.5,"judgeReward":1,"composite":1.5,"rubricMean":1,"rewardTruthGap":0,"mislabelRate":0,"advantage":0.517,"passRate":1,"tokensTotal":541033,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round0/eval_cand1"}
+  -> composite=1.5 judge=1 mislabel=0 tokens=541033
+
+--- s1 round 0 candidate 2 (2564 chars, cov={"networkpolicy":true,"dnsconfig":true,"endpoints_selector":true,"ordered_checks":false}): scoring ---
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round0/cand2.txt skillChars=2564
+[reward] agent c068 -> completed
+[reward] agent c069 -> completed
+[reward] agent c070 -> completed
+[reward] agent c071 -> completed
+[reward] agent c072 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 104s | tokens in=240490 out=6403 total=698093 toolCalls=53 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 83.3%   mean total = 0.917
+  localization  0.917
+  mechanism     0.833
+  scope         1.000
+  evidence      0.917
+  remediation   0.917
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.917   (delta 0.216)
+  largest disagreements (id  keyword -> llm):
+    c069  0.43 -> 1.00  (+0.57)
+    c072  0.45 -> 1.00  (+0.55)
+    c073  0.65 -> 1.00  (+0.35)
+    c070  0.83 -> 0.50  (-0.33)
+    c071  0.92 -> 1.00  (+0.08)
+    c068  0.93 -> 1.00  (+0.07)
+
+wrote experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round0/eval_cand2/judgments.json
+[reward] judge meanScore=0.917 passRate=83% graded=6/6
+[reward] composite=1.333 rubric=0.833 rewardTruthGap=0.083 mislabelRate=0.167 spurious=0
+{"reward":1.333,"judgeReward":0.917,"composite":1.333,"rubricMean":0.833,"rewardTruthGap":0.083,"mislabelRate":0.167,"advantage":0.434,"passRate":0.8333333333333334,"tokensTotal":698093,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round0/eval_cand2"}
+  -> composite=1.333 judge=0.917 mislabel=0.167 tokens=698093
+
+--- s1 round 0 candidate 3 (2528 chars, cov={"networkpolicy":true,"dnsconfig":true,"endpoints_selector":true,"ordered_checks":true}): scoring ---
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round0/cand3.txt skillChars=2528
+[reward] agent c069 -> completed
+[reward] agent c068 -> completed
+[reward] agent c070 -> completed
+[reward] agent c071 -> completed
+[reward] agent c072 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 89s | tokens in=240697 out=6726 total=508159 toolCalls=38 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 83.3%   mean total = 0.850
+  localization  0.833
+  mechanism     0.667
+  scope         1.000
+  evidence      0.917
+  remediation   0.833
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.850   (delta 0.149)
+  largest disagreements (id  keyword -> llm):
+    c069  0.43 -> 1.00  (+0.57)
+    c073  0.65 -> 1.00  (+0.35)
+    c070  0.83 -> 0.70  (-0.13)
+    c071  0.92 -> 1.00  (+0.08)
+    c068  0.93 -> 1.00  (+0.07)
+    c072  0.45 -> 0.40  (-0.04)
+
+wrote experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round0/eval_cand3/judgments.json
+[reward] judge meanScore=0.85 passRate=83% graded=6/6
+[reward] composite=1.211 rubric=0.722 rewardTruthGap=0.128 mislabelRate=0.167 spurious=0
+{"reward":1.211,"judgeReward":0.85,"composite":1.211,"rubricMean":0.722,"rewardTruthGap":0.128,"mislabelRate":0.167,"advantage":0.367,"passRate":0.8333333333333334,"tokensTotal":508159,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round0/eval_cand3"}
+  -> composite=1.211 judge=0.85 mislabel=0.167 tokens=508159
+
+### s1 round 0: meanComposite=1.379 best=1.500 (cand 1) diversity={"mean_edit":0.8624,"token_entropy":7.993} tokens=2218785
+
+$ cp experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round0/scored.json -> pod
+  kubectl -n siclaw-rl-yye cp experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round0/scored.json siclaw-rl-yye/rl-skill-trainer-2:/workspace/out/skillprop_v2/s1/round0/scored.json
+
+$ round0: update_v2.py (GRPO)
+  kubectl -n siclaw-rl-yye exec rl-skill-trainer-2 -- bash -lc cd /workspace/rl && HF_HOME=/workspace/hf python update_v2.py --model Qwen/Qwen2.5-3B-Instruct  --scored-file /workspace/out/skillprop_v2/s1/round0/scored.json --category network-dns --examples-file /workspace/rl/examples_s1.json --prior-skill /workspace/rl/prior_s1.txt --train-cases c068,c069,c070,c071,c072,c073 --entropy-beta 0.01 --coverage-bonus 0.3 --out-adapter /workspace/out/skillprop_v2/s1/round0/adapter
+[update_v2] group mean=1.379 std=0.116; kept 1 (pareto), imitating 1 with adv>0: rewards=[1.5] covs=[1.0]
+[update_v2] 4 SFT sequences (advantage-weighted)
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.85s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.04s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.16s/it]
+trainable params: 29,933,568 || all params: 3,115,872,256 || trainable%: 0.9607
+[update_v2] ep0 step1 loss=0.8783 ce=0.8871 H=0.8867
+[update_v2] ep0 step2 loss=0.8275 ce=0.8363 H=0.8789
+[update_v2] ep0 step3 loss=0.7323 ce=0.7408 H=0.8555
+[update_v2] ep0 step4 loss=0.6317 ce=0.6397 H=0.8008
+[update_v2] ep1 step5 loss=0.5351 ce=0.5424 H=0.7305
+[update_v2] ep1 step6 loss=0.4446 ce=0.4510 H=0.6328
+[update_v2] ep1 step7 loss=0.3509 ce=0.3561 H=0.5156
+[update_v2] ep1 step8 loss=0.2648 ce=0.2687 H=0.3945
+[update_v2] DONE -> /workspace/out/skillprop_v2/s1/round0/adapter in 3s final_loss=0.2648 ce=0.2687 H=0.7119
+
+$ cp pod /workspace/out/skillprop_v2/s1/round0/update_summary.json -> experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round0/update_summary.json
+  kubectl -n siclaw-rl-yye cp siclaw-rl-yye/rl-skill-trainer-2:/workspace/out/skillprop_v2/s1/round0/update_summary.json experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round0/update_summary.json
+tar: Removing leading `/' from member names
+
+########## s1 ROUND 1 ##########
+
+$ round1: proposer_v2.py
+  kubectl -n siclaw-rl-yye exec rl-skill-trainer-2 -- bash -lc cd /workspace/rl && HF_HOME=/workspace/hf python proposer_v2.py --model Qwen/Qwen2.5-3B-Instruct --adapter /workspace/out/skillprop_v2/s1/round0/adapter --prior-skill /workspace/rl/prior_s1.txt --category network-dns --examples-file /workspace/rl/examples_s1.json --k 4 --out /workspace/out/skillprop_v2/s1/round1/candidates.json --temperature 1.05 --max-new-tokens 700 --seed 107
+[proposer_v2] loading Qwen/Qwen2.5-3B-Instruct adapter=/workspace/out/skillprop_v2/s1/round0/adapter prior=/workspace/rl/prior_s1.txt
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.87s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.07s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.19s/it]
+[proposer_v2] loaded adapter /workspace/out/skillprop_v2/s1/round0/adapter
+[proposer_v2] candidate 0: 2844 chars coverage={'networkpolicy': True, 'dnsconfig': True, 'endpoints_selector': True, 'ordered_checks': True}
+[proposer_v2] candidate 1: 2946 chars coverage={'networkpolicy': True, 'dnsconfig': True, 'endpoints_selector': True, 'ordered_checks': True}
+[proposer_v2] candidate 2: 2917 chars coverage={'networkpolicy': True, 'dnsconfig': True, 'endpoints_selector': True, 'ordered_checks': False}
+[proposer_v2] candidate 3: 2848 chars coverage={'networkpolicy': True, 'dnsconfig': True, 'endpoints_selector': True, 'ordered_checks': True}
+[proposer_v2] wrote 4 candidates -> /workspace/out/skillprop_v2/s1/round1/candidates.json diversity={'mean_edit': 0.8321, 'token_entropy': 7.9624} in 77s
+
+$ cp pod /workspace/out/skillprop_v2/s1/round1/candidates.json -> experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round1/candidates.json
+  kubectl -n siclaw-rl-yye cp siclaw-rl-yye/rl-skill-trainer-2:/workspace/out/skillprop_v2/s1/round1/candidates.json experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round1/candidates.json
+tar: Removing leading `/' from member names
+[orchestrate_v2] round 1 diversity: {"mean_edit":0.8321,"token_entropy":7.9624}
+
+--- s1 round 1 candidate 0 (2844 chars, cov={"networkpolicy":true,"dnsconfig":true,"endpoints_selector":true,"ordered_checks":true}): scoring ---
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round1/cand0.txt skillChars=2844
+[reward] agent c068 -> completed
+[reward] agent c069 -> completed
+[reward] agent c070 -> completed
+[reward] agent c072 -> completed
+[reward] agent c071 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 98s | tokens in=252661 out=6045 total=470290 toolCalls=31 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 100.0%   mean total = 1.000
+  localization  1.000
+  mechanism     1.000
+  scope         1.000
+  evidence      1.000
+  remediation   1.000
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 1.000   (delta 0.299)
+  largest disagreements (id  keyword -> llm):
+    c069  0.43 -> 1.00  (+0.57)
+    c072  0.45 -> 1.00  (+0.55)
+    c073  0.65 -> 1.00  (+0.35)
+    c070  0.83 -> 1.00  (+0.17)
+    c071  0.92 -> 1.00  (+0.08)
+    c068  0.93 -> 1.00  (+0.07)
+
+wrote experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round1/eval_cand0/judgments.json
+[reward] judge meanScore=1 passRate=100% graded=6/6
+[reward] composite=1.389 rubric=0.778 rewardTruthGap=0.222 mislabelRate=0 spurious=0
+{"reward":1.389,"judgeReward":1,"composite":1.389,"rubricMean":0.778,"rewardTruthGap":0.222,"mislabelRate":0,"advantage":0.517,"passRate":1,"tokensTotal":470290,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round1/eval_cand0"}
+  -> composite=1.389 judge=1 mislabel=0 tokens=470290
+
+--- s1 round 1 candidate 1 (2946 chars, cov={"networkpolicy":true,"dnsconfig":true,"endpoints_selector":true,"ordered_checks":true}): scoring ---
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round1/cand1.txt skillChars=2946
+[reward] agent c069 -> completed
+[reward] agent c068 -> completed
+[reward] agent c070 -> completed
+[reward] agent c071 -> completed
+[reward] agent c072 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 99s | tokens in=231226 out=6861 total=459655 toolCalls=31 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 100.0%   mean total = 1.000
+  localization  1.000
+  mechanism     1.000
+  scope         1.000
+  evidence      1.000
+  remediation   1.000
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 1.000   (delta 0.299)
+  largest disagreements (id  keyword -> llm):
+    c069  0.43 -> 1.00  (+0.57)
+    c072  0.45 -> 1.00  (+0.55)
+    c073  0.65 -> 1.00  (+0.35)
+    c070  0.83 -> 1.00  (+0.17)
+    c071  0.92 -> 1.00  (+0.08)
+    c068  0.93 -> 1.00  (+0.07)
+
+wrote experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round1/eval_cand1/judgments.json
+[reward] judge meanScore=1 passRate=100% graded=6/6
+[reward] composite=1.5 rubric=1 rewardTruthGap=0 mislabelRate=0 spurious=0
+{"reward":1.5,"judgeReward":1,"composite":1.5,"rubricMean":1,"rewardTruthGap":0,"mislabelRate":0,"advantage":0.517,"passRate":1,"tokensTotal":459655,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round1/eval_cand1"}
+  -> composite=1.5 judge=1 mislabel=0 tokens=459655
+
+--- s1 round 1 candidate 2 (2917 chars, cov={"networkpolicy":true,"dnsconfig":true,"endpoints_selector":true,"ordered_checks":false}): scoring ---
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round1/cand2.txt skillChars=2917
+[reward] agent c069 -> completed
+[reward] agent c068 -> completed
+[reward] agent c070 -> completed
+[reward] agent c072 -> completed
+[reward] agent c071 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 96s | tokens in=157965 out=6140 total=470025 toolCalls=34 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 83.3%   mean total = 0.917
+  localization  0.833
+  mechanism     0.833
+  scope         1.000
+  evidence      1.000
+  remediation   0.917
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.917   (delta 0.216)
+  largest disagreements (id  keyword -> llm):
+    c069  0.43 -> 1.00  (+0.57)
+    c072  0.45 -> 1.00  (+0.55)
+    c071  0.92 -> 0.50  (-0.42)
+    c073  0.65 -> 1.00  (+0.35)
+    c070  0.83 -> 1.00  (+0.17)
+    c068  0.93 -> 1.00  (+0.07)
+
+wrote experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round1/eval_cand2/judgments.json
+[reward] judge meanScore=0.917 passRate=83% graded=6/6
+[reward] composite=1.139 rubric=0.611 rewardTruthGap=0.306 mislabelRate=0.167 spurious=0.167
+{"reward":1.139,"judgeReward":0.917,"composite":1.139,"rubricMean":0.611,"rewardTruthGap":0.306,"mislabelRate":0.167,"advantage":0.434,"passRate":0.8333333333333334,"tokensTotal":470025,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round1/eval_cand2"}
+  -> composite=1.139 judge=0.917 mislabel=0.167 tokens=470025
+
+--- s1 round 1 candidate 3 (2848 chars, cov={"networkpolicy":true,"dnsconfig":true,"endpoints_selector":true,"ordered_checks":true}): scoring ---
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round1/cand3.txt skillChars=2848
+[reward] agent c068 -> completed
+[reward] agent c069 -> completed
+[reward] agent c071 -> completed
+[reward] agent c070 -> completed
+[reward] agent c072 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 100s | tokens in=241628 out=7355 total=538007 toolCalls=35 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 100.0%   mean total = 1.000
+  localization  1.000
+  mechanism     1.000
+  scope         1.000
+  evidence      1.000
+  remediation   1.000
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 1.000   (delta 0.299)
+  largest disagreements (id  keyword -> llm):
+    c069  0.43 -> 1.00  (+0.57)
+    c072  0.45 -> 1.00  (+0.55)
+    c073  0.65 -> 1.00  (+0.35)
+    c070  0.83 -> 1.00  (+0.17)
+    c071  0.92 -> 1.00  (+0.08)
+    c068  0.93 -> 1.00  (+0.07)
+
+wrote experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round1/eval_cand3/judgments.json
+[reward] judge meanScore=1 passRate=100% graded=6/6
+[reward] composite=1.361 rubric=0.722 rewardTruthGap=0.278 mislabelRate=0 spurious=0
+{"reward":1.361,"judgeReward":1,"composite":1.361,"rubricMean":0.722,"rewardTruthGap":0.278,"mislabelRate":0,"advantage":0.517,"passRate":1,"tokensTotal":538007,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round1/eval_cand3"}
+  -> composite=1.361 judge=1 mislabel=0 tokens=538007
+
+### s1 round 1: meanComposite=1.347 best=1.500 (cand 1) diversity={"mean_edit":0.8321,"token_entropy":7.9624} tokens=1937977
+
+$ cp experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round1/scored.json -> pod
+  kubectl -n siclaw-rl-yye cp experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round1/scored.json siclaw-rl-yye/rl-skill-trainer-2:/workspace/out/skillprop_v2/s1/round1/scored.json
+
+$ round1: update_v2.py (GRPO)
+  kubectl -n siclaw-rl-yye exec rl-skill-trainer-2 -- bash -lc cd /workspace/rl && HF_HOME=/workspace/hf python update_v2.py --model Qwen/Qwen2.5-3B-Instruct --in-adapter /workspace/out/skillprop_v2/s1/round0/adapter --scored-file /workspace/out/skillprop_v2/s1/round1/scored.json --category network-dns --examples-file /workspace/rl/examples_s1.json --prior-skill /workspace/rl/prior_s1.txt --train-cases c068,c069,c070,c071,c072,c073 --entropy-beta 0.01 --coverage-bonus 0.3 --out-adapter /workspace/out/skillprop_v2/s1/round1/adapter
+[update_v2] group mean=1.347 std=0.131; kept 1 (pareto), imitating 1 with adv>0: rewards=[1.5] covs=[1.0]
+[update_v2] 4 SFT sequences (advantage-weighted)
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.87s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.06s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.18s/it]
+[update_v2] continuing adapter /workspace/out/skillprop_v2/s1/round0/adapter
+trainable params: 29,933,568 || all params: 3,115,872,256 || trainable%: 0.9607
+[update_v2] ep0 step1 loss=0.5332 ce=0.5379 H=0.4629
+[update_v2] ep0 step2 loss=0.3363 ce=0.3410 H=0.4609
+[update_v2] ep0 step3 loss=0.1998 ce=0.2034 H=0.3594
+[update_v2] ep0 step4 loss=0.1056 ce=0.1080 H=0.2412
+[update_v2] ep1 step5 loss=0.0497 ce=0.0512 H=0.1494
+[update_v2] ep1 step6 loss=0.0218 ce=0.0227 H=0.0859
+[update_v2] ep1 step7 loss=0.0101 ce=0.0106 H=0.0479
+[update_v2] ep1 step8 loss=0.0053 ce=0.0056 H=0.0299
+[update_v2] DONE -> /workspace/out/skillprop_v2/s1/round1/adapter in 3s final_loss=0.0053 ce=0.0056 H=0.2297
+
+$ cp pod /workspace/out/skillprop_v2/s1/round1/update_summary.json -> experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round1/update_summary.json
+  kubectl -n siclaw-rl-yye cp siclaw-rl-yye/rl-skill-trainer-2:/workspace/out/skillprop_v2/s1/round1/update_summary.json experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round1/update_summary.json
+tar: Removing leading `/' from member names
+
+########## s1 ROUND 2 ##########
+
+$ round2: proposer_v2.py
+  kubectl -n siclaw-rl-yye exec rl-skill-trainer-2 -- bash -lc cd /workspace/rl && HF_HOME=/workspace/hf python proposer_v2.py --model Qwen/Qwen2.5-3B-Instruct --adapter /workspace/out/skillprop_v2/s1/round1/adapter --prior-skill /workspace/rl/prior_s1.txt --category network-dns --examples-file /workspace/rl/examples_s1.json --k 4 --out /workspace/out/skillprop_v2/s1/round2/candidates.json --temperature 1.05 --max-new-tokens 700 --seed 114
+[proposer_v2] loading Qwen/Qwen2.5-3B-Instruct adapter=/workspace/out/skillprop_v2/s1/round1/adapter prior=/workspace/rl/prior_s1.txt
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.87s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.05s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.18s/it]
+[proposer_v2] loaded adapter /workspace/out/skillprop_v2/s1/round1/adapter
+[proposer_v2] candidate 0: 3068 chars coverage={'networkpolicy': True, 'dnsconfig': True, 'endpoints_selector': True, 'ordered_checks': True}
+[proposer_v2] candidate 1: 2936 chars coverage={'networkpolicy': True, 'dnsconfig': True, 'endpoints_selector': True, 'ordered_checks': True}
+[proposer_v2] candidate 2: 2949 chars coverage={'networkpolicy': True, 'dnsconfig': True, 'endpoints_selector': True, 'ordered_checks': True}
+[proposer_v2] candidate 3: 2931 chars coverage={'networkpolicy': True, 'dnsconfig': True, 'endpoints_selector': True, 'ordered_checks': True}
+[proposer_v2] wrote 4 candidates -> /workspace/out/skillprop_v2/s1/round2/candidates.json diversity={'mean_edit': 0.1232, 'token_entropy': 7.3207} in 83s
+
+$ cp pod /workspace/out/skillprop_v2/s1/round2/candidates.json -> experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round2/candidates.json
+  kubectl -n siclaw-rl-yye cp siclaw-rl-yye/rl-skill-trainer-2:/workspace/out/skillprop_v2/s1/round2/candidates.json experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round2/candidates.json
+tar: Removing leading `/' from member names
+[orchestrate_v2] round 2 diversity: {"mean_edit":0.1232,"token_entropy":7.3207}
+
+--- s1 round 2 candidate 0 (3068 chars, cov={"networkpolicy":true,"dnsconfig":true,"endpoints_selector":true,"ordered_checks":true}): scoring ---
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round2/cand0.txt skillChars=3068
+[reward] agent c069 -> completed
+[reward] agent c068 -> completed
+[reward] agent c071 -> completed
+[reward] agent c070 -> completed
+[reward] agent c073 -> completed
+[reward] agent c072 -> completed
+[reward] agent done in 83s | tokens in=175057 out=6143 total=449360 toolCalls=35 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 100.0%   mean total = 1.000
+  localization  1.000
+  mechanism     1.000
+  scope         1.000
+  evidence      1.000
+  remediation   1.000
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 1.000   (delta 0.299)
+  largest disagreements (id  keyword -> llm):
+    c069  0.43 -> 1.00  (+0.57)
+    c072  0.45 -> 1.00  (+0.55)
+    c073  0.65 -> 1.00  (+0.35)
+    c070  0.83 -> 1.00  (+0.17)
+    c071  0.92 -> 1.00  (+0.08)
+    c068  0.93 -> 1.00  (+0.07)
+
+wrote experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round2/eval_cand0/judgments.json
+[reward] judge meanScore=1 passRate=100% graded=6/6
+[reward] composite=1.444 rubric=0.889 rewardTruthGap=0.111 mislabelRate=0 spurious=0
+{"reward":1.444,"judgeReward":1,"composite":1.444,"rubricMean":0.889,"rewardTruthGap":0.111,"mislabelRate":0,"advantage":0.517,"passRate":1,"tokensTotal":449360,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round2/eval_cand0"}
+  -> composite=1.444 judge=1 mislabel=0 tokens=449360
+
+--- s1 round 2 candidate 1 (2936 chars, cov={"networkpolicy":true,"dnsconfig":true,"endpoints_selector":true,"ordered_checks":true}): scoring ---
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round2/cand1.txt skillChars=2936
+[reward] agent c069 -> completed
+[reward] agent c068 -> completed
+[reward] agent c071 -> completed
+[reward] agent c070 -> completed
+[reward] agent c072 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 84s | tokens in=236308 out=6433 total=492853 toolCalls=32 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 100.0%   mean total = 0.950
+  localization  1.000
+  mechanism     0.833
+  scope         1.000
+  evidence      1.000
+  remediation   0.917
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.950   (delta 0.249)
+  largest disagreements (id  keyword -> llm):
+    c069  0.43 -> 1.00  (+0.57)
+    c072  0.45 -> 1.00  (+0.55)
+    c070  0.83 -> 1.00  (+0.17)
+    c071  0.92 -> 1.00  (+0.08)
+    c068  0.93 -> 1.00  (+0.07)
+    c073  0.65 -> 0.70  (+0.05)
+
+wrote experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round2/eval_cand1/judgments.json
+[reward] judge meanScore=0.95 passRate=100% graded=6/6
+[reward] composite=1.394 rubric=0.889 rewardTruthGap=0.061 mislabelRate=0 spurious=0
+{"reward":1.394,"judgeReward":0.95,"composite":1.394,"rubricMean":0.889,"rewardTruthGap":0.061,"mislabelRate":0,"advantage":0.467,"passRate":1,"tokensTotal":492853,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round2/eval_cand1"}
+  -> composite=1.394 judge=0.95 mislabel=0 tokens=492853
+
+--- s1 round 2 candidate 2 (2949 chars, cov={"networkpolicy":true,"dnsconfig":true,"endpoints_selector":true,"ordered_checks":true}): scoring ---
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round2/cand2.txt skillChars=2949
+[reward] agent c068 -> completed
+[reward] agent c069 -> completed
+[reward] agent c070 -> completed
+[reward] agent c071 -> completed
+[reward] agent c072 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 78s | tokens in=121043 out=6094 total=437409 toolCalls=36 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 100.0%   mean total = 1.000
+  localization  1.000
+  mechanism     1.000
+  scope         1.000
+  evidence      1.000
+  remediation   1.000
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 1.000   (delta 0.299)
+  largest disagreements (id  keyword -> llm):
+    c069  0.43 -> 1.00  (+0.57)
+    c072  0.45 -> 1.00  (+0.55)
+    c073  0.65 -> 1.00  (+0.35)
+    c070  0.83 -> 1.00  (+0.17)
+    c071  0.92 -> 1.00  (+0.08)
+    c068  0.93 -> 1.00  (+0.07)
+
+wrote experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round2/eval_cand2/judgments.json
+[reward] judge meanScore=1 passRate=100% graded=6/6
+[reward] composite=1.417 rubric=0.833 rewardTruthGap=0.167 mislabelRate=0 spurious=0
+{"reward":1.417,"judgeReward":1,"composite":1.417,"rubricMean":0.833,"rewardTruthGap":0.167,"mislabelRate":0,"advantage":0.517,"passRate":1,"tokensTotal":437409,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round2/eval_cand2"}
+  -> composite=1.417 judge=1 mislabel=0 tokens=437409
+
+--- s1 round 2 candidate 3 (2931 chars, cov={"networkpolicy":true,"dnsconfig":true,"endpoints_selector":true,"ordered_checks":true}): scoring ---
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round2/cand3.txt skillChars=2931
+[reward] agent c068 -> completed
+[reward] agent c069 -> completed
+[reward] agent c070 -> completed
+[reward] agent c071 -> completed
+[reward] agent c072 -> completed
+[reward] agent c073 -> error
+[reward] agent done in 84s | tokens in=139460 out=6187 total=478575 toolCalls=36 completed=5/6
+
+=== LLM-judge (claude-sonnet-4-6) over 2 graded / 6 cases ===
+pass(>0.65) = 100.0%   mean total = 1.000
+  localization  1.000
+  mechanism     1.000
+  scope         1.000
+  evidence      1.000
+  remediation   1.000
+  [!] 4 not graded: c070:judge-error, c071:judge-error, c072:judge-error, c073:judge-error
+
+=== keyword scorer vs LLM judge (n=2) ===
+  keyword mean total = 0.681
+  LLM     mean total = 1.000   (delta 0.319)
+  largest disagreements (id  keyword -> llm):
+    c069  0.43 -> 1.00  (+0.57)
+    c068  0.93 -> 1.00  (+0.07)
+
+wrote experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round2/eval_cand3/judgments.json
+[reward] judge meanScore=1 passRate=100% graded=2/6
+[reward] composite=0.778 rubric=0.889 rewardTruthGap=-0.556 mislabelRate=0.167 spurious=0
+{"reward":0.778,"judgeReward":1,"composite":0.778,"rubricMean":0.889,"rewardTruthGap":-0.556,"mislabelRate":0.167,"advantage":0.517,"passRate":1,"tokensTotal":478575,"completed":5,"runDir":"experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round2/eval_cand3"}
+  -> composite=0.778 judge=1 mislabel=0.167 tokens=478575
+
+### s1 round 2: meanComposite=1.258 best=1.444 (cand 0) diversity={"mean_edit":0.1232,"token_entropy":7.3207} tokens=1858197
+
+$ cp experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round2/scored.json -> pod
+  kubectl -n siclaw-rl-yye cp experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round2/scored.json siclaw-rl-yye/rl-skill-trainer-2:/workspace/out/skillprop_v2/s1/round2/scored.json
+
+$ round2: update_v2.py (GRPO)
+  kubectl -n siclaw-rl-yye exec rl-skill-trainer-2 -- bash -lc cd /workspace/rl && HF_HOME=/workspace/hf python update_v2.py --model Qwen/Qwen2.5-3B-Instruct --in-adapter /workspace/out/skillprop_v2/s1/round1/adapter --scored-file /workspace/out/skillprop_v2/s1/round2/scored.json --category network-dns --examples-file /workspace/rl/examples_s1.json --prior-skill /workspace/rl/prior_s1.txt --train-cases c068,c069,c070,c071,c072,c073 --entropy-beta 0.01 --coverage-bonus 0.3 --out-adapter /workspace/out/skillprop_v2/s1/round2/adapter
+[update_v2] group mean=1.258 std=0.278; kept 3 (pareto), imitating 3 with adv>0: rewards=[1.444, 1.417, 1.394] covs=[1.0, 1.0, 1.0]
+[update_v2] 9 SFT sequences (advantage-weighted)
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.88s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.06s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.18s/it]
+[update_v2] continuing adapter /workspace/out/skillprop_v2/s1/round1/adapter
+trainable params: 29,933,568 || all params: 3,115,872,256 || trainable%: 0.9607
+[update_v2] ep0 step1 loss=0.0484 ce=0.0488 H=0.0420
+[update_v2] ep0 step2 loss=0.0316 ce=0.0320 H=0.0398
+[update_v2] ep0 step3 loss=0.1627 ce=0.1633 H=0.0625
+[update_v2] ep0 step4 loss=0.1567 ce=0.1580 H=0.1260
+[update_v2] ep0 step5 loss=0.0865 ce=0.0877 H=0.1191
+[update_v2] ep0 step6 loss=0.0248 ce=0.0257 H=0.0854
+[update_v2] ep0 step7 loss=0.0425 ce=0.0433 H=0.0781
+[update_v2] ep0 step8 loss=0.0391 ce=0.0398 H=0.0732
+[update_v2] ep0 step9 loss=0.0186 ce=0.0192 H=0.0557
+[update_v2] ep1 step10 loss=0.0179 ce=0.0183 H=0.0352
+[update_v2] ep1 step11 loss=0.0073 ce=0.0076 H=0.0330
+[update_v2] ep1 step12 loss=0.0193 ce=0.0196 H=0.0306
+[update_v2] ep1 step13 loss=0.0174 ce=0.0177 H=0.0286
+[update_v2] ep1 step14 loss=0.0110 ce=0.0112 H=0.0203
+[update_v2] ep1 step15 loss=0.0090 ce=0.0092 H=0.0179
+[update_v2] ep1 step16 loss=0.0059 ce=0.0061 H=0.0193
+[update_v2] ep1 step17 loss=0.0091 ce=0.0093 H=0.0184
+[update_v2] ep1 step18 loss=0.0040 ce=0.0042 H=0.0175
+[update_v2] DONE -> /workspace/out/skillprop_v2/s1/round2/adapter in 4s final_loss=0.004 ce=0.0042 H=0.0501
+
+$ cp pod /workspace/out/skillprop_v2/s1/round2/update_summary.json -> experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round2/update_summary.json
+  kubectl -n siclaw-rl-yye cp siclaw-rl-yye/rl-skill-trainer-2:/workspace/out/skillprop_v2/s1/round2/update_summary.json experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round2/update_summary.json
+tar: Removing leading `/' from member names
+
+=== s1 DONE. composite trajectory: ===
+  round 0: mean=1.379 best=1.500 diversity={"mean_edit":0.8624,"token_entropy":7.993}
+  round 1: mean=1.347 best=1.500 diversity={"mean_edit":0.8321,"token_entropy":7.9624}
+  round 2: mean=1.258 best=1.444 diversity={"mean_edit":0.1232,"token_entropy":7.3207}
+{"runRoot":"experiments/rl-skill-opt/results-v2/grpo_netdns_s1","seedTag":"s1","trajectory":[{"round":0,"meanReward":1.379,"bestReward":1.5,"diversity":{"mean_edit":0.8624,"token_entropy":7.993}},{"round":1,"meanReward":1.34725,"bestReward":1.5,"diversity":{"mean_edit":0.8321,"token_entropy":7.9624}},{"round":2,"meanReward":1.2582499999999999,"bestReward":1.444,"diversity":{"mean_edit":0.1232,"token_entropy":7.3207}}],"bestSkill":"experiments/rl-skill-opt/results-v2/grpo_netdns_s1/BEST_SKILL.txt"}

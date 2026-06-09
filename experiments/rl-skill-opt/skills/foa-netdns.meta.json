@@ -1,0 +1,9 @@
+{
+  "method": "flow-of-action",
+  "category": "network-dns",
+  "reflector": "gpt-5.4",
+  "chars": 2462,
+  "llmCalls": 1,
+  "llmTokens": 906,
+  "out": "experiments/rl-skill-opt/skills/foa-netdns.txt"
+}

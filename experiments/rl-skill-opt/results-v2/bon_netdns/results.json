@@ -1,0 +1,129 @@
+{
+  "category": "network-dns",
+  "provider": "gpt",
+  "proposer": "gpt-5.4",
+  "n": 7,
+  "rollouts": 42,
+  "proposerTokens": 5920,
+  "candidates": [
+    {
+      "idx": 0,
+      "chars": 2999,
+      "temp": 0.6,
+      "mean": 0.561,
+      "judgeMean": 0.45,
+      "advantage": -0.033,
+      "perCase": {
+        "c068": 0.2,
+        "c069": 0.267,
+        "c070": 1.333,
+        "c071": 0.767,
+        "c072": 0.1,
+        "c073": 0.7
+      },
+      "runDir": "experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand0"
+    },
+    {
+      "idx": 1,
+      "chars": 2991,
+      "temp": 0.7,
+      "mean": 0.494,
+      "judgeMean": 0.55,
+      "advantage": 0.067,
+      "perCase": {
+        "c068": 0,
+        "c069": 0.133,
+        "c070": 1.233,
+        "c071": 0.167,
+        "c072": 0.1,
+        "c073": 1.333
+      },
+      "runDir": "experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand1"
+    },
+    {
+      "idx": 2,
+      "chars": 2678,
+      "temp": 0.8,
+      "mean": 0.689,
+      "judgeMean": 0.55,
+      "advantage": 0.067,
+      "perCase": {
+        "c068": 0.567,
+        "c069": -0.4,
+        "c070": 0.867,
+        "c071": 0.733,
+        "c072": 1.5,
+        "c073": 0.867
+      },
+      "runDir": "experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand2"
+    },
+    {
+      "idx": 3,
+      "chars": 2797,
+      "temp": 0.9,
+      "mean": 0.705,
+      "judgeMean": 0.4,
+      "advantage": -0.083,
+      "perCase": {
+        "c068": 0.433,
+        "c069": 0.433,
+        "c070": 1.333,
+        "c071": 0.433,
+        "c072": 0.267,
+        "c073": 1.333
+      },
+      "runDir": "experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand3"
+    },
+    {
+      "idx": 4,
+      "chars": 2762,
+      "temp": 1,
+      "mean": 1.089,
+      "judgeMean": 0.7,
+      "advantage": 0.217,
+      "perCase": {
+        "c068": 1.5,
+        "c069": 0.267,
+        "c070": 1.5,
+        "c071": 1.5,
+        "c072": 0.267,
+        "c073": 1.5
+      },
+      "runDir": "experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand4"
+    },
+    {
+      "idx": 5,
+      "chars": 2806,
+      "temp": 0.6,
+      "mean": 0.494,
+      "judgeMean": 0.467,
+      "advantage": -0.016,
+      "perCase": {
+        "c068": 0.567,
+        "c069": 0.1,
+        "c070": 0.5,
+        "c071": 0,
+        "c072": 0.467,
+        "c073": 1.333
+      },
+      "runDir": "experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand5"
+    },
+    {
+      "idx": 6,
+      "chars": 3053,
+      "temp": 0.7,
+      "mean": 0.705,
+      "judgeMean": 0.567,
+      "advantage": 0.084,
+      "perCase": {
+        "c068": 0.167,
+        "c069": 0.267,
+        "c070": 1.333,
+        "c071": 1.033,
+        "c072": 0.1,
+        "c073": 1.333
+      },
+      "runDir": "experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand6"
+    }
+  ]
+}

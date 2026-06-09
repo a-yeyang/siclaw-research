@@ -1,0 +1,402 @@
+[
+  {
+    "caseId": "c074",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Diagnosis explicitly names 'NetworkPolicy `c074-deny-egress`' as the root cause, matching the ground-truth localization of networkpolicy/c074-deny-egress.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis correctly identifies the NetworkPolicy as the primary fault origin, not a downstream resource like the server pod or service (which are noted as healthy/running).",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Diagnosis states 'NetworkPolicy c074-deny-egress is blocking all egress traffic from the client pod, preventing both DNS resolution and TCP connections' — this matches the ground truth mechanism of the policy selecting the client and denying all egress including DNS/service traffic.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Diagnosis specifies the concrete detail: policy selector 'app=c074-client', blocked traffic 'All egress (<none> allowed)', which is the specific misconfiguration causing the fault.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Diagnosis states 'Isolated to this client pod; other pods in the namespace are unaffected' and identifies affected resources as c074-client, c074-server-svc — consistent with ground truth scope of traffic involving this case's client/server pods.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The impact is accurately scoped to the client pod's inability to resolve/reach the server service, without overstating (e.g., claiming cluster-wide impact) or understating the effect.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Diagnosis cites concrete observations: NetworkPolicy name and selector from YAML, client pod with 99 restarts, server pod IP 172.16.243.230, service ClusterIP 172.17.134.1:80/TCP.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The cited evidence (99 restarts correlating with connection failures, NetworkPolicy with no egress rules) is consistent with and supports the identified root cause of egress blocking.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation suggests either deleting the blocking NetworkPolicy or modifying it to allow DNS (UDP 53) and TCP 80 to the server — both options directly address the root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Both remediation options are appropriately scoped: deletion is flagged as conditional ('if no longer needed'), and the modification option is targeted to allow only necessary traffic, avoiding destructive over-reach.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 25401,
+    "toolCallCount": 4,
+    "judgeModel": "claude-sonnet-4-6"
+  },
+  {
+    "caseId": "c075",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Diagnosis explicitly names 'NetworkPolicy c075-deny-ingress', 'c075-client', 'c075-server', and 'c075-server-svc' — matching all ground-truth target resources.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The primary fault origin is correctly identified as the NetworkPolicy c075-deny-ingress, not any downstream or unrelated resource.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Diagnosis states 'NetworkPolicy c075-deny-ingress blocks all ingress traffic to the server pod' with PodSelector matching app=c075-server and ingress rules set to none — exactly matching the ground-truth mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Concrete detail provided: PodSelector 'app=c075-server', ingress rules '<none>' (deny-all), and the policy annotation confirming ingress isolation — not a vague guess.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Diagnosis states 'Affects only this case's client-server pair; other pods in the namespace are unaffected', consistent with ground-truth scope of traffic involving this case's client/server pods.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Impact is appropriately scoped — notes DNS may succeed but TCP/UDP connections are dropped, neither overstating (cluster-wide) nor understating (single pod only) the impact.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Cites observed pod states (Running 1/1, restart counts), server IP, service ClusterIP, selector labels, and the actual NetworkPolicy YAML fields (PodSelector, ingress rules, annotation).",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "All cited evidence is consistent: NetworkPolicy with empty ingress rules on a selector matching the server pod directly explains why client cannot reach the server service.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation proposes either patching the NetworkPolicy to allow ingress from the client pod or deleting it — both directly address the deny-all ingress rule that is the root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Both remediation options are appropriately scoped (namespace-specific, targeting only the offending NetworkPolicy) and the patch option is minimally invasive; delete is offered as an alternative with appropriate caveat.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 33851,
+    "toolCallCount": 4,
+    "judgeModel": "claude-sonnet-4-6"
+  },
+  {
+    "caseId": "c076",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": false,
+    "totalScore": 0.3,
+    "dimensions": {
+      "localization": {
+        "score": 0
+      },
+      "mechanism": {
+        "score": 0
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 0.5
+      },
+      "remediation": {
+        "score": 0
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The diagnosis identifies the service c076-server-svc and both pods as affected, but names the service port mismatch as the primary fault origin rather than pod/c076-client as the ground truth specifies.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The diagnosis names the service c076-server-svc as the primary fault origin (port mismatch), but the actual fault is in pod/c076-client overriding DNS. The service is a healthy downstream resource, not the fault origin.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The ground truth mechanism is that c076-client overrides DNS with a TEST-NET nameserver (203.0.113.1), causing cluster DNS resolution to fail. The agent diagnosed a service port mismatch (port 80 vs 8080), which is a completely different mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The agent cites port 80 vs 8080 mismatch as the concrete detail, but the actual concrete detail is the custom DNS nameserver 203.0.113.1 (TEST-NET address) configured in the client pod. The agent's detail is wrong.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The agent correctly scopes the impact to c076-client and c076-server pods in the namespace, which is consistent with the ground truth scope of traffic involving this case's client/server pods.",
+        "confidence": "Medium"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The agent does not materially over- or under-state the blast radius; it correctly limits impact to the two pods and the service in question.",
+        "confidence": "Medium"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The agent cites kubectl get service output showing PORT(S): 80/TCP and kubectl get endpoints showing 172.16.243.220:8080 as concrete observed evidence.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "No",
+        "evidence": "The cited evidence (port 80 in service vs 8080 in endpoints) may be real observations but is inconsistent with the actual root cause (DNS override). The evidence supports a different (incorrect) diagnosis, not the true fault mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The recommended remediation (patching targetPort to 8080) addresses the alleged port mismatch, not the actual root cause of DNS override via TEST-NET nameserver in c076-client. It would not fix the real problem.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "While the patch command itself is not destructive, it addresses the wrong problem entirely and would not resolve the DNS resolution failure caused by the client pod's custom nameserver configuration.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 50525,
+    "toolCallCount": 10,
+    "judgeModel": "claude-sonnet-4-6"
+  },
+  {
+    "caseId": "c077",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Diagnosis explicitly names NetworkPolicy `c077-deny-egress`, pod `c077-client`, and service `c077-server-svc`, matching all ground-truth target resources.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis correctly identifies the NetworkPolicy as the primary fault origin, not the server pod or service (which are noted as healthy).",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Diagnosis explains that the NetworkPolicy selects the client pod via `app=c077-client` and enforces total egress isolation (Policy Types: Egress, no egress rules), blocking DNS and service traffic — identical to the ground-truth mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Concrete details provided: PodSelector `app=c077-client`, Policy Types `Egress`, and `Allowing egress traffic: <none>` (total egress isolation), which is the specific mutated detail causing the fault.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Diagnosis states single pod `c077-client` is affected, consistent with ground-truth scope of traffic involving the client/server pods.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Impact is accurately scoped to the client pod's inability to resolve DNS and reach the service; server pod is correctly noted as healthy and unaffected.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Cites observed YAML fields from the NetworkPolicy (PodSelector, Policy Types, egress rules), valid endpoint `172.16.36.216:8080`, server pod Running status, and 99 restarts on the client pod.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "All cited evidence is consistent: NetworkPolicy with no egress rules explains DNS failure and connection timeouts, which in turn explains the CrashLoopBackOff restart count.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Recommends deleting or patching `c077-deny-egress` to allow egress to the server pod and DNS (UDP/53), which directly addresses the root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Offers both a delete option and a targeted patch option; the patch is appropriately scoped to allow only necessary traffic (DNS + server port), avoiding destructive over-reach.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 26607,
+    "toolCallCount": 5,
+    "judgeModel": "claude-sonnet-4-6"
+  }
+]

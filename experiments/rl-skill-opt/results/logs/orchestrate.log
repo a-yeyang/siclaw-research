@@ -1,0 +1,562 @@
+=== RL skill-proposer  category=network-dns rounds=3 k=4 provider=kimi ===
+train cases: c068,c069,c070,c071,c072,c073
+
+$ cp experiments/rl-skill-opt/proposer.py -> pod
+  kubectl -n siclaw-rl-yye cp experiments/rl-skill-opt/proposer.py siclaw-rl-yye/rl-skill-trainer:/workspace/rl/proposer.py
+
+$ cp experiments/rl-skill-opt/update.py -> pod
+  kubectl -n siclaw-rl-yye cp experiments/rl-skill-opt/update.py siclaw-rl-yye/rl-skill-trainer:/workspace/rl/update.py
+
+$ cp experiments/rl-skill-opt/results/rl_netdns_main/examples.json -> pod
+  kubectl -n siclaw-rl-yye cp experiments/rl-skill-opt/results/rl_netdns_main/examples.json siclaw-rl-yye/rl-skill-trainer:/workspace/rl/examples.json
+examples (no ground truth):
+  1. Client pod c074-client cannot resolve or reach service c074-server-svc even though the server pod exists.
+  2. Client pod c075-client cannot resolve or reach service c075-server-svc even though the server pod exists.
+
+$ mkdir pod out
+  kubectl -n siclaw-rl-yye exec rl-skill-trainer -- bash -lc mkdir -p /workspace/out/skillprop
+
+########## ROUND 0 ##########
+
+$ round0: proposer.py
+  kubectl -n siclaw-rl-yye exec rl-skill-trainer -- bash -lc cd /workspace/rl && HF_HOME=/workspace/hf python proposer.py --model Qwen/Qwen2.5-3B-Instruct  --category network-dns --examples-file /workspace/rl/examples.json --k 4 --out /workspace/out/skillprop/round0/candidates.json --temperature 0.9 --max-new-tokens 700 --seed 100
+[proposer] loading Qwen/Qwen2.5-3B-Instruct adapter=None
+Sliding Window Attention is enabled but not implemented for `sdpa`; unexpected results may be encountered.
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.78s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.04it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.08s/it]
+[proposer] candidate 0: 2272 chars
+[proposer] candidate 1: 744 chars
+[proposer] candidate 2: 2040 chars
+[proposer] candidate 3: 1507 chars
+[proposer] wrote 4 candidates -> /workspace/out/skillprop/round0/candidates.json in 28s
+
+$ cp pod /workspace/out/skillprop/round0/candidates.json -> experiments/rl-skill-opt/results/rl_netdns_main/round0/candidates.json
+  kubectl -n siclaw-rl-yye cp siclaw-rl-yye/rl-skill-trainer:/workspace/out/skillprop/round0/candidates.json experiments/rl-skill-opt/results/rl_netdns_main/round0/candidates.json
+tar: Removing leading `/' from member names
+
+--- round 0 candidate 0 (2272 chars): scoring ---
+[reward] provider=kimi cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results/rl_netdns_main/round0/cand0.txt skillChars=2272
+[reward] agent c070 -> completed
+[reward] agent c068 -> completed
+[reward] agent c071 -> completed
+[reward] agent c069 -> completed
+[reward] agent c073 -> completed
+[reward] agent c072 -> completed
+[reward] agent done in 128s | tokens in=64830 out=11128 total=581430 toolCalls=56 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 66.7%   mean total = 0.700
+  localization  0.667
+  mechanism     0.667
+  scope         0.667
+  evidence      0.833
+  remediation   0.667
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.700   (delta -0.001)
+  largest disagreements (id  keyword -> llm):
+    c073  0.65 -> 1.00  (+0.35)
+    c072  0.45 -> 0.10  (-0.34)
+    c069  0.43 -> 0.10  (-0.33)
+    c070  0.83 -> 1.00  (+0.17)
+    c071  0.92 -> 1.00  (+0.08)
+    c068  0.93 -> 1.00  (+0.07)
+
+wrote experiments/rl-skill-opt/results/rl_netdns_main/round0/eval_cand0/judgments.json
+[reward] judge meanScore=0.7 passRate=67% graded=6/6
+{"reward":0.7,"advantage":0.1,"passRate":0.6666666666666666,"tokensTotal":581430,"completed":6,"runDir":"experiments/rl-skill-opt/results/rl_netdns_main/round0/eval_cand0"}
+  -> reward=0.7 advantage=0.1 tokens=581430
+
+--- round 0 candidate 1 (744 chars): scoring ---
+[reward] provider=kimi cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results/rl_netdns_main/round0/cand1.txt skillChars=744
+[reward] agent c070 -> completed
+[reward] agent c068 -> completed
+[reward] agent c072 -> completed
+[reward] agent c069 -> completed
+[reward] agent c071 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 141s | tokens in=49803 out=10530 total=821677 toolCalls=58 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 83.3%   mean total = 0.850
+  localization  0.833
+  mechanism     0.833
+  scope         0.833
+  evidence      0.917
+  remediation   0.833
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.850   (delta 0.149)
+  largest disagreements (id  keyword -> llm):
+    c069  0.43 -> 1.00  (+0.57)
+    c073  0.65 -> 1.00  (+0.35)
+    c072  0.45 -> 0.10  (-0.34)
+    c070  0.83 -> 1.00  (+0.17)
+    c071  0.92 -> 1.00  (+0.08)
+    c068  0.93 -> 1.00  (+0.07)
+
+wrote experiments/rl-skill-opt/results/rl_netdns_main/round0/eval_cand1/judgments.json
+[reward] judge meanScore=0.85 passRate=83% graded=6/6
+{"reward":0.85,"advantage":0.25,"passRate":0.8333333333333334,"tokensTotal":821677,"completed":6,"runDir":"experiments/rl-skill-opt/results/rl_netdns_main/round0/eval_cand1"}
+  -> reward=0.85 advantage=0.25 tokens=821677
+
+--- round 0 candidate 2 (2040 chars): scoring ---
+[reward] provider=kimi cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results/rl_netdns_main/round0/cand2.txt skillChars=2040
+[reward] agent c069 -> completed
+[reward] agent c070 -> completed
+[reward] agent c068 -> completed
+[reward] agent c071 -> completed
+[reward] agent c072 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 128s | tokens in=59574 out=9898 total=714720 toolCalls=55 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 83.3%   mean total = 0.800
+  localization  0.833
+  mechanism     0.667
+  scope         0.833
+  evidence      0.917
+  remediation   0.750
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.800   (delta 0.099)
+  largest disagreements (id  keyword -> llm):
+    c069  0.43 -> 1.00  (+0.57)
+    c073  0.65 -> 1.00  (+0.35)
+    c072  0.45 -> 0.10  (-0.34)
+    c070  0.83 -> 0.70  (-0.13)
+    c071  0.92 -> 1.00  (+0.08)
+    c068  0.93 -> 1.00  (+0.07)
+
+wrote experiments/rl-skill-opt/results/rl_netdns_main/round0/eval_cand2/judgments.json
+[reward] judge meanScore=0.8 passRate=83% graded=6/6
+{"reward":0.8,"advantage":0.2,"passRate":0.8333333333333334,"tokensTotal":714720,"completed":6,"runDir":"experiments/rl-skill-opt/results/rl_netdns_main/round0/eval_cand2"}
+  -> reward=0.8 advantage=0.2 tokens=714720
+
+--- round 0 candidate 3 (1507 chars): scoring ---
+[reward] provider=kimi cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results/rl_netdns_main/round0/cand3.txt skillChars=1507
+[reward] agent c070 -> completed
+[reward] agent c068 -> completed
+[reward] agent c071 -> completed
+[reward] agent c072 -> completed
+[reward] agent c069 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 133s | tokens in=69932 out=12747 total=912055 toolCalls=62 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 50.0%   mean total = 0.600
+  localization  0.500
+  mechanism     0.500
+  scope         0.667
+  evidence      0.750
+  remediation   0.583
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.600   (delta -0.101)
+  largest disagreements (id  keyword -> llm):
+    c071  0.92 -> 0.20  (-0.72)
+    c070  0.83 -> 0.30  (-0.53)
+    c069  0.43 -> 0.80  (+0.37)
+    c073  0.65 -> 1.00  (+0.35)
+    c072  0.45 -> 0.30  (-0.15)
+    c068  0.93 -> 1.00  (+0.07)
+
+wrote experiments/rl-skill-opt/results/rl_netdns_main/round0/eval_cand3/judgments.json
+[reward] judge meanScore=0.6 passRate=50% graded=6/6
+{"reward":0.6,"advantage":0,"passRate":0.5,"tokensTotal":912055,"completed":6,"runDir":"experiments/rl-skill-opt/results/rl_netdns_main/round0/eval_cand3"}
+  -> reward=0.6 advantage=0 tokens=912055
+
+### round 0 summary: meanReward=0.737 bestReward=0.850 (cand 1) tokens=3029882
+
+$ cp experiments/rl-skill-opt/results/rl_netdns_main/round0/scored.json -> pod
+  kubectl -n siclaw-rl-yye cp experiments/rl-skill-opt/results/rl_netdns_main/round0/scored.json siclaw-rl-yye/rl-skill-trainer:/workspace/out/skillprop/round0/scored.json
+
+$ round0: update.py (RAFT)
+  kubectl -n siclaw-rl-yye exec rl-skill-trainer -- bash -lc cd /workspace/rl && HF_HOME=/workspace/hf python update.py --model Qwen/Qwen2.5-3B-Instruct  --scored-file /workspace/out/skillprop/round0/scored.json --category network-dns --examples-file /workspace/rl/examples.json --out-adapter /workspace/out/skillprop/round0/adapter
+[update] round mean reward=0.737  keeping 2/4: [0.85, 0.8]
+[update] 5 SFT sequences (after advantage weighting)
+Sliding Window Attention is enabled but not implemented for `sdpa`; unexpected results may be encountered.
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.65s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.14it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.01it/s]
+trainable params: 29,933,568 || all params: 3,115,872,256 || trainable%: 0.9607
+[update] ep0 step1 loss=0.8273
+[update] ep0 step2 loss=0.7700
+[update] ep0 step3 loss=1.0910
+[update] ep0 step4 loss=0.9443
+[update] ep0 step5 loss=0.7276
+[update] ep1 step6 loss=0.4925
+[update] ep1 step7 loss=0.2780
+[update] ep1 step8 loss=0.5210
+[update] ep1 step9 loss=0.0725
+[update] ep1 step10 loss=0.4601
+[update] ep2 step11 loss=0.0157
+[update] ep2 step12 loss=0.0098
+[update] ep2 step13 loss=0.2768
+[update] ep2 step14 loss=0.2111
+[update] ep2 step15 loss=0.0184
+[update] DONE -> /workspace/out/skillprop/round0/adapter in 3s final_loss=0.0184
+
+########## ROUND 1 ##########
+
+$ round1: proposer.py
+  kubectl -n siclaw-rl-yye exec rl-skill-trainer -- bash -lc cd /workspace/rl && HF_HOME=/workspace/hf python proposer.py --model Qwen/Qwen2.5-3B-Instruct --adapter /workspace/out/skillprop/round0/adapter --category network-dns --examples-file /workspace/rl/examples.json --k 4 --out /workspace/out/skillprop/round1/candidates.json --temperature 0.9 --max-new-tokens 700 --seed 107
+[proposer] loading Qwen/Qwen2.5-3B-Instruct adapter=/workspace/out/skillprop/round0/adapter
+Sliding Window Attention is enabled but not implemented for `sdpa`; unexpected results may be encountered.
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.81s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.05it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.08s/it]
+[proposer] loaded adapter /workspace/out/skillprop/round0/adapter
+[proposer] candidate 0: 744 chars
+[proposer] candidate 1: 744 chars
+[proposer] candidate 2: 744 chars
+[proposer] candidate 3: 744 chars
+[proposer] wrote 4 candidates -> /workspace/out/skillprop/round1/candidates.json in 25s
+
+$ cp pod /workspace/out/skillprop/round1/candidates.json -> experiments/rl-skill-opt/results/rl_netdns_main/round1/candidates.json
+  kubectl -n siclaw-rl-yye cp siclaw-rl-yye/rl-skill-trainer:/workspace/out/skillprop/round1/candidates.json experiments/rl-skill-opt/results/rl_netdns_main/round1/candidates.json
+tar: Removing leading `/' from member names
+
+--- round 1 candidate 0 (744 chars): scoring ---
+[reward] provider=kimi cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results/rl_netdns_main/round1/cand0.txt skillChars=744
+[reward] agent c068 -> completed
+[reward] agent c070 -> completed
+[reward] agent c069 -> completed
+[reward] agent c071 -> completed
+[reward] agent c072 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 140s | tokens in=51164 out=10353 total=586125 toolCalls=48 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 66.7%   mean total = 0.733
+  localization  0.667
+  mechanism     0.667
+  scope         0.833
+  evidence      0.833
+  remediation   0.667
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.733   (delta 0.032)
+  largest disagreements (id  keyword -> llm):
+    c068  0.93 -> 0.10  (-0.83)
+    c069  0.43 -> 1.00  (+0.57)
+    c073  0.65 -> 1.00  (+0.35)
+    c070  0.83 -> 1.00  (+0.17)
+    c072  0.45 -> 0.30  (-0.15)
+    c071  0.92 -> 1.00  (+0.08)
+
+wrote experiments/rl-skill-opt/results/rl_netdns_main/round1/eval_cand0/judgments.json
+[reward] judge meanScore=0.733 passRate=67% graded=6/6
+{"reward":0.733,"advantage":0.133,"passRate":0.6666666666666666,"tokensTotal":586125,"completed":6,"runDir":"experiments/rl-skill-opt/results/rl_netdns_main/round1/eval_cand0"}
+  -> reward=0.733 advantage=0.133 tokens=586125
+
+--- round 1 candidate 1 (744 chars): scoring ---
+[reward] provider=kimi cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results/rl_netdns_main/round1/cand1.txt skillChars=744
+[reward] agent c070 -> completed
+[reward] agent c069 -> completed
+[reward] agent c068 -> completed
+[reward] agent c071 -> completed
+[reward] agent c073 -> completed
+[reward] agent c072 -> completed
+[reward] agent done in 94s | tokens in=23193 out=8370 total=470411 toolCalls=32 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 50.0%   mean total = 0.583
+  localization  0.500
+  mechanism     0.500
+  scope         0.583
+  evidence      0.750
+  remediation   0.583
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.583   (delta -0.118)
+  largest disagreements (id  keyword -> llm):
+    c071  0.92 -> 0.10  (-0.82)
+    c068  0.93 -> 0.20  (-0.73)
+    c069  0.43 -> 0.90  (+0.47)
+    c073  0.65 -> 1.00  (+0.35)
+    c070  0.83 -> 1.00  (+0.17)
+    c072  0.45 -> 0.30  (-0.15)
+
+wrote experiments/rl-skill-opt/results/rl_netdns_main/round1/eval_cand1/judgments.json
+[reward] judge meanScore=0.583 passRate=50% graded=6/6
+{"reward":0.583,"advantage":-0.017,"passRate":0.5,"tokensTotal":470411,"completed":6,"runDir":"experiments/rl-skill-opt/results/rl_netdns_main/round1/eval_cand1"}
+  -> reward=0.583 advantage=-0.017 tokens=470411
+
+--- round 1 candidate 2 (744 chars): scoring ---
+[reward] provider=kimi cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results/rl_netdns_main/round1/cand2.txt skillChars=744
+[reward] agent c070 -> completed
+[reward] agent c068 -> completed
+[reward] agent c069 -> completed
+[reward] agent c071 -> completed
+[reward] agent c073 -> completed
+[reward] agent c072 -> completed
+[reward] agent done in 129s | tokens in=35057 out=10324 total=706245 toolCalls=46 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 66.7%   mean total = 0.750
+  localization  0.667
+  mechanism     0.667
+  scope         0.833
+  evidence      0.833
+  remediation   0.750
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.750   (delta 0.049)
+  largest disagreements (id  keyword -> llm):
+    c071  0.92 -> 0.20  (-0.72)
+    c072  0.45 -> 1.00  (+0.55)
+    c073  0.65 -> 1.00  (+0.35)
+    c070  0.83 -> 1.00  (+0.17)
+    c069  0.43 -> 0.30  (-0.13)
+    c068  0.93 -> 1.00  (+0.07)
+
+wrote experiments/rl-skill-opt/results/rl_netdns_main/round1/eval_cand2/judgments.json
+[reward] judge meanScore=0.75 passRate=67% graded=6/6
+{"reward":0.75,"advantage":0.15,"passRate":0.6666666666666666,"tokensTotal":706245,"completed":6,"runDir":"experiments/rl-skill-opt/results/rl_netdns_main/round1/eval_cand2"}
+  -> reward=0.75 advantage=0.15 tokens=706245
+
+--- round 1 candidate 3 (744 chars): scoring ---
+[reward] provider=kimi cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results/rl_netdns_main/round1/cand3.txt skillChars=744
+[reward] agent c068 -> completed
+[reward] agent c069 -> completed
+[reward] agent c070 -> completed
+[reward] agent c071 -> completed
+[reward] agent c072 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 101s | tokens in=28711 out=9489 total=528952 toolCalls=29 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 16.7%   mean total = 0.283
+  localization  0.250
+  mechanism     0.167
+  scope         0.333
+  evidence      0.500
+  remediation   0.167
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.283   (delta -0.418)
+  largest disagreements (id  keyword -> llm):
+    c070  0.83 -> 0.00  (-0.83)
+    c068  0.93 -> 0.10  (-0.83)
+    c071  0.92 -> 0.10  (-0.82)
+    c073  0.65 -> 1.00  (+0.35)
+    c069  0.43 -> 0.10  (-0.33)
+    c072  0.45 -> 0.40  (-0.04)
+
+wrote experiments/rl-skill-opt/results/rl_netdns_main/round1/eval_cand3/judgments.json
+[reward] judge meanScore=0.283 passRate=17% graded=6/6
+{"reward":0.283,"advantage":-0.317,"passRate":0.16666666666666666,"tokensTotal":528952,"completed":6,"runDir":"experiments/rl-skill-opt/results/rl_netdns_main/round1/eval_cand3"}
+  -> reward=0.283 advantage=-0.317 tokens=528952
+
+### round 1 summary: meanReward=0.587 bestReward=0.750 (cand 2) tokens=2291733
+
+$ cp experiments/rl-skill-opt/results/rl_netdns_main/round1/scored.json -> pod
+  kubectl -n siclaw-rl-yye cp experiments/rl-skill-opt/results/rl_netdns_main/round1/scored.json siclaw-rl-yye/rl-skill-trainer:/workspace/out/skillprop/round1/scored.json
+
+$ round1: update.py (RAFT)
+  kubectl -n siclaw-rl-yye exec rl-skill-trainer -- bash -lc cd /workspace/rl && HF_HOME=/workspace/hf python update.py --model Qwen/Qwen2.5-3B-Instruct --in-adapter /workspace/out/skillprop/round0/adapter --scored-file /workspace/out/skillprop/round1/scored.json --category network-dns --examples-file /workspace/rl/examples.json --out-adapter /workspace/out/skillprop/round1/adapter
+[update] round mean reward=0.587  keeping 2/4: [0.75, 0.733]
+[update] 4 SFT sequences (after advantage weighting)
+Sliding Window Attention is enabled but not implemented for `sdpa`; unexpected results may be encountered.
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.74s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.10it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:02<00:00,  1.04s/it]
+[update] continuing adapter /workspace/out/skillprop/round0/adapter
+trainable params: 29,933,568 || all params: 3,115,872,256 || trainable%: 0.9607
+[update] ep0 step1 loss=0.0042
+[update] ep0 step2 loss=0.0081
+[update] ep0 step3 loss=0.0017
+[update] ep0 step4 loss=0.0209
+[update] ep1 step5 loss=0.0024
+[update] ep1 step6 loss=0.0024
+[update] ep1 step7 loss=0.0019
+[update] ep1 step8 loss=0.0013
+[update] ep2 step9 loss=0.0009
+[update] ep2 step10 loss=0.0007
+[update] ep2 step11 loss=0.0005
+[update] ep2 step12 loss=0.0004
+[update] DONE -> /workspace/out/skillprop/round1/adapter in 3s final_loss=0.0004
+
+########## ROUND 2 ##########
+
+$ round2: proposer.py
+  kubectl -n siclaw-rl-yye exec rl-skill-trainer -- bash -lc cd /workspace/rl && HF_HOME=/workspace/hf python proposer.py --model Qwen/Qwen2.5-3B-Instruct --adapter /workspace/out/skillprop/round1/adapter --category network-dns --examples-file /workspace/rl/examples.json --k 4 --out /workspace/out/skillprop/round2/candidates.json --temperature 0.9 --max-new-tokens 700 --seed 114
+[proposer] loading Qwen/Qwen2.5-3B-Instruct adapter=/workspace/out/skillprop/round1/adapter
+Sliding Window Attention is enabled but not implemented for `sdpa`; unexpected results may be encountered.
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.62s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.16it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.02it/s]
+[proposer] loaded adapter /workspace/out/skillprop/round1/adapter
+[proposer] candidate 0: 744 chars
+[proposer] candidate 1: 744 chars
+[proposer] candidate 2: 744 chars
+[proposer] candidate 3: 744 chars
+[proposer] wrote 4 candidates -> /workspace/out/skillprop/round2/candidates.json in 23s
+
+$ cp pod /workspace/out/skillprop/round2/candidates.json -> experiments/rl-skill-opt/results/rl_netdns_main/round2/candidates.json
+  kubectl -n siclaw-rl-yye cp siclaw-rl-yye/rl-skill-trainer:/workspace/out/skillprop/round2/candidates.json experiments/rl-skill-opt/results/rl_netdns_main/round2/candidates.json
+tar: Removing leading `/' from member names
+
+--- round 2 candidate 0 (744 chars): scoring ---
+[reward] provider=kimi cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results/rl_netdns_main/round2/cand0.txt skillChars=744
+[reward] agent c070 -> completed
+[reward] agent c068 -> completed
+[reward] agent c069 -> completed
+[reward] agent c071 -> completed
+[reward] agent c072 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 114s | tokens in=30662 out=10335 total=556389 toolCalls=41 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 50.0%   mean total = 0.600
+  localization  0.500
+  mechanism     0.500
+  scope         0.750
+  evidence      0.750
+  remediation   0.500
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.600   (delta -0.101)
+  largest disagreements (id  keyword -> llm):
+    c071  0.92 -> 0.30  (-0.62)
+    c073  0.65 -> 1.00  (+0.35)
+    c072  0.45 -> 0.10  (-0.34)
+    c069  0.43 -> 0.20  (-0.23)
+    c070  0.83 -> 1.00  (+0.17)
+    c068  0.93 -> 1.00  (+0.07)
+
+wrote experiments/rl-skill-opt/results/rl_netdns_main/round2/eval_cand0/judgments.json
+[reward] judge meanScore=0.6 passRate=50% graded=6/6
+{"reward":0.6,"advantage":0,"passRate":0.5,"tokensTotal":556389,"completed":6,"runDir":"experiments/rl-skill-opt/results/rl_netdns_main/round2/eval_cand0"}
+  -> reward=0.6 advantage=0 tokens=556389
+
+--- round 2 candidate 1 (744 chars): scoring ---
+[reward] provider=kimi cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results/rl_netdns_main/round2/cand1.txt skillChars=744
+[reward] agent c069 -> completed
+[reward] agent c070 -> completed
+[reward] agent c068 -> completed
+[reward] agent c071 -> completed
+[reward] agent c073 -> completed
+[reward] agent c072 -> completed
+[reward] agent done in 97s | tokens in=27200 out=9530 total=361274 toolCalls=31 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 50.0%   mean total = 0.583
+  localization  0.417
+  mechanism     0.417
+  scope         0.750
+  evidence      0.750
+  remediation   0.583
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.583   (delta -0.118)
+  largest disagreements (id  keyword -> llm):
+    c071  0.92 -> 0.10  (-0.82)
+    c068  0.93 -> 0.40  (-0.53)
+    c069  0.43 -> 0.80  (+0.37)
+    c073  0.65 -> 1.00  (+0.35)
+    c072  0.45 -> 0.20  (-0.24)
+    c070  0.83 -> 1.00  (+0.17)
+
+wrote experiments/rl-skill-opt/results/rl_netdns_main/round2/eval_cand1/judgments.json
+[reward] judge meanScore=0.583 passRate=50% graded=6/6
+{"reward":0.583,"advantage":-0.017,"passRate":0.5,"tokensTotal":361274,"completed":6,"runDir":"experiments/rl-skill-opt/results/rl_netdns_main/round2/eval_cand1"}
+  -> reward=0.583 advantage=-0.017 tokens=361274
+
+--- round 2 candidate 2 (744 chars): scoring ---
+[reward] provider=kimi cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results/rl_netdns_main/round2/cand2.txt skillChars=744
+[reward] agent c068 -> completed
+[reward] agent c069 -> completed
+[reward] agent c072 -> completed
+[reward] agent c071 -> completed
+[reward] agent c070 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 118s | tokens in=24329 out=12184 total=456993 toolCalls=42 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 33.3%   mean total = 0.500
+  localization  0.417
+  mechanism     0.167
+  scope         0.750
+  evidence      0.667
+  remediation   0.500
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.500   (delta -0.201)
+  largest disagreements (id  keyword -> llm):
+    c068  0.93 -> 0.40  (-0.53)
+    c072  0.45 -> 0.10  (-0.34)
+    c070  0.83 -> 0.50  (-0.33)
+    c069  0.43 -> 0.20  (-0.23)
+    c073  0.65 -> 0.80  (+0.15)
+    c071  0.92 -> 1.00  (+0.08)
+
+wrote experiments/rl-skill-opt/results/rl_netdns_main/round2/eval_cand2/judgments.json
+[reward] judge meanScore=0.5 passRate=33% graded=6/6
+{"reward":0.5,"advantage":-0.1,"passRate":0.3333333333333333,"tokensTotal":456993,"completed":6,"runDir":"experiments/rl-skill-opt/results/rl_netdns_main/round2/eval_cand2"}
+  -> reward=0.5 advantage=-0.1 tokens=456993
+
+--- round 2 candidate 3 (744 chars): scoring ---
+[reward] provider=kimi cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results/rl_netdns_main/round2/cand3.txt skillChars=744
+[reward] agent c070 -> completed
+[reward] agent c069 -> completed
+[reward] agent c068 -> completed
+[reward] agent c072 -> completed
+[reward] agent c071 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 102s | tokens in=33283 out=9476 total=522823 toolCalls=38 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 50.0%   mean total = 0.650
+  localization  0.583
+  mechanism     0.500
+  scope         0.833
+  evidence      0.750
+  remediation   0.583
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.650   (delta -0.051)
+  largest disagreements (id  keyword -> llm):
+    c069  0.43 -> 0.10  (-0.33)
+    c070  0.83 -> 1.00  (+0.17)
+    c073  0.65 -> 0.50  (-0.15)
+    c072  0.45 -> 0.30  (-0.15)
+    c071  0.92 -> 1.00  (+0.08)
+    c068  0.93 -> 1.00  (+0.07)
+
+wrote experiments/rl-skill-opt/results/rl_netdns_main/round2/eval_cand3/judgments.json
+[reward] judge meanScore=0.65 passRate=50% graded=6/6
+{"reward":0.65,"advantage":0.05,"passRate":0.5,"tokensTotal":522823,"completed":6,"runDir":"experiments/rl-skill-opt/results/rl_netdns_main/round2/eval_cand3"}
+  -> reward=0.65 advantage=0.05 tokens=522823
+
+### round 2 summary: meanReward=0.583 bestReward=0.650 (cand 3) tokens=1897479
+
+$ cp experiments/rl-skill-opt/results/rl_netdns_main/round2/scored.json -> pod
+  kubectl -n siclaw-rl-yye cp experiments/rl-skill-opt/results/rl_netdns_main/round2/scored.json siclaw-rl-yye/rl-skill-trainer:/workspace/out/skillprop/round2/scored.json
+
+$ round2: update.py (RAFT)
+  kubectl -n siclaw-rl-yye exec rl-skill-trainer -- bash -lc cd /workspace/rl && HF_HOME=/workspace/hf python update.py --model Qwen/Qwen2.5-3B-Instruct --in-adapter /workspace/out/skillprop/round1/adapter --scored-file /workspace/out/skillprop/round2/scored.json --category network-dns --examples-file /workspace/rl/examples.json --out-adapter /workspace/out/skillprop/round2/adapter
+[update] round mean reward=0.583  keeping 2/4: [0.65, 0.6]
+[update] 2 SFT sequences (after advantage weighting)
+Sliding Window Attention is enabled but not implemented for `sdpa`; unexpected results may be encountered.
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:01<00:01,  1.63s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.15it/s]Loading checkpoint shards: 100%|██████████| 2/2 [00:01<00:00,  1.02it/s]
+[update] continuing adapter /workspace/out/skillprop/round1/adapter
+trainable params: 29,933,568 || all params: 3,115,872,256 || trainable%: 0.9607
+[update] ep0 step1 loss=0.0003
+[update] ep0 step2 loss=0.0010
+[update] ep1 step3 loss=0.0001
+[update] ep1 step4 loss=0.0003
+[update] ep2 step5 loss=0.0002
+[update] ep2 step6 loss=0.0003
+[update] DONE -> /workspace/out/skillprop/round2/adapter in 2s final_loss=0.0003
+
+=== DONE. reward trajectory (meanReward / bestReward per round): ===
+  round 0: mean=0.737 best=0.850 (cand 1)
+  round 1: mean=0.587 best=0.750 (cand 2)
+  round 2: mean=0.583 best=0.650 (cand 3)
+best skill -> experiments/rl-skill-opt/results/rl_netdns_main/BEST_SKILL.txt (round 0, reward 0.850)
+{"runRoot":"experiments/rl-skill-opt/results/rl_netdns_main","trajectory":[{"round":0,"meanReward":0.7374999999999999,"bestReward":0.85},{"round":1,"meanReward":0.5872499999999999,"bestReward":0.75},{"round":2,"meanReward":0.58325,"bestReward":0.65}],"bestSkill":"experiments/rl-skill-opt/results/rl_netdns_main/BEST_SKILL.txt"}

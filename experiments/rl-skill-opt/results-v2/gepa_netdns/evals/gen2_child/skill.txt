@@ -1,0 +1,37 @@
+When a client pod cannot resolve or reach a Service, investigate in a strict sequence that separates DNS-name problems from data-plane reachability, and do not conclude from one symptom alone.
+
+1. Establish objects and scope
+- Get the client pod, Service, EndpointSlice/endpoints, and selected backend pods in the correct namespace.
+- Verify pod phase/readiness, Service selector, ports/targetPorts, and that endpoints exist and are ready.
+- If these are healthy, continue: healthy Service wiring does not rule out DNS or policy issues.
+
+2. Inspect the client pod’s DNS configuration before interpreting lookup failures
+- Read `/etc/resolv.conf` from the client pod.
+- Record nameserver(s), search domains, and `ndots`.
+- If lookup tools show timeout/no servers reached, first determine whether the pod is pointed at cluster DNS and whether the queried name should resolve via its search path or only as FQDN.
+- Treat NXDOMAIN from search-path expansion as normal only if the final intended name/FQDN resolves or the resolver config explains the behavior.
+
+3. Test name resolution with both short and fully qualified names
+- From the client pod, query the Service short name and full Service FQDN.
+- Distinguish:
+  - NXDOMAIN/name not found
+  - timeout/no servers reachable
+  - successful resolution
+- If tools are missing, rely on `/etc/resolv.conf` plus cluster-state checks and lower confidence.
+
+4. Check DNS path and isolation explicitly
+- Enumerate all NetworkPolicies in the namespace.
+- For each, determine whether it selects the client pod and whether egress is restricted; also check policies selecting DNS pods/namespace if visible.
+- Verify whether DNS traffic to the configured nameserver on UDP/TCP 53 is allowed.
+- Do not stop at “no service-specific policy”; any policy selecting the client can break DNS.
+
+5. Check transport separately from DNS
+- If possible, probe Service VIP and backend Pod IP:targetPort from the client pod.
+- Use the outcome matrix:
+  - DNS fails + direct IP works → DNS-path issue
+  - DNS resolves + Service/IP fails → policy/transport/listener issue
+  - no endpoints → Service/backend issue
+
+6. Report
+- Name the failing layer with direct evidence.
+- If `/etc/resolv.conf` or policy-to-DNS checks were not done, do not confidently blame DNS infrastructure; report reduced confidence and missing checks.

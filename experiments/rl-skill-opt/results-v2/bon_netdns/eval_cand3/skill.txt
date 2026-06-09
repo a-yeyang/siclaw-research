@@ -1,0 +1,32 @@
+**SOP: Diagnose `network-dns` faults (service name resolution / service reachability by DNS name)**
+
+1. **First rule out basic object absence/mismatch**
+   - Inspect the **client Pod** (name, namespace, phase, node, restarts).
+   - Inspect the target **Service** (type, ClusterIP, ports, selector, namespace).
+   - Inspect **Endpoints/EndpointSlices** for that Service.
+   - Inspect the backing **server Pod(s)** (phase, readiness, labels, container ports).
+   - Decision:
+     - If Service is missing, in wrong namespace, has wrong port/targetPort, or selector does not match server Pod labels, this is the **root cause**.
+     - If Endpoints/EndpointSlices are empty while server Pods exist, determine whether pods are **not Ready** or labels/selectors do not match; empty endpoints are usually a **symptom** of readiness/selector issues.
+
+2. **Then rule out DNS construction / search-path issues**
+   - Inspect the client Pod’s **`dnsPolicy`**, **`dnsConfig`**, `/etc/resolv.conf` (via Pod spec/status if available), and the exact name being used by the application.
+   - Confirm whether short name, `<service>`, `<service>.<namespace>`, or full cluster FQDN is required from that namespace.
+   - Decision:
+     - If the queried name is wrong for the client namespace/search domain, or Pod DNS settings override cluster DNS incorrectly, this is the **root cause**.
+     - Failed lookups from a correct name imply a downstream DNS service problem or missing records.
+
+3. **Then rule out cluster DNS service failure**
+   - Inspect **CoreDNS/kube-dns** Pods, Deployment, Service, Endpoints, readiness, restarts, and recent logs.
+   - Decision:
+     - If DNS Pods are crashlooping/unready, Service/endpoints missing, or logs show upstream/config errors, cluster DNS is the **root cause**.
+     - If DNS is healthy and returns the Service ClusterIP, DNS is not the root cause.
+
+4. **Finally rule out post-resolution network blocking**
+   - Inspect **NetworkPolicies** in client and server namespaces and any namespace selectors that affect DNS egress (`UDP/TCP 53`) or traffic to the target Service/Pods.
+   - Decision:
+     - If name resolves but connection fails, and policies deny DNS or app traffic, NetworkPolicy is the **root cause**; failed reachability is the **symptom**.
+
+**A correct diagnosis must name:** the failing layer (Service spec, endpoints/readiness, Pod DNS config, cluster DNS, or NetworkPolicy), the exact misconfigured resource(s), and whether the observed failure is name resolution failure or post-resolution connectivity failure.
+
+**Safe remediation:** correct Service selector/ports, fix Pod labels/readiness, use the correct service FQDN/namespace, restore CoreDNS/kube-dns health/config, or add the minimal required NetworkPolicy allows for DNS and application traffic.

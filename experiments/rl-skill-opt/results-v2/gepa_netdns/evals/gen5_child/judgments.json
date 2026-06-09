@@ -1,0 +1,602 @@
+[
+  {
+    "caseId": "c068",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis explicitly identifies 'NetworkPolicy/c068-deny-egress' as the blocking policy, and names pod/c068-client, pod/c068-server, and service/c068-server-svc as the affected resources, matching the ground truth exactly.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis clearly states 'c068-server-svc 配置正常，且已有 ready 后端' and 'c068-server 本身状态为 Running/Ready', correctly attributing the fault to the NetworkPolicy rather than the server or service.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis explains that NetworkPolicy/c068-deny-egress selects c068-client via podSelector matchLabels app=c068-client, has policyTypes:[Egress] with no allow rules, thus denying all egress including DNS (UDP/TCP 53) and service traffic — identical to the ground truth mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis provides the concrete detail: 'podSelector.matchLabels.app = c068-client', 'policyTypes: [Egress]', '未定义任何允许的 egress 规则', which is the specific misconfiguration causing the deny-all egress behavior.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis states the impact is on pod/c068-client's ability to reach DNS and c068-server-svc, consistent with the ground truth scope of traffic involving the client/server pods and service.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis correctly scopes the impact to c068-client's outbound traffic being blocked, without overstating (e.g., claiming cluster-wide impact) or understating (e.g., missing DNS blockage).",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Concrete evidence cited includes: nslookup returning 'connection timed out; no servers could be reached', /etc/resolv.conf showing nameserver 172.17.0.10, EndpointSlice showing ready endpoint 172.16.36.206:8080, and the actual NetworkPolicy YAML fields.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The evidence is consistent: DNS timeout (not NXDOMAIN) aligns with egress being blocked to the DNS server; the NetworkPolicy YAML with no egress rules explains the block; the healthy server/service rules out server-side issues.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation recommends modifying NetworkPolicy/c068-deny-egress to explicitly allow egress to DNS (UDP/TCP 53) and to c068-server-svc port 8080/TCP, which directly addresses the deny-all egress root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation is appropriately scoped — it suggests targeted allow rules rather than deleting the policy outright, and notes to verify no unintended impact on other isolation policies before making changes.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 57943,
+    "toolCallCount": 14,
+    "judgeModel": "claude-sonnet-4-6"
+  },
+  {
+    "caseId": "c069",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": false,
+    "totalScore": 0.1,
+    "dimensions": {
+      "localization": {
+        "score": 0
+      },
+      "mechanism": {
+        "score": 0
+      },
+      "scope": {
+        "score": 0
+      },
+      "evidence": {
+        "score": 0.5
+      },
+      "remediation": {
+        "score": 0
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The agent mentions c069-client, c069-server, and c069-server-svc only in passing as healthy resources, not as fault origins. It does not identify networkpolicy/c069-deny-ingress as the target resource at all.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The agent concludes 'root cause remains undetermined' but implicitly treats DNS/Service layer as the primary fault domain, which is incorrect. It does not name the NetworkPolicy as the fault origin.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The agent does not identify the NetworkPolicy blocking ingress as the root cause mechanism. It only vaguely suggests 'network policy' as a possible next check in the remediation section, without diagnosing it as the actual cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The agent provides no concrete detail about a NetworkPolicy (e.g., its name, selector, or deny-all ingress rule). The specific mutated detail (NetworkPolicy selecting server and denying all ingress from client) is absent.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The agent states 'no evidence of a broken Service object, missing endpoints, or DNS resolution failure' and frames the scope as potentially a transport/application-level issue, which is inconsistent with the ground truth scope of a NetworkPolicy blocking traffic between the specific client/server pods.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The agent understates the impact by concluding DNS and service discovery are healthy and leaving root cause undetermined, missing the actual connectivity block caused by the NetworkPolicy.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The agent cites concrete observed evidence: ClusterIP, EndpointSlice with ready endpoints, nslookup output returning correct IP, and /etc/resolv.conf contents.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "No",
+        "evidence": "The evidence cited (DNS resolution working, endpoints ready) is consistent with the agent's (incorrect) conclusion that DNS/service layer is healthy, but it is not consistent with the actual root cause (NetworkPolicy blocking ingress). The agent never checked NetworkPolicy objects.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The agent's remediation suggestion is to probe TCP connectivity and 'inspect namespace-local NetworkPolicy objects' as a next step, not as an actual fix. No remediation addressing the NetworkPolicy is provided.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "Since the root cause was not identified, no remediation addressing the actual fault (modifying or removing networkpolicy/c069-deny-ingress) was recommended. The suggestion to inspect NetworkPolicies is safe but does not constitute a fix.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 35251,
+    "toolCallCount": 9,
+    "judgeModel": "claude-sonnet-4-6"
+  },
+  {
+    "caseId": "c070",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Diagnosis explicitly identifies `pod/c070-client` as the fault origin, matching ground truth localization.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis correctly identifies service/c070-server-svc and pod/c070-server as healthy, not as fault origins. The primary fault is correctly attributed to pod/c070-client.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Diagnosis states client pod uses external/non-cluster DNS server (203.0.113.1) instead of Kubernetes cluster DNS, which is exactly the mechanism described in ground truth.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Diagnosis provides the specific nameserver IP `203.0.113.1` and the wrong search domain `bad.local` from /etc/resolv.conf, matching the concrete mutated detail.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Diagnosis states 'Scope appears limited to pod/c070-client in this case,' consistent with ground truth scope of traffic involving this case's client/server pods.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis neither overstates (no claim of cluster-wide impact) nor understates (correctly identifies the client pod as the affected resource with downstream impact on reaching c070-server-svc).",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Diagnosis cites concrete observed evidence: /etc/resolv.conf contents showing `nameserver 203.0.113.1`, `search bad.local`, nslookup timeout result, EndpointSlice backend IP, ClusterIP of service.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The cited evidence (wrong nameserver 203.0.113.1 causing DNS timeout) is directly consistent with the identified root cause of cluster DNS resolution failure.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation suggests removing incorrect dnsPolicy/dnsConfig overrides and setting dnsPolicy: ClusterFirst to restore cluster DNS, which directly addresses the root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation is scoped to fixing the client pod's DNS configuration only, with no destructive actions proposed. Suggests re-testing after fix.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 29504,
+    "toolCallCount": 5,
+    "judgeModel": "claude-sonnet-4-6"
+  },
+  {
+    "caseId": "c071",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": false,
+    "totalScore": 0.5,
+    "dimensions": {
+      "localization": {
+        "score": 0
+      },
+      "mechanism": {
+        "score": 0
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 0.5
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The diagnosis does not identify networkpolicy/c071-deny-egress as the fault resource. It only mentions checking NetworkPolicy as a recommendation, not as the identified root cause resource.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The diagnosis names DNS path failure as the primary fault origin, treating it as a potential infrastructure issue rather than correctly identifying the NetworkPolicy blocking egress as the root cause. DNS is a downstream symptom, not the primary fault origin.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The ground truth mechanism is that a NetworkPolicy selects the client and denies all egress including DNS/service traffic. The diagnosis only observes DNS timeout symptoms and suggests checking NetworkPolicy as a recommendation, without identifying the NetworkPolicy as the actual root cause mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The diagnosis does not identify the specific NetworkPolicy (c071-deny-egress) or its concrete configuration (deny-all egress rule selecting the client pod). It only vaguely suggests checking NetworkPolicy as a possible cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis correctly scopes the impact to c071-client's inability to reach c071-server-svc, which is consistent with the ground truth scope involving the client/server pods and service.",
+        "confidence": "Medium"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis appropriately notes uncertainty about whether it's a namespace-wide or cluster-wide DNS issue, and focuses on the client's specific connectivity problem without major over- or under-statement.",
+        "confidence": "Medium"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The diagnosis cites concrete observed evidence: nslookup returning 'connection timed out; no servers could be reached', resolv.conf showing nameserver 172.17.0.10, endpoint 172.16.36.209:8080, pod Running/Ready status, and service ClusterIP.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The observed DNS timeout from c071-client is consistent with egress being blocked by a NetworkPolicy, though the diagnosis doesn't make this connection explicitly. The evidence is real and not contradictory.",
+        "confidence": "Medium"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The remediation suggests checking NetworkPolicy and DNS health, but since the actual root cause (c071-deny-egress NetworkPolicy) was not identified, the remediation does not specifically address removing or modifying that policy. It's too vague to constitute a fix.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The suggested remediation (check NetworkPolicy blocking UDP/TCP 53, check DNS health) is not destructive and is appropriately scoped, even if incomplete.",
+        "confidence": "Medium"
+      }
+    ],
+    "durationMs": 54445,
+    "toolCallCount": 13,
+    "judgeModel": "claude-sonnet-4-6"
+  },
+  {
+    "caseId": "c072",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": false,
+    "totalScore": 0.1,
+    "dimensions": {
+      "localization": {
+        "score": 0
+      },
+      "mechanism": {
+        "score": 0
+      },
+      "scope": {
+        "score": 0
+      },
+      "evidence": {
+        "score": 0.5
+      },
+      "remediation": {
+        "score": 0
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The diagnosis focuses on DNS resolution and application-level naming issues, mentioning pod/c072-client, pod/c072-server, and service/c072-server-svc only as healthy resources. It does not identify networkpolicy/c072-deny-ingress as the fault resource at all.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The diagnosis names 'wrong service name used by the application' or 'port-level issue' as the primary fault origin, which are unrelated to the actual cause (NetworkPolicy blocking ingress). These are incorrect primary fault origins.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The ground truth mechanism is a NetworkPolicy selecting the server and denying all ingress from the client. The diagnosis concludes DNS is working fine and speculates about wrong service names or port mismatches, completely missing the NetworkPolicy mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "No concrete detail about a NetworkPolicy, its selectors, or ingress deny rules is mentioned anywhere in the diagnosis. The diagnosis instead discusses resolv.conf, nslookup results, and application naming.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The ground truth scope is traffic between c072-client and c072-server pods blocked by NetworkPolicy. The diagnosis scopes the problem as a DNS/naming issue or port mismatch, which is a different and incorrect scope.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The diagnosis understates the impact by concluding 'DNS is fine' and suggesting the symptom description is inaccurate, while the actual issue (NetworkPolicy blocking all ingress) would cause complete connectivity failure, not just a naming confusion.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The diagnosis cites concrete observed evidence: /etc/resolv.conf contents, nslookup returning 172.17.124.64, ClusterIP value, pod Running status. These are real observations from the environment.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "No",
+        "evidence": "The evidence (DNS resolves successfully, service exists, pod is Running) is consistent with the observed facts but contradicts the agent's own conclusion that the problem is a naming error. More importantly, the evidence is irrelevant to and inconsistent with the actual root cause (NetworkPolicy), which the agent never investigated.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The recommended remediation (check application uses correct service name, verify Endpoints, check port/targetPort) does not address the actual root cause of a NetworkPolicy denying ingress. Applying these recommendations would not fix the connectivity issue.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "While the recommendations are not destructive, they are entirely misdirected. They address non-existent problems (wrong service name, port mismatch) rather than the NetworkPolicy that is actually blocking traffic.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 29322,
+    "toolCallCount": 6,
+    "judgeModel": "claude-sonnet-4-6"
+  },
+  {
+    "caseId": "c073",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Diagnosis explicitly identifies pod/c073-client as the fault origin, and also mentions c073-server-svc and c073-server as healthy resources, matching the ground truth target resources.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis correctly identifies c073-client as the primary fault origin and explicitly states that c073-server-svc and its backend are healthy, not blaming them as the root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Diagnosis states 'c073-client 使用了错误的 DNS nameserver，导致对 Service 名称解析超时' and shows nameserver 203.0.113.1 in /etc/resolv.conf, which matches the ground truth mechanism of overriding DNS with TEST-NET nameserver 203.0.113.1.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis provides the concrete detail: nameserver 203.0.113.1 (a TEST-NET address), search bad.local, and options ndots:5 from /etc/resolv.conf, plus the nslookup timeout result as confirmation.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Diagnosis states impact is limited to pod c073-client and its DNS-dependent service access, consistent with ground truth scope of traffic involving this case's client/server pods.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis notes the scope covers c073-client and mentions any DNS-dependent access from that pod is affected, which is a reasonable and accurate characterization without over- or under-stating.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Concrete evidence cited includes: /etc/resolv.conf contents (nameserver 203.0.113.1, search bad.local), nslookup output showing 'connection timed out; no servers could be reached', EndpointSlice showing ready endpoint 172.16.243.229:true on port 8080/TCP.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "All cited evidence is consistent: the unreachable nameserver 203.0.113.1 explains the DNS timeout, and the healthy EndpointSlice confirms the server side is fine, supporting the client-side DNS misconfiguration as root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation recommends correcting the DNS nameserver in c073-client's pod configuration, removing dnsPolicy:None/dnsConfig overrides, and restoring cluster DNS (kube-dns/CoreDNS), which directly addresses the root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation is scoped to fixing the client pod's DNS configuration only, is non-destructive, and appropriately targeted without affecting other resources.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 30876,
+    "toolCallCount": 7,
+    "judgeModel": "claude-sonnet-4-6"
+  }
+]

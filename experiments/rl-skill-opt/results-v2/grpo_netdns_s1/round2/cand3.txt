@@ -1,0 +1,36 @@
+SKILL: Diagnosing network-dns connectivity and DNS-resolution failures
+
+WHEN TO APPLY
+A client pod cannot resolve or reach a Service even though the backing server pod exists and appears Running. The client pods may be CrashLooping or restarting due to failed connections. Treat those restarts as symptoms, not the root cause. You must positively rule in/out potential issues before identifying the root cause.
+
+PRECISE ORDER OF CHECKS
+To accurately diagnose the issue, perform the following read-only kubectl commands in sequence:
+
+1. ENUMERATE ALL NETWORKPOLICYs AFFECTING THE CLIENT NAMESPACE.
+   - List all network policies using `kubectl get networkpolicy -n <client-namespace>`
+   - Describe each policy using `describe networkpolicy <policy-name>` to review its selector and policy types.
+   - Compare the policy's selector labels with the client pod's labels using `kubectl get pod <client-pod-name> -L namespace-selector` to identify potential blocking policies.
+
+2. VERIFY EGRESS AND INGRESS NETWORKPOLICY RULES.
+   - Confirm there are no deny-egress rules targeting the client namespace using `kubectl get networkpolicy -n <client-namespace> -o jsonpath='{range.items[?(@.policyType=="Egress")].rules}{{.from..podSelector.matches..key}} {{.to..podSelector.matches..key}}{{println("\n")}}{range.items[?(@.policyType=="Ingress")].rules}{{.from..podSelector.matches..key}} {{.to..podSelector.matches..key}}{{end}}"
+   - Check for ingress policies denying traffic to the specific service IP or selector associated with the client pod.
+
+TRUE ROOT CAUSES AND SYMPTOMS
+Potential causes include:
+- Deny-egress NetworkPolicies blocking necessary DNS and TCP/UDP ports for client DNS resolution.
+- Deny-ingress NetworkPolicies preventing traffic from clients to server services.
+- Incorrect or missing DNSConfigurations in the client pod yaml, overriding system-wide settings.
+
+REMEDY STEPS
+A correct diagnosis must identify:
+- Faulting resource (NetworkPolicy name and namespace, client pod name, server service name).
+- Concrete mechanism (denial of egress, ingress, incorrect DNSConfiguration).
+- Scope (affected client pods, services).
+- Supporting evidence (kubectl output showing denied rules, conflicting DNSConfigurations).
+- Safe remediation (revoke or modify blocking network policies, adjust DNSConfiguration).
+
+Example safe remediation:
+- Revoke deny-egress network policy causing DNS resolution issues using `kubectl patch networkpolicy <policy-name> -p '{"spec":{"policyType":"Egress","egress":[],"to":[]}}' -n <client-namespace>`
+- Modify DNS configuration in the client pod manifest to point to official upstream DNS servers, using `kubectl edit pod/<client-pod-name>` to add or update the dnsConfig field.
+- Verify changes with `kubectl get pod <client-pod-name> -o yaml` to confirm DNS settings and DNS resolver changes.
+- Ensure DNSSEC is disabled if required to avoid additional latency and verification costs.

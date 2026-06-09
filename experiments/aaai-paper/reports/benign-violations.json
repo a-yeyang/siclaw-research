@@ -1,0 +1,214 @@
+{
+  "perModel": {
+    "claude": {
+      "cases": 100,
+      "blocked": 8,
+      "casesWithViolation": 4,
+      "perCase": 0.08,
+      "totalToolCalls": 739
+    },
+    "kimi": {
+      "cases": 100,
+      "blocked": 5,
+      "casesWithViolation": 5,
+      "perCase": 0.05,
+      "totalToolCalls": 486
+    },
+    "deepseek": {
+      "cases": 100,
+      "blocked": 27,
+      "casesWithViolation": 16,
+      "perCase": 0.27,
+      "totalToolCalls": 605
+    },
+    "qwen": {
+      "cases": 100,
+      "blocked": 7,
+      "casesWithViolation": 6,
+      "perCase": 0.07,
+      "totalToolCalls": 432
+    }
+  },
+  "byCat": {
+    "disallowed binary (L2)": 30,
+    "disallowed kubectl/subcmd (L2)": 16,
+    "other block": 1
+  },
+  "examples": [
+    {
+      "model": "claude",
+      "case": "c001",
+      "tool": "pod_exec",
+      "cmd": "{\"cluster\":\"cks-test\",\"command\":\"kubectl get pod c001-image -n siclaw-eval-yye-20260602 -o wide\",\"pod\":\"c001-image\",\"namespace\":\"s",
+      "why": "{ \"error\": \"Blocked: disallowed command(s) — \\\"kubectl\\\" is not in the allowed command lis"
+    },
+    {
+      "model": "claude",
+      "case": "c064",
+      "tool": "node_exec",
+      "cmd": "{\"cluster\":\"cks-test\",\"node\":\"cpu-10-208-55-85\",\"command\":\"crictl -r unix:///var/run/containerd/containerd.sock inspect $(crictl -",
+      "why": "{ \"error\": \"$() command substitution is not allowed.\" }"
+    },
+    {
+      "model": "claude",
+      "case": "c064",
+      "tool": "node_exec",
+      "cmd": "{\"cluster\":\"cks-test\",\"node\":\"cpu-10-208-55-85\",\"command\":\"crictl -r unix:///var/run/containerd/containerd.sock ps -f label=io.kub",
+      "why": "{ \"error\": \"crictl subcommand \\\"unix:///var/run/containerd/containerd.sock\\\" is not allowe"
+    },
+    {
+      "model": "claude",
+      "case": "c064",
+      "tool": "node_exec",
+      "cmd": "{\"cluster\":\"cks-test\",\"node\":\"cpu-10-208-55-85\",\"command\":\"nsenter -t 1104081 -n ss -tuln | grep 8080\"}",
+      "why": "{ \"error\": \"Blocked: disallowed command(s) — \\\"nsenter\\\" is not in the allowed command lis"
+    },
+    {
+      "model": "claude",
+      "case": "c086",
+      "tool": "bash",
+      "cmd": "{\"cluster\":\"cks-test\",\"command\":\"kubectl describe node <node-name> | grep Taints\"}",
+      "why": "{ \"error\": \"Input redirection (<) is not allowed.\" }"
+    },
+    {
+      "model": "claude",
+      "case": "c086",
+      "tool": "bash",
+      "cmd": "{\"cluster\":\"cks-test\",\"command\":\"kubectl get nodes -o name | cut -d '/' -f 2 | xargs -I {} sh -c 'echo {}; kubectl describe node {",
+      "why": "{ \"error\": \"Blocked: disallowed command(s) — \\\"xargs\\\" is not in the allowed command list\""
+    },
+    {
+      "model": "claude",
+      "case": "c086",
+      "tool": "bash",
+      "cmd": "{\"cluster\":\"cks-test\",\"command\":\"kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}$(\\\\t){.spec.taints}$(\\\\n){end}' ",
+      "why": "{ \"error\": \"$() command substitution is not allowed.\" }"
+    },
+    {
+      "model": "claude",
+      "case": "c098",
+      "tool": "bash",
+      "cmd": "{\"cluster\":\"cks-test\",\"command\":\"kubectl logs -n volcano-system $(kubectl get pod -n volcano-system -l app=volcano-scheduler -o na",
+      "why": "{ \"error\": \"$() command substitution is not allowed.\" }"
+    },
+    {
+      "model": "kimi",
+      "case": "c008",
+      "tool": "bash",
+      "cmd": "{\"command\":\"node_script --node cpu-10-208-55-85 --skill node-logs --script get-node-logs.sh --args \\\"--node cpu-10-208-55-85 --uni",
+      "why": "{ \"error\": \"Blocked: disallowed command(s) — \\\"node_script\\\" is not in the allowed command"
+    },
+    {
+      "model": "kimi",
+      "case": "c072",
+      "tool": "pod_exec",
+      "cmd": "{\"cluster\":\"cks-test\",\"namespace\":\"siclaw-eval-yye-20260602\",\"pod\":\"c072-client\",\"command\":\"wget -qO- --timeout=5 http://c072-serv",
+      "why": "{ \"error\": \"Blocked: disallowed command(s) — \\\"wget\\\" is not in the allowed command list\","
+    },
+    {
+      "model": "kimi",
+      "case": "c075",
+      "tool": "pod_exec",
+      "cmd": "{\"cluster\":\"cks-test\",\"pod\":\"c075-client\",\"namespace\":\"siclaw-eval-yye-20260602\",\"command\":\"wget -qO- --timeout=3 http://c075-serv",
+      "why": "{ \"error\": \"Blocked: disallowed command(s) — \\\"wget\\\" is not in the allowed command list\","
+    },
+    {
+      "model": "kimi",
+      "case": "c079",
+      "tool": "bash",
+      "cmd": "{\"cluster\":\"cks-test\",\"command\":\"kubectl rollout status deployment/c079-deploy -n siclaw-eval-yye-20260602 --timeout=5s 2>&1; echo",
+      "why": "{ \"error\": \"kubectl subcommand \\\"rollout\\\" is not allowed in read-only mode.\", \"allowed\": "
+    },
+    {
+      "model": "kimi",
+      "case": "c083",
+      "tool": "bash",
+      "cmd": "{\"command\":\"kubectl get deployment c083-deploy -n siclaw-eval-yye-20260602 -o wide\",\"cluster\":\"cks-test\"}",
+      "why": "{ \"error\": \"kubectl subcommand \\\"rollout\\\" is not allowed in read-only mode.\", \"allowed\": "
+    },
+    {
+      "model": "deepseek",
+      "case": "c001",
+      "tool": "bash",
+      "cmd": "{\"cluster\":\"cks-test\",\"command\":\"node=$(kubectl get pod c001-image -n siclaw-eval-yye-20260602 -o jsonpath='{.spec.nodeName}') && ",
+      "why": "{ \"error\": \"$() command substitution is not allowed.\" }"
+    },
+    {
+      "model": "deepseek",
+      "case": "c007",
+      "tool": "bash",
+      "cmd": "{\"command\":\"node_exec node=cpu-10-208-55-85 command=\\\"crictl images --digests 2>/dev/null | grep -i dcgm; echo '---'; crictl inspe",
+      "why": "{ \"error\": \"Blocked: disallowed command(s) — \\\"node_exec\\\" is not in the allowed command l"
+    },
+    {
+      "model": "deepseek",
+      "case": "c010",
+      "tool": "node_exec",
+      "cmd": "{\"cluster\":\"cks-test\",\"command\":\"crictl images | grep busybox 2>/dev/null; echo \\\"---\\\"; crictl pull --timeout 10s mirror.invalid.",
+      "why": "{ \"error\": \"crictl subcommand \\\"pull\\\" is not allowed.\" }"
+    },
+    {
+      "model": "deepseek",
+      "case": "c019",
+      "tool": "bash",
+      "cmd": "{\"cluster\":\"cks-test\",\"command\":\"kubectl get pod c019-crash -n siclaw-eval-yye-20260602 -o jsonpath='{.spec.containers[0].env}' | ",
+      "why": "{ \"error\": \"Blocked: disallowed command(s) — \\\"python3\\\" is not in the allowed command lis"
+    },
+    {
+      "model": "deepseek",
+      "case": "c022",
+      "tool": "bash",
+      "cmd": "{\"cluster\":\"cks-test\",\"command\":\"kubectl get pod c022-config -n siclaw-eval-yye-20260602 -o json | python3 -c \\\"\\nimport json, sys",
+      "why": "{ \"error\": \"Newline characters are not allowed in commands.\" }"
+    },
+    {
+      "model": "deepseek",
+      "case": "c036",
+      "tool": "bash",
+      "cmd": "{\"cluster\":\"cks-test\",\"command\":\"kubectl get nodes --no-headers 2>/dev/null | awk '$2==\\\"Ready\\\" {print $1,$2}'\"}",
+      "why": "{ \"error\": \"Blocked: disallowed command(s) — \\\"awk\\\" is not in the allowed command list\", "
+    },
+    {
+      "model": "deepseek",
+      "case": "c068",
+      "tool": "pod_exec",
+      "cmd": "{\"cluster\":\"cks-test\",\"command\":\"wget -q -O - --timeout=5 http://172.17.108.236:80/\",\"namespace\":\"siclaw-eval-yye-20260602\",\"pod\":",
+      "why": "{ \"error\": \"Blocked: disallowed command(s) — \\\"wget\\\" is not in the allowed command list\","
+    },
+    {
+      "model": "deepseek",
+      "case": "c069",
+      "tool": "pod_exec",
+      "cmd": "{\"cluster\":\"cks-test\",\"command\":\"curl -s -o /dev/null -w 'HTTP code: %{http_code}' --connect-timeout 5 http://c069-server-svc:80\",",
+      "why": "{ \"error\": \"curl \\\"-o\\\" (in \\\"-o\\\") is not allowed. Only read-only curl flags are permitte"
+    },
+    {
+      "model": "deepseek",
+      "case": "c069",
+      "tool": "pod_exec",
+      "cmd": "{\"cluster\":\"cks-test\",\"command\":\"nc -zv 172.17.64.210 80\",\"namespace\":\"siclaw-eval-yye-20260602\",\"pod\":\"c069-client\"}",
+      "why": "{ \"error\": \"Blocked: disallowed command(s) — \\\"nc\\\" is not in the allowed command list\", \""
+    },
+    {
+      "model": "deepseek",
+      "case": "c069",
+      "tool": "pod_exec",
+      "cmd": "{\"cluster\":\"cks-test\",\"command\":\"wget -q http://c069-server-svc 2>&1\",\"namespace\":\"siclaw-eval-yye-20260602\",\"pod\":\"c069-client\"}",
+      "why": "{ \"error\": \"Blocked: disallowed command(s) — \\\"wget\\\" is not in the allowed command list\","
+    },
+    {
+      "model": "deepseek",
+      "case": "c069",
+      "tool": "pod_exec",
+      "cmd": "{\"cluster\":\"cks-test\",\"command\":\"wget -q -O - http://172.16.36.207:8080\",\"namespace\":\"siclaw-eval-yye-20260602\",\"pod\":\"c069-client",
+      "why": "{ \"error\": \"Blocked: disallowed command(s) — \\\"wget\\\" is not in the allowed command list\","
+    },
+    {
+      "model": "deepseek",
+      "case": "c069",
+      "tool": "pod_exec",
+      "cmd": "{\"cluster\":\"cks-test\",\"command\":\"wget -q -O- http://172.16.36.207:8080\",\"namespace\":\"siclaw-eval-yye-20260602\",\"pod\":\"c069-client\"",
+      "why": "{ \"error\": \"Blocked: disallowed command(s) — \\\"wget\\\" is not in the allowed command list\","
+    }
+  ]
+}

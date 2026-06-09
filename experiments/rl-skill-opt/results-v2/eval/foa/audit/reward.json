@@ -1,0 +1,108 @@
+{
+  "runDir": "experiments/rl-skill-opt/results-v2/eval/foa/audit",
+  "provider": "gpt",
+  "judgeModel": "claude-sonnet-4-6",
+  "skillFile": "experiments/rl-skill-opt/results-v2/eval/foa/audit/skill.txt",
+  "skillChars": 2462,
+  "cases": [
+    "ca1",
+    "ca2",
+    "ca3"
+  ],
+  "rewardMode": "composite",
+  "reward": 0.7,
+  "judgeReward": 0.533,
+  "passRate": 0.3333333333333333,
+  "perCase": {
+    "ca1": 0.5,
+    "ca2": 0.1,
+    "ca3": 1
+  },
+  "composite": {
+    "n": 3,
+    "composite": 0.7,
+    "judgeMean": 0.533,
+    "rubricMean": 0.333,
+    "rewardTruthGap": 0.2,
+    "mislabelRate": 0.333,
+    "spuriousMean": 0,
+    "perCase": {
+      "ca1": {
+        "judgeScore": 0.5,
+        "rubric": {
+          "enumeratedNetworkPolicies": 0,
+          "inspectedDnsConfig": 0,
+          "rootCauseClassCorrect": 1,
+          "predictedClass": "networkpolicy",
+          "trueClass": "networkpolicy",
+          "score": 0.333
+        },
+        "spuriousPenalty": {
+          "value": 0,
+          "reason": "diagnosis is not a DNS-override claim"
+        },
+        "composite": 0.667,
+        "rewardTruthGap": 0.167,
+        "mislabeled": 0
+      },
+      "ca2": {
+        "judgeScore": 0.1,
+        "rubric": {
+          "enumeratedNetworkPolicies": 0,
+          "inspectedDnsConfig": 1,
+          "rootCauseClassCorrect": 0,
+          "predictedClass": "selector",
+          "trueClass": "networkpolicy",
+          "score": 0.333
+        },
+        "spuriousPenalty": {
+          "value": 0,
+          "reason": "diagnosis is not a DNS-override claim"
+        },
+        "composite": 0.267,
+        "rewardTruthGap": -0.233,
+        "mislabeled": 1
+      },
+      "ca3": {
+        "judgeScore": 1,
+        "rubric": {
+          "enumeratedNetworkPolicies": 0,
+          "inspectedDnsConfig": 0,
+          "rootCauseClassCorrect": 1,
+          "predictedClass": "selector",
+          "trueClass": "selector",
+          "score": 0.333
+        },
+        "spuriousPenalty": {
+          "value": 0,
+          "reason": "diagnosis is not a DNS-override claim"
+        },
+        "composite": 1.167,
+        "rewardTruthGap": 0.667,
+        "mislabeled": 0
+      }
+    }
+  },
+  "advantage": 0.1,
+  "perCaseAdvantage": {
+    "ca1": 0.3,
+    "ca2": 0,
+    "ca3": 0
+  },
+  "baselineMeanScore": 0.433,
+  "tokens": {
+    "input": 88712,
+    "output": 3251,
+    "total": 276283,
+    "toolCalls": 16,
+    "completed": 3,
+    "cases": 3
+  },
+  "runStatuses": {
+    "ca1": "completed",
+    "ca2": "completed",
+    "ca3": "completed"
+  },
+  "notGraded": [],
+  "durationSec": 93
+}

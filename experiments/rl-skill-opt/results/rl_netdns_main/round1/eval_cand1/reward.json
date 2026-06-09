@@ -1,0 +1,53 @@
+{
+  "runDir": "experiments/rl-skill-opt/results/rl_netdns_main/round1/eval_cand1",
+  "provider": "kimi",
+  "judgeModel": "claude-sonnet-4-6",
+  "skillFile": "experiments/rl-skill-opt/results/rl_netdns_main/round1/cand1.txt",
+  "skillChars": 744,
+  "cases": [
+    "c068",
+    "c069",
+    "c070",
+    "c071",
+    "c072",
+    "c073"
+  ],
+  "reward": 0.583,
+  "passRate": 0.5,
+  "perCase": {
+    "c068": 0.2,
+    "c069": 0.9,
+    "c070": 1,
+    "c071": 0.1,
+    "c072": 0.3,
+    "c073": 1
+  },
+  "advantage": -0.017,
+  "perCaseAdvantage": {
+    "c068": -0.8,
+    "c069": 0.8,
+    "c070": 0,
+    "c071": -0.1,
+    "c072": -0.7,
+    "c073": 0.7
+  },
+  "baselineMeanScore": 0.6,
+  "tokens": {
+    "input": 23193,
+    "output": 8370,
+    "total": 470411,
+    "toolCalls": 32,
+    "completed": 6,
+    "cases": 6
+  },
+  "runStatuses": {
+    "c068": "completed",
+    "c069": "completed",
+    "c070": "completed",
+    "c071": "completed",
+    "c072": "completed",
+    "c073": "completed"
+  },
+  "notGraded": [],
+  "durationSec": 120
+}

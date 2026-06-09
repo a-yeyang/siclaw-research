@@ -1,0 +1,45 @@
+{
+  "runDir": "experiments/rl-skill-opt/results/heldout_learned",
+  "provider": "kimi",
+  "judgeModel": "claude-sonnet-4-6",
+  "skillFile": "experiments/rl-skill-opt/skills/learned-best-netdns.txt",
+  "skillChars": 744,
+  "cases": [
+    "c074",
+    "c075",
+    "c076",
+    "c077"
+  ],
+  "reward": 0.6,
+  "passRate": 0.5,
+  "perCase": {
+    "c074": 0.1,
+    "c075": 0.3,
+    "c076": 1,
+    "c077": 1
+  },
+  "advantage": -0.1,
+  "perCaseAdvantage": {
+    "c074": -0.9,
+    "c075": 0.2,
+    "c076": 0.3,
+    "c077": 0
+  },
+  "baselineMeanScore": 0.7,
+  "tokens": {
+    "input": 30902,
+    "output": 7631,
+    "total": 486149,
+    "toolCalls": 30,
+    "completed": 4,
+    "cases": 4
+  },
+  "runStatuses": {
+    "c074": "completed",
+    "c075": "completed",
+    "c076": "completed",
+    "c077": "completed"
+  },
+  "notGraded": [],
+  "durationSec": 100
+}

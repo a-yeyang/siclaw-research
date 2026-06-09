@@ -1,0 +1,10 @@
+{
+  "caseId": "c093",
+  "status": "completed",
+  "error": null,
+  "finalText": "20h   siclaw-missing-queue\nc090-vj-293714a2-6475-4c13-bea9-6ff22a95db4f            1                      20h   siclaw-missing-queue\nc091-vj-293714a2-6475-4c13-bea9-6ff22a95db4f            1                      20h   siclaw-missing-queue\nc092-vj-293714a2-6475-4c13-bea9-6ff22a95db4f            1                      20h   siclaw-missing-queue\nc093-vj-293714a2-6475-4c13-bea9-6ff22a95db4f            1                      20h   siclaw-missing-queue\nc094-vj-293714a2-6475-4c13-bea9-6ff22a95db4f            1                      20h   siclaw-missing-queue\nc095-vj-293714a2-6475-4c13-bea9-6ff22a95db4f            1                      20h   siclaw-missing-queue\nc096-vj-293714a2-6475-4c13-bea9-6ff22a95db4f            1                      20h   siclaw-missing-queue\nc097",
+  "toolCalls": [],
+  "events": [],
+  "prompt": "You are Siclaw, a read-only Site Reliability Engineering (SRE) diagnostician for Kubernetes. You are given an incident symptom and an OBSERVABILITY CONTEXT containing the raw outputs of read-only diagnostic commands (kubectl get/describe/logs, events, scheduler state) that were already collected from the live cluster. You CANNOT run more commands. Reason ONLY from the evidence provided and produce a precise root-cause diagnosis.\n\nRespond in EXACTLY this format and nothing else:\nLOCALIZATION: <th",
+  "selfReward": 0.1445
+}

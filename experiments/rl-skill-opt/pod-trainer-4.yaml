@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rl-skill-trainer-4
+  namespace: siclaw-rl-yye
+  labels:
+    app: rl-skill-trainer
+spec:
+  # Replacement for rl-skill-trainer-3, which the kubelet EVICTED when the 5.8GB
+  # HF model download into the ephemeral `work` emptyDir pushed node hpe-node144
+  # (already at its disk-pressure threshold from other tenants) over the edge.
+  # Fix: put HF_HOME + adapters on the MEMORY-backed volume (/dev/shm), so the model
+  # weights never touch node ephemeral-storage and cannot trip the eviction threshold.
+  # Right-sized to 2 GPUs (3B model; parallel-seed training needs 2, not 8).
+  restartPolicy: Never
+  activeDeadlineSeconds: 28800  # 8h self-terminate (only cleanup; do not rely on manual delete)
+  nodeSelector:
+    kubernetes.io/hostname: hpe-node144  # 8/8 GPUs free here; gemini-c-* are unreachable, gpu-10-208-55-159 GPU-exhausted
+  tolerations:
+    - key: node.kubernetes.io/disk-pressure
+      operator: Exists
+      effect: NoSchedule
+    - key: scitix.ai/nodecheck
+      operator: Exists
+    - key: node.kubernetes.io/not-ready
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 300
+    - key: node.kubernetes.io/unreachable
+      operator: Exists
+      effect: NoExecute
+      tolerationSeconds: 300
+  containers:
+    - name: trainer
+      image: pytorch/pytorch:2.5.1-cuda12.4-cudnn9-devel
+      command: ["sh", "-c", "nvidia-smi -L; echo READY; sleep infinity"]
+      resources:
+        requests:
+          cpu: "8"
+          memory: "96Gi"
+          nvidia.com/gpu: "2"
+          ephemeral-storage: "8Gi"   # explicit small request; pip wheels only — model lives in /dev/shm
+        limits:
+          cpu: "16"
+          memory: "128Gi"
+          nvidia.com/gpu: "2"
+          ephemeral-storage: "20Gi"
+      env:
+        - name: HF_HOME
+          value: /dev/shm/hf       # memory-backed cache => no ephemeral-storage pressure
+      volumeMounts:
+        - mountPath: /dev/shm
+          name: dshm
+        - mountPath: /workspace
+          name: work
+  volumes:
+    - name: dshm
+      emptyDir:
+        medium: Memory
+        sizeLimit: "80Gi"          # holds the 6GB model + room; RAM-backed
+    - name: work
+      emptyDir:
+        sizeLimit: "16Gi"          # scripts + adapters only (tiny); NOT the model

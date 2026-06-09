@@ -1,0 +1,24 @@
+For incidents in the "network-dns" category, follow these precise steps:
+
+1. **Check DNS Service Records**: Run `kubectl get svc -o wide` to list all services and their DNS names. Identify the affected service with the same name as the client pod's service reference, i.e., `c074-server-svc` or `c075-server-svc`.
+
+2. **Inspect Service Details**: For the identified service, check `kubectl describe svc <service-name>` to review its status. Look for any DNS-related errors or warnings.
+
+3. **Verify Pod Logs**: Use `kubectl logs <client-pod>` to examine the logs of the client pod `c074-client` or `c075-client`. Check for any DNS resolution attempts and related error messages.
+
+4. **Review DNS Resolver Configuration**: Use `kubectl exec` to access the client pod and check for configurations such as `/etc/resolv.conf` or environment variables pointing to custom DNS resolvers. Compare the resolver settings with known good values to identify mismatches.
+
+5. **Determine Root Cause**: If the service resolves correctly in the described DNS service but the client pod still experiences DNS resolution issues, consider examining the client pod’s network configuration, such as network policies, security groups, or node-level DNS settings that might block or delay DNS queries.
+
+6. **Identify Correct Diagnosis**: The diagnosis must include the DNS-related issue (like misconfigured `resolv.conf`, incorrect DNS service records, or network policy affecting DNS resolution). Specify the scope (e.g., pod, namespace) and support evidence (DNS service logs, pod network configurations).
+
+7. **Safe Remediation**: If the issue is found in the client pod’s resolver settings, update the `resolv.conf` file to point to the correct DNS servers. For instance, replace any incorrect DNS server entries with those provided by your organization or a trusted DNS provider.
+
+Ensure the final diagnosis includes:
+- Faulty resource (kind/name),
+- Specific mechanism (misconfigured DNS configuration),
+- Scope (affected pod, namespace),
+- Supporting evidence (log or config details),
+- Safe remediation (corrected DNS resolver settings).
+
+This skill ensures accurate identification and resolution of network-DNS-related issues while maintaining a strict read-only investigation approach.

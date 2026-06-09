@@ -1,0 +1,123 @@
+{
+  "round": 1,
+  "category": "network-dns",
+  "seedTag": "s1",
+  "meanReward": 1.34725,
+  "bestReward": 1.5,
+  "bestIdx": 1,
+  "roundTokens": 1937977,
+  "diversity": {
+    "mean_edit": 0.8321,
+    "token_entropy": 7.9624
+  },
+  "trainCases": [
+    "c068",
+    "c069",
+    "c070",
+    "c071",
+    "c072",
+    "c073"
+  ],
+  "candidates": [
+    {
+      "idx": 1,
+      "skill": "SKILL: Diagnosing network-dns connectivity and DNS-resolution failures\n\nWHEN TO APPLY\nA client pod cannot resolve or reach a Service even though the backing server pod exists and appears Running. The client pods may be CrashLooping or restarting due to failed connections. Treat those restarts as symptoms, not the root cause. You must positively rule in/out potential issues before identifying the root cause.\n\nPRECISE ORDER OF CHECKS\nTo accurately diagnose the issue, perform the following read-only kubectl commands in sequence:\n\n1. ENUMERATE ALL NETWORKPOLICYs AFFECTING THE CLIENT NAMESPACE.\n   - List all network policies using `kubectl get networkpolicy -n <client-namespace>`\n   - Describe each policy using `describe networkpolicy <policy-name>` to review its selector and policy types.\n   - Compare the policy's selector labels with the client pod's labels using `kubectl get pod <client-pod-name> -L namespace-selector` to identify potential blocking policies.\n\n2. VERIFY EGRESS AND INGRESS NETWORKPOLICY RULES.\n   - Confirm there are no deny-egress rules targeting the client namespace using `kubectl get networkpolicy -n <client-namespace> -o jsonpath='{range.items[?(@.policyType==\"Egress\")].rules}{\"\\n\"}{.from..podSelector.matchLabels}\\n{.to..podSelector.matchLabels}\\n{\\n}\\n{\"\\n\"}{range.items[?(@.policyType==\"Ingress\")].rules}{\"\\n\"}{.from..podSelector.matchLabels}\\n{.to..podSelector.matchLabels}\\n\"'\n   - Check for ingress policies denying traffic to the specific service IP or selector associated with the client pod.\n\nTRUE ROOT CAUSES AND SYMPTOMS\nPotential causes include:\n- Deny-egress NetworkPolicies blocking necessary DNS and TCP/UDP ports for client DNS resolution.\n- Deny-ingress NetworkPolicies preventing traffic from the client to the server service endpoints.\n- Incorrect or missing DNSConfigurations in the client pod yaml, overriding system-wide DNS settings.\n\nREMEDY STEPS\nA correct diagnosis must identify:\n- Faulting resource (NetworkPolicy name and namespace, client pod name, server service name).\n- Concrete mechanism (denial of egress, ingress, incorrect DNSConfiguration).\n- Scope (affected client pods, services).\n- Supporting evidence (kubectl output showing denied rules, conflicting DNSConfigurations).\n- Safe remediation (revoke or modify blocking network policies, adjust DNSConfiguration).\n\nExample safe remediation:\n- Revoke deny-egress network policy causing DNS resolution issues using `kubectl patch networkpolicy <policy-name> -p '{\"spec\":{\"policyType\":\"Egress\",\"egress\":[],\"to\":[]}}' -n <client-namespace>`\n- Modify DNS configuration in the client pod manifest to point to official upstream DNS servers, using `kubectl edit pod/<client-pod-name>` to add or update the dnsConfig field.\n- Verify changes with `kubectl get pod <client-pod-name> -o yaml` to confirm DNS settings and DNS resolver changes.\n- Ensure DNSSEC is disabled if required to avoid additional latency and verification costs.",
+      "chars": 2946,
+      "coverage": {
+        "networkpolicy": true,
+        "dnsconfig": true,
+        "endpoints_selector": true,
+        "ordered_checks": true
+      },
+      "reward": 1.5,
+      "judgeReward": 1,
+      "advantage": 0.517,
+      "perCase": {
+        "c068": 1.5,
+        "c069": 1.5,
+        "c070": 1.5,
+        "c071": 1.5,
+        "c072": 1.5,
+        "c073": 1.5
+      },
+      "tokensTotal": 459655,
+      "rubricMean": 1,
+      "mislabelRate": 0
+    },
+    {
+      "idx": 0,
+      "skill": "SKILL: Diagnosing network-dns connectivity and DNS-resolution failures\n\nWHEN TO APPLY\nA client pod is unable to resolve or reach a Service even though the corresponding server pod exists and is Running. Treat those pod crashes and restarts as symptoms, not the root cause. Root causes in Kubernetes almost always reside within controllable layers, and you must positively rule each in or out before identifying the exact issue.\n\nPRECISE ORDER OF READ-ONLY CHECKS\n1. ENUMERATE ALL NETWORKPOLICIES IN THE NAMESPACE.\n   - List all network policies using `kubectl get networkpolicy -n <your-namespace>`\n   - Describe each policy for details (`describe networkpolicy <policy-name>`).\n   - Compare the policy’s selector labels against the client pod labels (`kubectl get pod <client-pod> -l app=<client-app-name> -n <namespace> -o yaml`).\n   - Verify if any policy denies egress from the client to DNS servers (UDP port 53) or ingress to the server.\n\n2. VERIFY CLIENT DNS CONFIGURATION.\n   - Check the client pod’s DNS configuration (`kubectl get pod <client-pod> -o yaml`).\n   - Ensure there are no custom DNS server overrides specified in the dnsConfig section.\n   - Confirm the dnsPolicy is set to \"NamespaceLocal\" or \"ClusterFirst\".\n\n3. INSPECT SERVICE DEFINITION AND PROXY CONFIG.\n   - Examine the service manifest definition (`kubectl get svc <service-name> -o yaml`) for annotations or selector mismatches.\n   - Look for any custom DNS or proxy configurations (e.g., NodePortServices with exposed DNS services).\n\nRECOGNIZING THE ROOT CAUSE\nThe precise root cause could manifest as:\n- Denial of Service traffic for DNS from/to the client via NetworkPolicies.\n- Incorrectly configured DNS settings on the client pod.\n- Misconfigured service definitions leading to DNS resolution issues.\n- Inadequate DNS proxy configurations disrupting DNS lookup paths.\n\nCORRECT FINAL DIAGNOSIS\nYour correct diagnosis must detail:\n- The exact resource involved (pod/service/node/networkPolicy).\n- The specific mechanism causing the issue (NetworkPolicy deny, incorrect DNS config).\n- The scope affected (single pod/service, entire namespace).\n- Supporting evidence from logs, network traces, and inspection results.\n- A remediation step (update policy, change DNS config, reconfigure service).\n\nSAFE REMEDIATION ACTION\nTo fix the issue, take the following steps based on your diagnosis:\n- Modify the NetworkPolicy selector to allow necessary traffic if denied.\n- Update the client pod’s DNS configuration if misconfigured.\n- Adjust service definitions or proxy configurations if mismanaged.\n- Validate changes with another attempt to access the service.\n\nREVIEW & MONITOR\nAfter implementing a remediation, verify the issue has been resolved by retrying the client pod’s interaction with the service. Monitor for continued stability and adjust further if needed.",
+      "chars": 2844,
+      "coverage": {
+        "networkpolicy": true,
+        "dnsconfig": true,
+        "endpoints_selector": true,
+        "ordered_checks": true
+      },
+      "reward": 1.389,
+      "judgeReward": 1,
+      "advantage": 0.517,
+      "perCase": {
+        "c068": 1.333,
+        "c069": 1.5,
+        "c070": 1.333,
+        "c071": 1.5,
+        "c072": 1.333,
+        "c073": 1.333
+      },
+      "tokensTotal": 470290,
+      "rubricMean": 0.778,
+      "mislabelRate": 0
+    },
+    {
+      "idx": 3,
+      "skill": "SKILL: Diagnosing network-dns connectivity and DNS-resolution failures\n\nWHEN TO APPLY\nA client pod is unable to resolve or reach a Service even when the underlying server pod exists and is running. The client pods may crashloop or restart due to failed connections, treating those restarts as symptoms rather than the root cause. Connect failures in Kubernetes often stem from one of several controllable layers, and you must systematically eliminate each potential issue before identifying the root cause.\n\nPRECISE ORDER OF READ-ONLY CHECKS\n1. ENUMERATE ALL NETWORK POLICIES IN THE NAMESPACE\n   - List all network policies using `kubectl get networkpolicy -n <your-namespace>`\n   - Describe each policy: `describe networkpolicy <policy-name>`\n   - Compare the policy's selector labels against the client pod’s labels using `kubectl get pod <client-pod> -l app=<client-app> -o yaml`\n\n2. VERIFY EGRESS AND EGRESS POLICY\n   - Check egress policies targeting the namespace using `kubectl get networkpolicy -n <namespace> | grep egress`\n   - Ensure there are no rules denying DNS traffic (UDP/TCP ports 53)\n   - Examine individual egress policies: `describe networkpolicy <egress-policy-name>`\n\n3. REVIEW DNS CONFIGURATIONS\n   - Inspect client pod’s DNS configuration using `kubectl get pod <client-pod> -o yaml`\n   - Confirm there are no custom DNS servers overridden via `dnsConfig`\n   - Check pod’s DNS policy: `kubectl describe pod <client-pod>`\n\n4. EXAMINE CLUSTER INTERNAL CONNECTIVITY\n   - Verify DNS resolution within the cluster using tools like `nslookup` or `dig`\n   - Ensure there are no DNS conflicts or misconfigurations between services\n\nRECOGNIZE COMMON CAUSES AND RESOLUTION STEPS\nPossible root causes include:\n- Inadequate DNS configuration in client pods\n- Denial-of-service Network Policies targeting the client namespace or specific clients\n- Misconfigured external DNS servers overriding cluster-local DNS queries\n\nA correct diagnosis must identify:\n- The specific resource(s) causing the failure (pod/service/name/etc.)\n- The precise mechanism (e.g., denied DNS traffic, improper network policy)\n- The affected scope (specific clients/services, entire namespace)\n- Supporting evidence from logs/diagnostics\n- A remediation action to address the issue (e.g., adjust policy rules, update DNS config)\n\nSAFE REMEDIAL ACTION\nFor example, if an improperly configured Network Policy is identified, adjust its selector and policy types as needed:\n```\nkubectl patch networkpolicy <policy-name> --patch='{\"spec\":{\"podSelector\": {\"matchLabels\": {\"app\":\"client-app\"}},\"policyTypes\": [\"Ingress\",\"Egress\"]}}'\n```\nIf DNS issues are found, ensure proper DNS settings in client pods:\n```\nkubectl edit pod <client-pod>\n- Add or update DNSConfig section ensuring necessary DNS servers are listed\n```\nFollow through with tests to confirm resolution.",
+      "chars": 2848,
+      "coverage": {
+        "networkpolicy": true,
+        "dnsconfig": true,
+        "endpoints_selector": true,
+        "ordered_checks": true
+      },
+      "reward": 1.361,
+      "judgeReward": 1,
+      "advantage": 0.517,
+      "perCase": {
+        "c068": 1.5,
+        "c069": 1.5,
+        "c070": 1.333,
+        "c071": 1.333,
+        "c072": 1.333,
+        "c073": 1.167
+      },
+      "tokensTotal": 538007,
+      "rubricMean": 0.722,
+      "mislabelRate": 0
+    },
+    {
+      "idx": 2,
+      "skill": "SKILL: Diagnosing network-dns connectivity and DNS-resolution failures\n\nWHEN TO APPLY\nA client pod fails to resolve or reach a Service despite the backend server pod being Running and healthy. The client pod may be crashing due to unresolvable DNS lookups or network issues. Treat these DNS-related client-side failures as symptoms to be investigated, rather than the root cause itself. Root causes in Kubernetes often stem from controllable layers; positively ruling in/out each layer is essential to pinpoint the exact issue.\n\nPRESCRIBED CHECKS\nTo diagnose network-dns connectivity and DNS resolution issues, follow these steps:\n\n1. ENUMERATE CLIENT-SIDE DNS CONFIGURATIONS\n   - List all pods in the client namespace: `kubectl get pods -n <client-namespace>`\n   - Examine their DNS configurations using `describe pod <client-pod-name>` or `kubectl get pod <client-pod-name> -o yaml`\n   - Note any explicit DNS config like `dnsConfig`: `env.DNSConfig`\n   - Assess if DNS policies such as `dnsPolicy: Default` or custom policies exist: `kubectl get pod <client-pod-name> -o yaml`\n\n2. REVIEW CLIENT NETWORK POLICY FOR DNS INTERFERENCE\n   - Identify network policies affecting the client namespace: `kubectl get networkpolicy -n <client-namespace>`\n   - Carefully examine each policy’s selector and policy types, specifically looking for deny rules related to DNS: `describe networkpolicy <network-policy-name>`\n   - Compare the policy selectors against the client pods' labels: `kubectl get pod <client-pod-name> -o yaml`\n\n3. CHECK SERVER ENDPOINT ACCESS\n   - Verify whether the client can reach the server endpoint using port-forwarding or direct DNS resolution: `kubectl exec <client-pod-name> nslookup <server-service-name>.<namespace>.svc.cluster.local`\n   - Confirm server-side network policies allow necessary access: `kubectl get svc <server-service-name> -n <namespace> -o yaml` and check its networkPolicyName\n\nCORRECTIVE STEPS\nA precise diagnosis requires identifying the root cause among the potential issues enumerated above. Here’s what constitutes a correct diagnosis:\n\n- Identify the specific resource (pod/service/namespace/network policy) and the exact mechanism causing DNS resolution failure (e.g., denied egress/ingress rules).\n- Clearly describe the scope of the problem, mentioning affected clients/pods/services.\n- Present evidence from your checks, such as DNS configuration details, network policy definitions, and access logs.\n- Suggest a remediation action based on the diagnosed issue:\n  - Modify DNS configurations if misconfigured.\n  - Adjust network policies to permit necessary network flows.\n  - Ensure correct DNS resolution and service accessibility.\n\nREMEMBER, the goal is to restore proper DNS resolution and communication without disrupting other services. Always opt for modifications that align closely with the observed issues without making broad, potentially harmful changes.",
+      "chars": 2917,
+      "coverage": {
+        "networkpolicy": true,
+        "dnsconfig": true,
+        "endpoints_selector": true,
+        "ordered_checks": false
+      },
+      "reward": 1.139,
+      "judgeReward": 0.917,
+      "advantage": 0.434,
+      "perCase": {
+        "c068": 1.5,
+        "c069": 1.333,
+        "c070": 1.167,
+        "c071": 0.167,
+        "c072": 1.333,
+        "c073": 1.333
+      },
+      "tokensTotal": 470025,
+      "rubricMean": 0.611,
+      "mislabelRate": 0.167
+    }
+  ]
+}

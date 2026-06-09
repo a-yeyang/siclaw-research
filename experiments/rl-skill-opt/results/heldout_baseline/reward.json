@@ -1,0 +1,40 @@
+{
+  "runDir": "experiments/rl-skill-opt/results/heldout_baseline",
+  "provider": "kimi",
+  "judgeModel": "claude-sonnet-4-6",
+  "skillFile": null,
+  "skillChars": 0,
+  "cases": [
+    "c074",
+    "c075",
+    "c076",
+    "c077"
+  ],
+  "reward": 0.7,
+  "passRate": 0.75,
+  "perCase": {
+    "c074": 1,
+    "c075": 0.1,
+    "c076": 0.7,
+    "c077": 1
+  },
+  "advantage": null,
+  "perCaseAdvantage": null,
+  "baselineMeanScore": null,
+  "tokens": {
+    "input": 48003,
+    "output": 6494,
+    "total": 343265,
+    "toolCalls": 28,
+    "completed": 4,
+    "cases": 4
+  },
+  "runStatuses": {
+    "c074": "completed",
+    "c075": "completed",
+    "c076": "completed",
+    "c077": "completed"
+  },
+  "notGraded": [],
+  "durationSec": 95
+}

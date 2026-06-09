@@ -1,0 +1,302 @@
+[
+  {
+    "caseId": "ca1",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": false,
+    "totalScore": 0.2,
+    "dimensions": {
+      "localization": {
+        "score": 0
+      },
+      "mechanism": {
+        "score": 0
+      },
+      "scope": {
+        "score": 0
+      },
+      "evidence": {
+        "score": 0.5
+      },
+      "remediation": {
+        "score": 0.5
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The agent does not identify networkpolicy/ca1-deny-egress as the fault resource. It points vaguely to 'DNS resolution path' and 'client-side access path' without naming the NetworkPolicy.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The agent identifies the Service, endpoints, and backend pod as the primary investigation targets and concludes they are healthy, while the actual fault origin (NetworkPolicy ca1-deny-egress) is never mentioned. It names the DNS resolution path as the likely issue without identifying the real cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The ground truth mechanism is a NetworkPolicy with Egress policyType and no egress rules blocking all egress including DNS. The agent only guesses 'DNS resolution issue' without identifying any NetworkPolicy or egress blocking mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The agent provides no concrete mutated detail such as the NetworkPolicy name, its selector (app=ca1-client), or the empty egress rules. It only speculates about DNS resolution without citing any specific misconfiguration.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The agent correctly scopes the issue to the client pod's ability to reach the server service, which is consistent with the ground truth scope. However, it misses that the NetworkPolicy also blocks all other egress, not just DNS.",
+        "confidence": "Medium"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The agent understates the impact by framing it purely as a DNS/name-resolution issue, missing that ALL egress from ca1-client is blocked (not just DNS), which means even direct IP connections would fail.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The agent cites concrete observed evidence: Service selector matching pod labels, live endpoint IP (172.16.36.245), port mapping (80->8080), pod status Running/Ready=True for both client and server.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "No",
+        "evidence": "The cited evidence (healthy service, endpoints, pod status) is consistent with the service being fine, but it is irrelevant to the actual root cause (NetworkPolicy blocking egress). The evidence does not support the claimed DNS resolution hypothesis.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The remediation suggests running DNS tests and checking /etc/resolv.conf from ca1-client, which would not fix the actual problem (removing or modifying the NetworkPolicy ca1-deny-egress). The real fix requires modifying the NetworkPolicy to allow egress.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The suggested diagnostic steps (DNS resolution tests, checking resolv.conf, testing TCP to ClusterIP) are non-destructive and safe, even if they don't address the real root cause.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 39674,
+    "toolCallCount": 5,
+    "judgeModel": "claude-sonnet-4-6"
+  },
+  {
+    "caseId": "ca2",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": false,
+    "totalScore": 0.1,
+    "dimensions": {
+      "localization": {
+        "score": 0
+      },
+      "mechanism": {
+        "score": 0
+      },
+      "scope": {
+        "score": 0
+      },
+      "evidence": {
+        "score": 0.5
+      },
+      "remediation": {
+        "score": 0
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The agent identifies pod/ca2-client, pod/ca2-server, and service/ca2-server-svc as healthy resources, but never identifies networkpolicy/ca2-deny-ingress as the fault resource. The ground truth localization is the NetworkPolicy, which the agent completely misses.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The agent names DNS resolution and service endpoint wiring as the primary focus, concluding everything is healthy. It does not identify the NetworkPolicy as the fault origin; instead it points to a non-existent DNS misinterpretation issue as the 'likely issue', which is unrelated to the actual fault.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The ground truth mechanism is a NetworkPolicy (ca2-deny-ingress) blocking all ingress to the server pod. The agent's diagnosis is that DNS works fine and there is no fault, completely missing the NetworkPolicy-based traffic denial mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The agent never mentions the NetworkPolicy ca2-deny-ingress, its policyTypes:[Ingress] with no ingress rules, or the app=ca2-server selector. No concrete mutated detail related to the actual root cause is provided.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The agent concludes DNS and service wiring are functioning and scopes the issue as a possible application-layer misinterpretation. The ground truth scope is traffic blocking between ca2-client and ca2-server due to a NetworkPolicy, which the agent does not capture.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The agent materially understates the impact by concluding everything is healthy and suggesting the symptom is a DNS misinterpretation artifact. The actual impact is complete ingress denial to the server pod from all sources including the client.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The agent cites concrete observed evidence: nslookup output showing successful resolution, resolver config with search domains and ndots:5, service selector app=ca2-server, endpoints 172.16.36.247:8080, and pod/ca2-server Running/Ready 1/1.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "No",
+        "evidence": "The evidence cited (DNS resolution success, healthy endpoints) is consistent with the agent's (incorrect) conclusion that everything is fine, but it is contradictory to the actual root cause (NetworkPolicy blocking ingress). The agent never checked for NetworkPolicies, so the evidence does not support the real fault.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The agent recommends treating nslookup NXDOMAIN intermediates as normal and checking client connection port/hostname. Neither addresses the actual root cause of a NetworkPolicy denying all ingress to the server pod.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The remediation is safe but entirely irrelevant to the actual fault. It does not address removing or modifying the NetworkPolicy ca2-deny-ingress, so it would not fix the connectivity problem.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 39316,
+    "toolCallCount": 6,
+    "judgeModel": "claude-sonnet-4-6"
+  },
+  {
+    "caseId": "ca3",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Diagnosis explicitly identifies 'service/ca3-server-svc' as the faulty resource, matching the ground-truth localization exactly.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis correctly points to the Service selector mismatch as the primary fault origin, not any downstream or unrelated resource.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Diagnosis explains that the Service selector 'app=ca3-srv' does not match the pod label 'app=ca3-server', resulting in zero endpoints — identical to the ground-truth mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Concrete mismatch details are provided: selector is 'app=ca3-srv' vs pod label 'app=ca3-server', with both values explicitly stated.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Scope is stated as 'Scoped to this Service path in namespace ... case ca3', affecting ca3-client reaching ca3-server-svc — consistent with ground truth scope of traffic involving these specific pods/service.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis neither overstates (e.g., cluster-wide) nor understates (e.g., only DNS) the impact; it correctly notes connectivity failure due to empty endpoints while acknowledging DNS may still resolve the ClusterIP.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Cites kubectl get endpoints output showing no subsets, kubectl get svc showing selector {'app':'ca3-srv'}, and kubectl get pod showing labels {'app':'ca3-server'} with Ready=True.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "All cited evidence is consistent: empty endpoints + mismatched selector + pod label mismatch directly supports the selector-mismatch root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Recommends making the Service selector match the server pod label (or relabeling the pod), which directly fixes the selector mismatch causing zero endpoints.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation is targeted and safe — changing a label selector or pod label is non-destructive and appropriately scoped to the identified fault.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 31519,
+    "toolCallCount": 7,
+    "judgeModel": "claude-sonnet-4-6"
+  }
+]

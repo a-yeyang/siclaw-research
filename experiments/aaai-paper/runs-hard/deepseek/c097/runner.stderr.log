@@ -1,0 +1,31 @@
+(node:74372) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[debug-pod] cleanup failed {
+  jobName: 'node-debug-a27ee0cf',
+  nodeName: 'cpu-10-208-55-86',
+  namespace: 'default',
+  attempt: 1,
+  maxRetries: 3,
+  error: 'Error from server (Forbidden): jobs.batch "node-debug-a27ee0cf" is forbidden: User "admin2" cannot delete resource "jobs" in API group "batch" in the namespace "default"'
+}
+[debug-pod] cleanup failed {
+  jobName: 'node-debug-a27ee0cf',
+  nodeName: 'cpu-10-208-55-86',
+  namespace: 'default',
+  attempt: 2,
+  maxRetries: 3,
+  error: 'Error from server (Forbidden): jobs.batch "node-debug-a27ee0cf" is forbidden: User "admin2" cannot delete resource "jobs" in API group "batch" in the namespace "default"'
+}
+[debug-pod] cleanup failed {
+  jobName: 'node-debug-a27ee0cf',
+  nodeName: 'cpu-10-208-55-86',
+  namespace: 'default',
+  attempt: 3,
+  maxRetries: 3,
+  error: 'Error from server (Forbidden): jobs.batch "node-debug-a27ee0cf" is forbidden: User "admin2" cannot delete resource "jobs" in API group "batch" in the namespace "default"'
+}
+[debug-pod] cleanup exhausted retries, relying on Job ttlSecondsAfterFinished {
+  jobName: 'node-debug-a27ee0cf',
+  nodeName: 'cpu-10-208-55-86',
+  namespace: 'default'
+}

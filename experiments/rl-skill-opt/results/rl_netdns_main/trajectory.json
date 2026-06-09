@@ -1,0 +1,58 @@
+{
+  "category": "network-dns",
+  "model": "Qwen/Qwen2.5-3B-Instruct",
+  "provider": "kimi",
+  "trainCases": [
+    "c068",
+    "c069",
+    "c070",
+    "c071",
+    "c072",
+    "c073"
+  ],
+  "baselineJudge": "experiments/rl-skill-opt/results/baseline_netdns6/judgments.json",
+  "trajectory": [
+    {
+      "round": 0,
+      "meanReward": 0.7374999999999999,
+      "bestReward": 0.85,
+      "bestIdx": 1,
+      "rewards": [
+        0.85,
+        0.8,
+        0.7,
+        0.6
+      ],
+      "roundTokens": 3029882,
+      "bestSkillPath": "experiments/rl-skill-opt/results/rl_netdns_main/round0/best_skill_round0.txt"
+    },
+    {
+      "round": 1,
+      "meanReward": 0.5872499999999999,
+      "bestReward": 0.75,
+      "bestIdx": 2,
+      "rewards": [
+        0.75,
+        0.733,
+        0.583,
+        0.283
+      ],
+      "roundTokens": 2291733,
+      "bestSkillPath": "experiments/rl-skill-opt/results/rl_netdns_main/round1/best_skill_round1.txt"
+    },
+    {
+      "round": 2,
+      "meanReward": 0.58325,
+      "bestReward": 0.65,
+      "bestIdx": 3,
+      "rewards": [
+        0.65,
+        0.6,
+        0.583,
+        0.5
+      ],
+      "roundTokens": 1897479,
+      "bestSkillPath": "experiments/rl-skill-opt/results/rl_netdns_main/round2/best_skill_round2.txt"
+    }
+  ]
+}

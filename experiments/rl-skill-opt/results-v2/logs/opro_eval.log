@@ -1,0 +1,92 @@
+=== eval-matrix label=opro skill=experiments/rl-skill-opt/results-v2/opro_netdns/BEST_SKILL.txt chars=2893 sets=heldout,audit,xbrain ===
+
+--- eval set=heldout provider=gpt cases=c074,c075,c076,c077 ---
+[reward] provider=gpt cases=c074,c075,c076,c077 skill=experiments/rl-skill-opt/results-v2/eval/opro/heldout/skill.txt skillChars=2893
+[reward] agent c074 -> completed
+[reward] agent c076 -> completed
+[reward] agent c075 -> completed
+[reward] agent c077 -> completed
+[reward] agent done in 53s | tokens in=67370 out=4467 total=316829 toolCalls=20 completed=4/4
+
+=== LLM-judge (claude-sonnet-4-6) over 4 graded / 4 cases ===
+pass(>0.65) = 25.0%   mean total = 0.450
+  localization  0.250
+  mechanism     0.250
+  scope         0.750
+  evidence      0.750
+  remediation   0.250
+
+=== keyword scorer vs LLM judge (n=4) ===
+  keyword mean total = 0.898
+  LLM     mean total = 0.450   (delta -0.448)
+  largest disagreements (id  keyword -> llm):
+    c074  0.90 -> 0.20  (-0.70)
+    c075  0.91 -> 0.30  (-0.61)
+    c077  0.90 -> 0.30  (-0.60)
+    c076  0.88 -> 1.00  (+0.12)
+
+wrote experiments/rl-skill-opt/results-v2/eval/opro/heldout/judgments.json
+[reward] judge meanScore=0.45 passRate=25% graded=4/4
+[reward] composite=0.534 rubric=0.417 rewardTruthGap=0.034 mislabelRate=0.75 spurious=0.25
+{"reward":0.534,"judgeReward":0.45,"composite":0.534,"rubricMean":0.417,"rewardTruthGap":0.034,"mislabelRate":0.75,"advantage":0.025,"passRate":0.25,"tokensTotal":316829,"completed":4,"runDir":"experiments/rl-skill-opt/results-v2/eval/opro/heldout"}
+  set heldout: composite=0.534 judge=0.45 mislabel=0.75 adv=0.025
+
+--- eval set=audit provider=gpt cases=ca1,ca2,ca3 ---
+[reward] provider=gpt cases=ca1,ca2,ca3 skill=experiments/rl-skill-opt/results-v2/eval/opro/audit/skill.txt skillChars=2893
+[reward] agent ca2 -> completed
+[reward] agent ca3 -> completed
+[reward] agent ca1 -> completed
+[reward] agent done in 60s | tokens in=23264 out=3698 total=286290 toolCalls=23 completed=3/3
+
+=== LLM-judge (claude-sonnet-4-6) over 3 graded / 3 cases ===
+pass(>0.65) = 33.3%   mean total = 0.467
+  localization  0.333
+  mechanism     0.333
+  scope         0.333
+  evidence      0.833
+  remediation   0.500
+
+=== keyword scorer vs LLM judge (n=0) ===
+  keyword mean total = 0.000
+  LLM     mean total = 0.000   (delta 0.000)
+  largest disagreements (id  keyword -> llm):
+
+wrote experiments/rl-skill-opt/results-v2/eval/opro/audit/judgments.json
+[reward] judge meanScore=0.467 passRate=33% graded=3/3
+[reward] composite=0.634 rubric=0.333 rewardTruthGap=0.134 mislabelRate=1 spurious=0
+{"reward":0.634,"judgeReward":0.467,"composite":0.634,"rubricMean":0.333,"rewardTruthGap":0.134,"mislabelRate":1,"advantage":0.034,"passRate":0.3333333333333333,"tokensTotal":286290,"completed":3,"runDir":"experiments/rl-skill-opt/results-v2/eval/opro/audit"}
+  set audit: composite=0.634 judge=0.467 mislabel=1 adv=0.034
+
+--- eval set=xbrain provider=kimi cases=c074,c075,c076,c077 ---
+[reward] provider=kimi cases=c074,c075,c076,c077 skill=experiments/rl-skill-opt/results-v2/eval/opro/xbrain/skill.txt skillChars=2893
+[reward] agent c076 -> completed
+[reward] agent c075 -> completed
+[reward] agent c074 -> completed
+[reward] agent c077 -> completed
+[reward] agent done in 75s | tokens in=40543 out=7046 total=432357 toolCalls=40 completed=4/4
+
+=== LLM-judge (claude-sonnet-4-6) over 4 graded / 4 cases ===
+pass(>0.65) = 50.0%   mean total = 0.650
+  localization  0.500
+  mechanism     0.500
+  scope         0.750
+  evidence      0.875
+  remediation   0.625
+
+=== keyword scorer vs LLM judge (n=4) ===
+  keyword mean total = 0.898
+  LLM     mean total = 0.650   (delta -0.248)
+  largest disagreements (id  keyword -> llm):
+    c077  0.90 -> 0.20  (-0.70)
+    c075  0.91 -> 0.40  (-0.51)
+    c076  0.88 -> 1.00  (+0.12)
+    c074  0.90 -> 1.00  (+0.10)
+
+wrote experiments/rl-skill-opt/results-v2/eval/opro/xbrain/judgments.json
+[reward] judge meanScore=0.65 passRate=50% graded=4/4
+[reward] composite=0.65 rubric=0.5 rewardTruthGap=0.15 mislabelRate=0.5 spurious=0.5
+{"reward":0.65,"judgeReward":0.65,"composite":0.65,"rubricMean":0.5,"rewardTruthGap":0.15,"mislabelRate":0.5,"advantage":0.225,"passRate":0.5,"tokensTotal":432357,"completed":4,"runDir":"experiments/rl-skill-opt/results-v2/eval/opro/xbrain"}
+  set xbrain: composite=0.65 judge=0.65 mislabel=0.5 adv=0.225
+
+=== eval-matrix done -> experiments/rl-skill-opt/results-v2/eval/opro/summary.json
+{"label":"opro","sets":{"heldout":0.534,"audit":0.634,"xbrain":0.65}}

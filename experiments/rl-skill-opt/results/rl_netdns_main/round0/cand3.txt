@@ -1,0 +1,27 @@
+For network-dns issues, follow these steps:
+
+1. **Identify DNS Query Logs**:
+   ```bash
+   kubectl get pods -n <namespace> -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{range .spec.containers[*]}{.name}{"\t"}{"{'Logs': [", (.status.logs | toJson | fromJson | split("\n")) | range(1,-1) | join(", ") | fromJson | .)}'{"\n"}{end}}{end}' | grep c074-client-c074-server-svc
+   ```
+
+2. **Describe Pod Logs**:
+   ```bash
+   kubectl describe pod c074-client -n <namespace>
+   ```
+
+3. **Describe Service**:
+   ```bash
+   kubectl describe svc c074-server-svc -n <namespace>
+   ```
+
+Separate the root cause from symptoms by confirming that the client pod is correctly configured to query the service without network restrictions, such as firewall rules or IP whitelisting, while the pod's container is restarting due to misconfiguration (e.g., DNS settings in the container's environment). 
+
+A correct diagnosis should include:
+- Faulty Resource: Pod `c074-client`.
+- Concrete Mechanism: Incorrect DNS configuration (`CNAME` or `A` record) in the pod's container.
+- Scope: Pod `c074-client` is unable to resolve DNS due to faulty DNS settings.
+- Supporting Evidence: Pod logs showing DNS queries, service definition, and pod specifications.
+- Remediation: Update DNS resolution within the pod’s container configuration to point to the correct server IP address or service name.
+
+Fix: Adjust DNS resolution in `c074-client`'s container configuration file to resolve to the appropriate server IP or service name.

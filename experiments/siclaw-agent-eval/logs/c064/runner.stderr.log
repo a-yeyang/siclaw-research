@@ -1,0 +1,31 @@
+(node:97709) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[debug-pod] cleanup failed {
+  jobName: 'node-debug-2b493d5d',
+  nodeName: 'cpu-10-208-55-85',
+  namespace: 'siclaw-eval-yye-20260602',
+  attempt: 1,
+  maxRetries: 3,
+  error: 'Error from server (Forbidden): jobs.batch "node-debug-2b493d5d" is forbidden: User "admin2" cannot delete resource "jobs" in API group "batch" in the namespace "siclaw-eval-yye-20260602"'
+}
+[debug-pod] cleanup failed {
+  jobName: 'node-debug-2b493d5d',
+  nodeName: 'cpu-10-208-55-85',
+  namespace: 'siclaw-eval-yye-20260602',
+  attempt: 2,
+  maxRetries: 3,
+  error: 'Error from server (Forbidden): jobs.batch "node-debug-2b493d5d" is forbidden: User "admin2" cannot delete resource "jobs" in API group "batch" in the namespace "siclaw-eval-yye-20260602"'
+}
+[debug-pod] cleanup failed {
+  jobName: 'node-debug-2b493d5d',
+  nodeName: 'cpu-10-208-55-85',
+  namespace: 'siclaw-eval-yye-20260602',
+  attempt: 3,
+  maxRetries: 3,
+  error: 'Error from server (Forbidden): jobs.batch "node-debug-2b493d5d" is forbidden: User "admin2" cannot delete resource "jobs" in API group "batch" in the namespace "siclaw-eval-yye-20260602"'
+}
+[debug-pod] cleanup exhausted retries, relying on Job ttlSecondsAfterFinished {
+  jobName: 'node-debug-2b493d5d',
+  nodeName: 'cpu-10-208-55-85',
+  namespace: 'siclaw-eval-yye-20260602'
+}

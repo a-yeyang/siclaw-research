@@ -1,0 +1,187 @@
+# -- Container images
+image:
+  registry: ""          # e.g. "siclaw" -> siclaw/siclaw-runtime:latest
+  pullPolicy: Always
+  tag: "latest"
+
+# -- Demo MySQL (testing only, not for production)
+mysql:
+  enabled: false
+  image: mysql:8.0
+  database: siclaw
+  username: siclaw
+  password: ""
+
+# -- Database (MySQL, Portal only — Runtime uses adapter API)
+database:
+  url: ""               # mysql://user:pass@host:3306/siclaw
+
+# -- Agent Runtime
+# NOTE: Runtime is a singleton — exactly one replica per Helm release.
+# Phone-home WS registration on the upstream (Portal or an external management server) is keyed by
+# runtime identity and a second connection with the same identity evicts the
+# first, so multiple replicas of the same release would continuously fight.
+# Scale horizontally by deploying multiple releases with distinct identities.
+runtime:
+  enabled: true
+  portalSecret: ""      # Runtime → Portal/Upstream API auth (X-Auth-Token on phone-home WS)
+  # Where Runtime gets Agent/Credential info from:
+  #   Standalone mode: http://siclaw-portal:3003
+  #   Upstream mode:     http://upstream-apiserver:8080
+  serverUrl: "http://siclaw-portal:3003"
+  # Runtime ↔ AgentBox mTLS CA. Without persistence, every Runtime restart
+  # generates a fresh CA and existing AgentBox pods (which hold client certs
+  # signed by the previous CA) immediately fail mTLS — sessions hang until
+  # those pods are reaped.
+  #
+  # Pick exactly one:
+  #   generateCa: true  — chart genCAs once and stores it in a Secret with
+  #                       helm.sh/resource-policy=keep so upgrades reuse it.
+  #                       NOTE: relies on `helm lookup` to detect the existing
+  #                       Secret. `helm template` / `helm install --dry-run`
+  #                       cannot lookup the cluster and will emit a FRESH CA
+  #                       every render — never pipe their output to
+  #                       `kubectl apply -f -`, you will overwrite the live
+  #                       Secret and break mTLS for all running AgentBoxes.
+  #                       For GitOps / render-then-apply use caSecret instead.
+  #   caSecret: "name"  — bring-your-own kubernetes.io/tls Secret (keys
+  #                       tls.crt / tls.key). Useful with cert-manager,
+  #                       Vault PKI, or any pipeline that pre-renders manifests.
+  tls:
+    generateCa: true
+    caSecret: ""
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "2"
+      memory: "2Gi"
+  memory:
+    # Disabled by default for integrated production deployments. Enabling
+    # this re-exposes memory_search/memory_get and session memory auto-save.
+    enabled: false
+  # Max sub-agent child sessions a single AgentBox runs concurrently. A wide
+  # spawn_subagent fan-out queues past this instead of starting one child agent +
+  # one LLM stream per target at once (avoids provider 429s / pod pressure).
+  # Forwarded to each AgentBox pod as SICLAW_SUBAGENT_CONCURRENCY. Default 5.
+  subagentConcurrency: 5
+  env: {}
+
+# -- Portal (standalone web UI, replaces Upstream)
+portal:
+  enabled: true
+  replicas: 1
+  jwtSecret: ""         # Portal's JWT signing key (Portal is the auth boundary)
+  portalSecret: ""      # shared with Runtime; verifies Runtime phone-home X-Auth-Token
+  service:
+    type: NodePort
+    port: 3003
+    nodePort: 31003
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "64Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+  env: {}
+
+# -- OCR backend for Portal image/PDF attachment preprocessing
+ocr:
+  enabled: true
+  replicas: 1
+  # Set when OCR is provided by another service. If enabled=false and this is
+  # empty, Portal treats OCR as unavailable and keeps chat sends recoverable.
+  externalUrl: ""
+  timeoutMs: 120000
+  image:
+    # Empty repository uses image.registry + image.tag as siclaw-ocr:<tag>.
+    repository: ""
+    tag: ""
+    pullPolicy: ""
+  service:
+    port: 8088
+  device: "cpu"
+  preload: true
+  enableStructure: false
+  # Per-Pod admitted in-flight OCR requests. PaddleOCR inference is serialized
+  # inside each backend process; requests above this limit receive HTTP 503.
+  maxConcurrency: 1
+  # Per-attachment OCR text characters that Portal may inject into the prompt.
+  maxEvidenceTextChars: 32768
+  # Total OCR evidence characters that Portal may inject for one chat turn.
+  maxTotalEvidenceTextChars: 65536
+  # Hard process-level watchdog for a single OCR request. If PaddleOCR hangs past
+  # this window, the backend exits and Kubernetes restarts the container.
+  hardTimeoutMs: 150000
+  # PDF inputs are capped before PaddleOCR runs so a long paper does not occupy
+  # OCR workers and delay screenshot/table requests. Set 0 to disable.
+  maxPdfPages: 10
+  # Decoded image pixel cap before OCR runs. Set 0 to disable.
+  maxImagePixels: 50000000
+  textDetectionModelName: "PP-OCRv5_mobile_det"
+  textRecognitionModelName: "PP-OCRv5_mobile_rec"
+  textDetLimitSideLen: ""
+  maxRequestBytes: "10485760"
+  cache:
+    # Cache PaddleOCR/PaddleX model downloads across container restarts in the
+    # same Pod. This does not store user uploads or OCR text.
+    enabled: true
+  resources:
+    requests:
+      cpu: "2"
+      memory: "4Gi"
+    limits:
+      cpu: "4"
+      memory: "8Gi"
+  env: {}
+  networkPolicy:
+    enabled: false
+    # Extra Kubernetes NetworkPolicy from entries for OCR-only/shared-service
+    # deployments. Example:
+    # ingressFrom:
+    #   - namespaceSelector:
+    #       matchLabels:
+    #         kubernetes.io/metadata.name: management-server
+    #     podSelector:
+    #       matchLabels:
+    #         app.kubernetes.io/name: management-apiserver
+    ingressFrom: []
+
+# -- AgentBox (spawned at runtime by K8s spawner)
+agentbox:
+  debugImage: ""
+  persistence:
+    enabled: false
+    # Override the shared PVC name. Empty → "<release-fullname>-data".
+    claimName: ""
+    # REQUIRED when enabled: true. Must support ReadWriteMany.
+    # Examples: nfs, efs-sc, csi-cephfs, longhorn (with RWX).
+    # Leaving this empty while enabled keeps the PVC in Pending state.
+    storageClassName: ""
+    size: "10Gi"
+
+# -- Metrics & Observability
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    interval: 15s
+    namespace: ""
+    namespaceSelector: {}
+    additionalLabels: {}
+  podMonitor:
+    enabled: true
+    interval: 15s
+    namespace: ""
+    additionalLabels: {}
+  grafanaDashboard:
+    enabled: true
+    namespace: ""
+    additionalLabels: {}
+  prometheusRule:
+    enabled: false
+    namespace: ""
+    additionalLabels: {}
+    costThresholdPerHour: 10

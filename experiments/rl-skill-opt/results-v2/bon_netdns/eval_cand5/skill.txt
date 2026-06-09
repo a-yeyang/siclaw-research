@@ -1,0 +1,31 @@
+**SOP: Diagnose `network-dns` faults in Kubernetes**
+
+1. **Start from the failing client path**
+   - Identify the affected **client Pod**, its **Namespace**, the target **Service FQDN/name**, and whether failure is **name resolution**, **connection**, or both.
+   - Inspect client Pod status, node placement, IP, restart history, and recent logs/events to confirm the failure is current and not caused by app crash, bad config, or stale DNS cache.
+
+2. **Verify the target Service and backing workload**
+   - Get the **Service** spec: type, ClusterIP, selector, ports, targetPort, and namespace.
+   - Get matching **Endpoints/EndpointSlices**. If empty or wrong IPs/ports, inspect target Pods for labels, readiness, container ports, and namespace mismatch.
+   - Distinguish: empty endpoints or wrong selector = likely root cause; client “cannot resolve/reach” is downstream symptom.
+
+3. **Check DNS objects and resolution chain**
+   - Confirm the queried name is valid for the namespace/search path; inspect client Pod `/etc/resolv.conf` settings via Pod spec (`dnsPolicy`, `dnsConfig`).
+   - Inspect **CoreDNS/kube-dns** Pods, Service, Endpoints, readiness, restarts, logs, and ConfigMap. Look for plugin/config errors, upstream forwarding failures, timeouts, or crash loops.
+   - If only one name fails, suspect Service/namespace/name issue; if many names fail, suspect cluster DNS service or configuration.
+
+4. **Check network reachability after resolution**
+   - Verify **NetworkPolicies** affecting client namespace, server namespace, and DNS Pods (UDP/TCP 53 and application port).
+   - Inspect **CNI/plugin** health indicators from node and system Pod events/logs for cross-node routing issues, dropped traffic, or sandbox/network setup failures.
+   - Compare whether failure is cluster-wide, namespace-scoped, node-scoped, or only cross-node.
+
+5. **Check platform-wide dependencies**
+   - Review kube-proxy/service-routing health (or equivalent dataplane), node readiness, and relevant system component restarts/events.
+   - For external name resolution, inspect upstream DNS reachability/configuration.
+
+**A correct diagnosis must name**
+- The exact broken layer: **Service definition**, **Endpoints/EndpointSlices**, **CoreDNS/kube-dns**, **NetworkPolicy**, **CNI/dataplane**, **node-specific issue**, or **application using wrong DNS name/port**.
+- The concrete offending object(s), namespace, and evidence showing why this is the root cause rather than a downstream symptom.
+
+**Safe remediation**
+- Restore the specific misconfiguration or unhealthy component only: fix Service selector/ports, restore Pod labels/readiness, correct DNS/CoreDNS config, allow DNS/app traffic in NetworkPolicy, or repair node/CNI/kube-proxy health. Avoid broad restarts unless component health clearly requires it.

@@ -1,0 +1,31 @@
+{
+  "runDir": "experiments/rl-skill-opt/results/smoke_baseline_c070",
+  "provider": "kimi",
+  "judgeModel": "claude-sonnet-4-6",
+  "skillFile": null,
+  "skillChars": 0,
+  "cases": [
+    "c070"
+  ],
+  "reward": 1,
+  "passRate": 1,
+  "perCase": {
+    "c070": 1
+  },
+  "advantage": null,
+  "perCaseAdvantage": null,
+  "baselineMeanScore": null,
+  "tokens": {
+    "input": 30229,
+    "output": 1837,
+    "total": 60994,
+    "toolCalls": 7,
+    "completed": 1,
+    "cases": 1
+  },
+  "runStatuses": {
+    "c070": "completed"
+  },
+  "notGraded": [],
+  "durationSec": 59
+}

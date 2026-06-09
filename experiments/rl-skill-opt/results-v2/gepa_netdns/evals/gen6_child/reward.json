@@ -1,0 +1,174 @@
+{
+  "runDir": "experiments/rl-skill-opt/results-v2/gepa_netdns/evals/gen6_child",
+  "provider": "gpt",
+  "judgeModel": "claude-sonnet-4-6",
+  "skillFile": "experiments/rl-skill-opt/results-v2/gepa_netdns/evals/gen6_child/skill.txt",
+  "skillChars": 2494,
+  "cases": [
+    "c068",
+    "c069",
+    "c070",
+    "c071",
+    "c072",
+    "c073"
+  ],
+  "rewardMode": "composite",
+  "reward": 1.222,
+  "judgeReward": 0.833,
+  "passRate": 0.6666666666666666,
+  "perCase": {
+    "c068": 1,
+    "c069": 0.5,
+    "c070": 1,
+    "c071": 0.5,
+    "c072": 1,
+    "c073": 1
+  },
+  "composite": {
+    "n": 6,
+    "composite": 1.222,
+    "judgeMean": 0.833,
+    "rubricMean": 0.778,
+    "rewardTruthGap": 0.055,
+    "mislabelRate": 0,
+    "spuriousMean": 0,
+    "perCase": {
+      "c068": {
+        "judgeScore": 1,
+        "rubric": {
+          "enumeratedNetworkPolicies": 1,
+          "inspectedDnsConfig": 1,
+          "rootCauseClassCorrect": 1,
+          "predictedClass": "networkpolicy",
+          "trueClass": "networkpolicy",
+          "score": 1
+        },
+        "spuriousPenalty": {
+          "value": 0,
+          "reason": "diagnosis is not a DNS-override claim"
+        },
+        "composite": 1.5,
+        "rewardTruthGap": 0,
+        "mislabeled": 0
+      },
+      "c069": {
+        "judgeScore": 0.5,
+        "rubric": {
+          "enumeratedNetworkPolicies": 0,
+          "inspectedDnsConfig": 1,
+          "rootCauseClassCorrect": 1,
+          "predictedClass": "networkpolicy",
+          "trueClass": "networkpolicy",
+          "score": 0.667
+        },
+        "spuriousPenalty": {
+          "value": 0,
+          "reason": "diagnosis is not a DNS-override claim"
+        },
+        "composite": 0.833,
+        "rewardTruthGap": -0.167,
+        "mislabeled": 0
+      },
+      "c070": {
+        "judgeScore": 1,
+        "rubric": {
+          "enumeratedNetworkPolicies": 0,
+          "inspectedDnsConfig": 1,
+          "rootCauseClassCorrect": 1,
+          "predictedClass": "dns",
+          "trueClass": "dns",
+          "score": 0.667
+        },
+        "spuriousPenalty": {
+          "value": 0,
+          "reason": "DNS claim and the case really is DNS"
+        },
+        "composite": 1.333,
+        "rewardTruthGap": 0.333,
+        "mislabeled": 0
+      },
+      "c071": {
+        "judgeScore": 0.5,
+        "rubric": {
+          "enumeratedNetworkPolicies": 0,
+          "inspectedDnsConfig": 1,
+          "rootCauseClassCorrect": 1,
+          "predictedClass": "networkpolicy",
+          "trueClass": "networkpolicy",
+          "score": 0.667
+        },
+        "spuriousPenalty": {
+          "value": 0,
+          "reason": "diagnosis is not a DNS-override claim"
+        },
+        "composite": 0.833,
+        "rewardTruthGap": -0.167,
+        "mislabeled": 0
+      },
+      "c072": {
+        "judgeScore": 1,
+        "rubric": {
+          "enumeratedNetworkPolicies": 1,
+          "inspectedDnsConfig": 1,
+          "rootCauseClassCorrect": 1,
+          "predictedClass": "networkpolicy",
+          "trueClass": "networkpolicy",
+          "score": 1
+        },
+        "spuriousPenalty": {
+          "value": 0,
+          "reason": "diagnosis is not a DNS-override claim"
+        },
+        "composite": 1.5,
+        "rewardTruthGap": 0,
+        "mislabeled": 0
+      },
+      "c073": {
+        "judgeScore": 1,
+        "rubric": {
+          "enumeratedNetworkPolicies": 0,
+          "inspectedDnsConfig": 1,
+          "rootCauseClassCorrect": 1,
+          "predictedClass": "dns",
+          "trueClass": "dns",
+          "score": 0.667
+        },
+        "spuriousPenalty": {
+          "value": 0,
+          "reason": "DNS claim and the case really is DNS"
+        },
+        "composite": 1.333,
+        "rewardTruthGap": 0.333,
+        "mislabeled": 0
+      }
+    }
+  },
+  "advantage": 0.35,
+  "perCaseAdvantage": {
+    "c068": 0.4,
+    "c069": 0.4,
+    "c070": 0.4,
+    "c071": 0,
+    "c072": 0.9,
+    "c073": 0
+  },
+  "baselineMeanScore": 0.483,
+  "tokens": {
+    "input": 274473,
+    "output": 8478,
+    "total": 1063623,
+    "toolCalls": 71,
+    "completed": 6,
+    "cases": 6
+  },
+  "runStatuses": {
+    "c068": "completed",
+    "c069": "completed",
+    "c070": "completed",
+    "c071": "completed",
+    "c072": "completed",
+    "c073": "completed"
+  },
+  "notGraded": [],
+  "durationSec": 213
+}

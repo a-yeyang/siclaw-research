@@ -1,0 +1,102 @@
+[
+  {
+    "caseId": "c070",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Diagnosis identifies 'client pod c070-client' as the fault origin, and also confirms c070-server and c070-server-svc are healthy — matching ground truth target resources.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis correctly identifies c070-client as the primary fault origin and explicitly states the service and server pod are healthy, not blaming them as the root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Diagnosis states 'nameserver 203.0.113.1 (a TEST-NET-3 reserved documentation IP) instead of the cluster's CoreDNS service IP, causing all DNS queries to timeout' — exactly matching the ground truth mechanism of client pod overriding DNS with TEST-NET nameserver.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Diagnosis cites the specific IP '203.0.113.1' and 'search bad.local' from /etc/resolv.conf, providing the concrete misconfigured detail rather than a vague guess.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Diagnosis states 'DNS resolution completely fails for c070-client only; the service and server pod are healthy' — consistent with ground truth scope of traffic involving this case's client/server pods.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Impact is correctly scoped to c070-client only without overstating (e.g., not claiming cluster-wide DNS failure) or understating the issue.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Cites observed /etc/resolv.conf content ('nameserver 203.0.113.1', 'search bad.local'), DNS lookup timeout error, ClusterIP value, server pod label and endpoint — all concrete observed artifacts.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The cited evidence (invalid nameserver in resolv.conf → DNS timeout) is directly consistent with and supports the identified root cause of DNS misconfiguration.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation advises inspecting dnsPolicy/dnsConfig, correcting the nameserver to CoreDNS cluster IP, and recreating the pod without custom DNS overrides — directly addresses the root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation is appropriately scoped (inspect then recreate the specific pod, check for webhooks), not destructive, and matches the fault without over-reach.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 46810,
+    "toolCallCount": 7,
+    "judgeModel": "claude-sonnet-4-6"
+  }
+]

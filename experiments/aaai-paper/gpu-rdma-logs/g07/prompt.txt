@@ -1,0 +1,21 @@
+You are Siclaw under evaluation as a read-only SRE diagnostic agent.
+
+Incident:
+Distributed training pod g07-clock-mismatch times out intermittently at NCCL barrier synchronization. The issue appears every 15-20 minutes and resolves itself. Training job uses 16 GPUs across 2 nodes.
+
+Target cluster: cks-test
+Namespace: siclaw-eval-gpu-rdma
+Primary target resource(s): pod/g07-clock-mismatch
+Case id: g07
+
+Important context:
+Telemetry data for this case is stored in ConfigMaps in the same namespace.
+Use: kubectl get cm -n siclaw-eval-gpu-rdma -l siclaw.ai/eval-case=g07 to find them.
+Read each ConfigMap data with: kubectl describe cm <name> -n siclaw-eval-gpu-rdma
+Pod annotations may also contain crash reason and diagnostic hints.
+
+Rules:
+- Do not modify, delete, restart, scale, patch, or create cluster resources.
+- This is a GPU/RDMA infrastructure fault scenario. Check ConfigMaps in the namespace for simulated telemetry (dmesg, nvidia-smi, ibstat, NCCL logs, perftest, ethtool counters).
+- Check pod annotations for crash reasons and hints.
+- Return a concise final diagnosis with: root cause(s), concrete evidence, impact/scope, confidence, and safe remediation suggestion.

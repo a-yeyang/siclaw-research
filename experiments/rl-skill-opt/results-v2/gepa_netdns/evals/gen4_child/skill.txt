@@ -1,0 +1,32 @@
+When a client pod cannot resolve or reach a Service, investigate in a strict sequence that separates DNS-name problems from transport problems, and do not conclude “DNS infrastructure issue” from a single failed lookup.
+
+1. Confirm object wiring first:
+- Get the client pod, Service, EndpointSlice/endpoints, backend pods, and their labels.
+- Verify client/backend pods are Running and Ready.
+- Verify the Service selector matches the intended backend pods and ports/targetPorts are correct.
+- Record the Service ClusterIP and backend Pod IPs.
+
+2. Inspect the client’s DNS configuration before interpreting lookup failures:
+- Read `/etc/resolv.conf` in the client pod: nameserver(s), search domains, ndots, options.
+- Verify the nameserver points to cluster DNS as expected for that pod.
+- Test both short name and full Service FQDN.
+- Treat search-path `NXDOMAIN` attempts as normal; focus on whether the final intended FQDN resolves.
+- If lookup times out or says “no servers could be reached,” classify this as “cannot contact configured DNS server,” not yet as a Service-name problem.
+
+3. Distinguish DNS reachability from Service reachability:
+- If tools exist, probe the configured DNS server IP:53 from the client pod.
+- Separately test connectivity to the Service ClusterIP:port and, if possible, directly to backend Pod IP:targetPort.
+- Use the result matrix: DNS fails but direct IP works; DNS works but Service IP fails; both fail; Service works but app fails.
+
+4. Enumerate NetworkPolicies comprehensively:
+- List all NetworkPolicies in the namespace(s), not only obviously related names.
+- Determine which policies select the client pod (egress isolation), backend pod (ingress isolation), and DNS pods/namespace if relevant.
+- Explicitly check whether rules allow client egress to DNS on UDP/TCP 53 and allow client-to-backend traffic on the needed port.
+- Treat DNS-blocking policy as a first-class cause whenever lookups time out.
+
+5. Consider remaining blockers:
+- DNS pod/service outage, server not listening on targetPort, named-port mismatch, readiness masking, wrong protocol, CNI/node-local DNS issues, cross-namespace name confusion.
+
+6. Report:
+- State the failing layer with direct evidence.
+- If you could not inspect `/etc/resolv.conf`, DNS reachability, and policies affecting the client, do not confidently attribute the issue to DNS infrastructure or the application.

@@ -1,0 +1,1183 @@
+[
+  {
+    "caseId": "c001",
+    "status": "completed",
+    "category": "image-pull",
+    "difficulty": "easy",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Diagnosis explicitly identifies 'pod c001-image' as the target, matching ground truth localization.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Primary fault origin is correctly identified as the pod with the invalid image; node cpu-10-208-55-85 is only mentioned as log source, not as root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Explains that 'registry.invalid' is an invalid/non-existent registry hostname causing DNS resolution failure (NXDOMAIN), which is semantically equivalent to 'image registry host/tag is invalid and cannot be pulled'.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Specifies concrete mutated detail: image 'registry.invalid/scitix/missing-trainer:v404' with invalid hostname 'registry.invalid' and tag 'v404'.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "States 'Impact/scope: Single pod c001-image... No other pods are affected,' consistent with ground truth scope.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Correctly limits impact to single pod startup failure without over-stating (e.g., node-wide issue) or under-stating (e.g., transient glitch).",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Cites concrete containerd logs showing 'dial tcp: lookup registry.invalid on 10.208.12.100:53: no such host' and references ~4000 pull attempts.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The DNS NXDOMAIN error for 'registry.invalid' is logically consistent with and directly supports the identified root cause of invalid registry hostname.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Recommends replacing the invalid image reference with a valid one (e.g., 'registry.example.com/scitix/trainer:v1.2.3'), which would resolve the pull failure.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation is scoped to updating the specific pod's image field or using imagePullPolicy: Never for local testing, with no destructive over-reach.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 21912,
+    "toolCallCount": 8,
+    "judgeModel": "moonshotai/Kimi-K2.5"
+  },
+  {
+    "caseId": "c002",
+    "status": "completed",
+    "category": "image-pull",
+    "difficulty": "easy",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Diagnosis explicitly names 'pod/c002-image' as the target resource multiple times, matching the ground-truth localization.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Primary fault origin is correctly identified as the pod's image configuration; node 'cpu-10-208-55-85' is mentioned only as log source, not as a faulty resource.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Agent states the 'repository does not exist' and image 'does not exist on Docker Hub', semantically matching the ground-truth mechanism of non-existent image repository.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Concrete mutated detail provided: specific image name 'docker.io/library/siclaw-does-not-exist:v1' identified as the non-existent repository.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Scope explicitly stated as 'Single pod c002-image only — no other resources are affected', consistent with ground-truth single pod scope.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Impact correctly limited to one stuck pod (15h duration); no over-statement (cluster/node impact) or under-statement (transient issue).",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Cites containerd logs with specific error strings ('insufficient_scope', 'repository does not exist'), pod events ('Back-off pulling image'), and node location.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Cited containerd error 'repository does not exist or may require authorization' is consistent with and supports the root cause of a non-existent repository.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation advises correcting the image name to a valid reference or pushing the missing image, which directly resolves the non-existent repository issue.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Recommendations are limited to updating image references or adding imagePullSecrets; no destructive actions or over-reaching changes proposed.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 22319,
+    "toolCallCount": 8,
+    "judgeModel": "moonshotai/Kimi-K2.5"
+  },
+  {
+    "caseId": "c011",
+    "status": "completed",
+    "category": "crashloop",
+    "difficulty": "easy",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Diagnosis explicitly identifies 'Pod `c011-crash`' as the target and references its spec, container command, and restart count.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Primary fault origin is correctly attributed to the pod's missing environment variable configuration; node and image are cited as metadata, not blamed.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Explains that the container command checks for `MODEL_PATH` with `test -n`, exits 42 when unset, causing the crash loop—matching the ground truth mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Explicitly names the missing `MODEL_PATH` variable, shows the exact exit code 42 from the script, and confirms `Environment: <none>` in describe output.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "States impact is limited to 'The pod never reaches Ready' with 182 restarts, consistent with a single-container crash loop.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Accurately describes impact as the pod consuming resources with 'zero productive work' without claiming broader cluster failure.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Cites concrete observed data: CrashLoopBackOff status, 182 restarts, exit code 42, container duration ~0s, 'Environment: <none>' from describe, and jsonpath output.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Exit code 42 aligns with the script's `exit 42` branch for missing MODEL_PATH; absence of env vars in describe/jsonpath supports the root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Recommends adding the `MODEL_PATH` environment variable to the pod spec, which directly resolves the identified missing variable.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Suggestion to add an env var is non-destructive and appropriately scoped; includes guidance for pod templates in workload controllers.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 12804,
+    "toolCallCount": 8,
+    "judgeModel": "moonshotai/Kimi-K2.5"
+  },
+  {
+    "caseId": "c012",
+    "status": "completed",
+    "category": "crashloop",
+    "difficulty": "easy",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Diagnosis explicitly identifies 'pod/c012-crash' as the target resource in the header and states 'Only this pod is affected'",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The CPU node is mentioned only as context ('runs on CPU node cpu-10-208-55-85'), not blamed; the primary fault is correctly placed on the pod's missing env var",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Agent states 'The pod does not set the CUDA_VISIBLE_DEVICES environment variable' causing the check to fail, which semantically matches the ground truth 'CUDA_VISIBLE_DEVICES is mis-set'",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Concrete details provided: '\"env\": null', '\"resources\": {}', exit code 43, and the specific shell test 'test \"$CUDA_VISIBLE_DEVICES\" = all'",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "States 'Only this pod is affected' and 'single container crash loop' implied by analysis of one pod's command/env",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Impact correctly stated as 'The pod never becomes Ready' with '182 times over 15h' restarts, matching single container scope without claiming broader impact",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Cites specific observed data: Pod spec command, '\"env\": null', '\"resources\": {}', container logs 'cuda devices masked', exit code 43, and restart count",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Log message 'cuda devices masked' matches the script's echo statement; exit code 43 matches the 'exit 43' in the command; null env confirms variable is unset",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation suggests 'Set CUDA_VISIBLE_DEVICES=all' which directly addresses the identified missing environment variable",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Offers two targeted options (add env var or request GPU) with guidance on when each is appropriate; no destructive actions suggested",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 30551,
+    "toolCallCount": 11,
+    "judgeModel": "moonshotai/Kimi-K2.5"
+  },
+  {
+    "caseId": "c021",
+    "status": "completed",
+    "category": "config",
+    "difficulty": "easy",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Diagnosis explicitly identifies 'Pod c021-config' and 'Only this single pod (c021-config) is affected', matching ground truth localization.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Primary fault is correctly attributed to the missing ConfigMap reference within the pod spec, not to any unrelated or healthy downstream resource.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Explains that the pod references a non-existent ConfigMap 'missing-model-config' with key 'bucket' for env var MODEL_BUCKET, matching the ground truth mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Specifies concrete details: ConfigMap name 'missing-model-config', key 'bucket', and environment variable 'MODEL_BUCKET', rather than vague guesses.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "States 'Only this single pod (c021-config) is affected', consistent with ground truth scope of 'single pod configuration dependency'.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Correctly limits impact to the single pod and does not claim broader cluster impact or incorrectly narrow it to a sub-component.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Cites concrete observed evidence: Pod status 'CreateContainerConfigError', container waiting message 'configmap \"missing-model-config\" not found', and specific YAML fields.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The cited error message 'configmap \"missing-model-config\" not found' is directly consistent with and confirms the identified root cause of missing ConfigMap.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Recommends creating the specific missing ConfigMap 'missing-model-config' with key 'bucket', which directly resolves the identified root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation is scoped to creating the missing ConfigMap or optionally deleting the specific pod to force re-evaluation; no destructive over-reach or unsafe cluster-wide changes suggested.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 27781,
+    "toolCallCount": 5,
+    "judgeModel": "moonshotai/Kimi-K2.5"
+  },
+  {
+    "caseId": "c022",
+    "status": "completed",
+    "category": "config",
+    "difficulty": "easy",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Identifies 'Single pod c022-config' which matches ground-truth localization pod/c022-config",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Focuses on the pod and the missing secret dependency; does not blame unrelated or healthy resources",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Explains that Secret 'missing-registry-secret' referenced via env.valueFrom.secretKeyRef is absent, matching ground-truth mechanism",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Specifies concrete details: secret name 'missing-registry-secret', env var 'REGISTRY_TOKEN', and key reference via secretKeyRef",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "States 'Single pod c022-config... No other workloads appear affected' consistent with single pod configuration dependency",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Accurately describes impact as limited to one pod stuck for 15 hours without overstating cluster impact or understating severity",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Cites concrete observed evidence: Pod status CreateContainerConfigError, container Waiting reason/message, kubectl get secret NotFound output, and YAML field values",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Cited evidence 'secret \"missing-registry-secret\" not found' message and NotFound command output directly support the missing secret root cause",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Recommends creating the specific missing secret 'missing-registry-secret' or removing the env var dependency, both of which would resolve the CreateContainerConfigError",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation is targeted (create specific secret or edit specific pod) with no destructive over-reach; matches the real fault scope",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 12955,
+    "toolCallCount": 7,
+    "judgeModel": "moonshotai/Kimi-K2.5"
+  },
+  {
+    "caseId": "c031",
+    "status": "completed",
+    "category": "scheduling-gpu",
+    "difficulty": "easy",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Diagnosis explicitly identifies 'Pod `c031-pending` stuck Pending' and focuses analysis on this specific pod, matching ground-truth localization.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Primary fault origin is correctly attributed to the pod's own nodeSelector configuration, not to unrelated nodes or downstream resources.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Explains nodeSelector requesting unavailable GPU type 'h100-pcie-80gb' while nodes have 'h100nvlink80', matching ground-truth mechanism of unavailable GPU type constraint.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Specifies concrete mutated detail: pod has `nodeSelector: {scitix.ai/gpu-type: h100-pcie-80gb}` vs nodes having `scitix.ai/gpu-type=h100nvlink80`.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "States 'Single pod in namespace' and 'No other resources affected', consistent with ground-truth single workload scope.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Accurately describes impact as limited to one pod blocked for 55+ minutes without overstating to cluster-wide or multi-service impact.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Cites concrete observed evidence: Pod events showing 'FailedScheduling' with '0/368 nodes are available', pod spec YAML showing nodeSelector, and node labels showing actual GPU types.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Cited scheduler message '5 node(s) didn't match Pod's node affinity/selector' is consistent with and supports the identified nodeSelector mismatch root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Recommends correcting nodeSelector to 'h100nvlink80' or removing it, which directly addresses the label mismatch preventing scheduling.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation is targeted (edit pod nodeSelector) and safe, without destructive over-reach like deleting nodes or changing cluster configurations.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 75502,
+    "toolCallCount": 25,
+    "judgeModel": "moonshotai/Kimi-K2.5"
+  },
+  {
+    "caseId": "c040",
+    "status": "judge-error",
+    "error": "Error: empty judge response",
+    "passed": false,
+    "totalScore": 0,
+    "dimensions": {},
+    "judgeModel": "moonshotai/Kimi-K2.5"
+  },
+  {
+    "caseId": "c046",
+    "status": "completed",
+    "category": "storage",
+    "difficulty": "easy",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Agent identifies 'PVC c046-data' as the primary resource and mentions 'Pod c046-storage', matching ground truth target resources pvc/c046-data and pod/c046-storage.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Agent correctly identifies PVC c046-data as the root cause location and treats pod c046-storage as the downstream impacted resource, not the primary origin.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Agent states 'PVC c046-data references non-existent StorageClass' which semantically matches ground truth mechanism 'PVC requests nonexistent storageClass'.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Agent explicitly names the concrete mutated detail: 'missing-storageclass' as the specific non-existent StorageClass value.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Agent states impact is 'Pod c046-storage cannot start' and 'Storage provisioning blocked for this workload', consistent with ground truth scope of single pod blocked by unbound PVC.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Agent limits impact to 'this workload' and specific pod, avoiding claims of cluster-wide failure or under-stating by omitting the pod impact.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Agent cites concrete observed evidence: 'PVC spec.storageClassName: missing-storageclass' and 'kubectl get storageclass returns empty'.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The cited evidence (PVC referencing non-existent StorageClass) is logically consistent with and supports the identified root cause of unbound PVC.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation options to 'Create StorageClass missing-storageclass' or 'update PVC to use an existing StorageClass' directly address the non-existent StorageClass reference.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation is safe and appropriately scoped: creating the missing resource or updating PVC configuration without destructive actions or cluster-wide changes.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 25995,
+    "toolCallCount": 2,
+    "judgeModel": "moonshotai/Kimi-K2.5"
+  },
+  {
+    "caseId": "c047",
+    "status": "completed",
+    "category": "storage",
+    "difficulty": "easy",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Agent identifies PVC c047-data as the primary faulty resource and mentions pod c047-storage as affected, matching ground truth target resources [\"pvc/c047-data\",\"pod/c047-storage\"]",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Root Cause section correctly focuses on PVC c047-data as the origin; pod is mentioned as impacted downstream resource, not as primary fault origin",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Agent states PVC references 'non-existent StorageClass gpu-local-ssd-missing', semantically identical to ground truth mechanism 'PVC requests nonexistent storageClass gpu-local-ssd-missing'",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Explicitly names the concrete mutated detail: StorageClass 'gpu-local-ssd-missing' and confirms it does not exist via kubectl get storageclass",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "States impact is limited to 'pod c047-storage' and 'prevents PVC binding and pod startup', consistent with ground truth scope 'pod blocked by unbound PVC'",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Scope is appropriately limited to single pod/PVC pair without overstating to cluster-wide impact or understating to ignore the blocked pod",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Cites concrete observed evidence: 'PVC status: Pending with ProvisioningFailed events showing storageclass.storage.k8s.io not found' and 'kubectl get storageclass confirms no StorageClass named...'",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Cited evidence (Pending status, ProvisioningFailed events referencing missing storageclass) is exactly consistent with and diagnostic of a non-existent StorageClass",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation options (create missing StorageClass 'gpu-local-ssd-missing' OR update PVC to use existing StorageClass) directly address the non-existent StorageClass root cause",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation is appropriately scoped (create SC or edit PVC spec) without destructive over-reach; matches standard resolution for missing StorageClass",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 34329,
+    "toolCallCount": 3,
+    "judgeModel": "moonshotai/Kimi-K2.5"
+  },
+  {
+    "caseId": "c056",
+    "status": "judge-error",
+    "error": "Error: empty judge response",
+    "passed": false,
+    "totalScore": 0,
+    "dimensions": {},
+    "judgeModel": "moonshotai/Kimi-K2.5"
+  },
+  {
+    "caseId": "c057",
+    "status": "completed",
+    "category": "service-readiness",
+    "difficulty": "medium",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Agent identifies service 'c057-svc' as the primary location of the fault and mentions deployment 'c057-app', matching the ground-truth target resources.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Agent correctly identifies the service selector as the fault origin rather than blaming the healthy deployment or pods.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Agent describes 'Mismatch between service selector and deployment labels' preventing binding, which semantically matches 'Service selector does not match the backing pod labels, so endpoints are empty'.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Agent specifies the concrete mutated detail: service selector is 'app=c057-app-typo' while deployment labels are 'app=c057-app'.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Agent states impact is limited to 'clients relying on c057-svc', consistent with 'one service path' scope.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Agent describes impact as the specific service being unreachable, without overstating to namespace-wide or multiple services.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Agent cites specific YAML fields (selectors 'app=c057-app-typo' vs 'app=c057-app') and endpoint status ('<none>').",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The cited selector mismatch directly explains the empty endpoints and service unavailability.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation updates service selector to 'app: c057-app', directly fixing the identified mismatch.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation is a targeted, non-destructive change to a single field in the service spec.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 62309,
+    "toolCallCount": 4,
+    "judgeModel": "moonshotai/Kimi-K2.5"
+  },
+  {
+    "caseId": "c069",
+    "status": "judge-error",
+    "error": "Error: empty judge response",
+    "passed": false,
+    "totalScore": 0,
+    "dimensions": {},
+    "judgeModel": "moonshotai/Kimi-K2.5"
+  },
+  {
+    "caseId": "c072",
+    "status": "judge-error",
+    "error": "Error: empty judge response",
+    "passed": false,
+    "totalScore": 0,
+    "dimensions": {},
+    "judgeModel": "moonshotai/Kimi-K2.5"
+  },
+  {
+    "caseId": "c079",
+    "status": "judge-error",
+    "error": "Error: empty judge response",
+    "passed": false,
+    "totalScore": 0,
+    "dimensions": {},
+    "judgeModel": "moonshotai/Kimi-K2.5"
+  },
+  {
+    "caseId": "c080",
+    "status": "judge-error",
+    "error": "Error: empty judge response",
+    "passed": false,
+    "totalScore": 0,
+    "dimensions": {},
+    "judgeModel": "moonshotai/Kimi-K2.5"
+  },
+  {
+    "caseId": "c086",
+    "status": "judge-error",
+    "error": "Error: empty judge response",
+    "passed": false,
+    "totalScore": 0,
+    "dimensions": {},
+    "judgeModel": "moonshotai/Kimi-K2.5"
+  },
+  {
+    "caseId": "c087",
+    "status": "completed",
+    "category": "volcano-gpu",
+    "difficulty": "hard",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Diagnosis identifies 'PodGroup c087-pg' as the root location, matching ground truth localization to podgroup/c087-pg",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Primary fault origin correctly identified as the PodGroup configuration, not the pending pod or unrelated resources",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Explains that 'PodGroup references non-existent Volcano queue', semantically identical to ground truth mechanism",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Specifies concrete mutated detail: queue name 'siclaw-missing-queue' vs available queues 'default' and 'root'",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "States 'Affects single PodGroup/pod (c087-pg/c087-vcpod)', consistent with ground truth scope",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Accurately describes impact as limited to this PodGroup without overstating cluster-wide effects",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Cites concrete observations: PodGroup spec.queue field, kubectl get queues output, and absence of scheduling events",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Evidence of non-existent queue 'siclaw-missing-queue' and available queues list directly supports the identified root cause",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation to 'Update PodGroup spec.queue to an existing queue' directly addresses the non-existent queue reference",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Updating the queue name is targeted and safe; additional GPU verification suggestions are optional best practices, not destructive",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 56454,
+    "toolCallCount": 6,
+    "judgeModel": "moonshotai/Kimi-K2.5"
+  },
+  {
+    "caseId": "c094",
+    "status": "judge-error",
+    "error": "Error: empty judge response",
+    "passed": false,
+    "totalScore": 0,
+    "dimensions": {},
+    "judgeModel": "moonshotai/Kimi-K2.5"
+  },
+  {
+    "caseId": "c097",
+    "status": "judge-error",
+    "error": "Error: empty judge response",
+    "passed": false,
+    "totalScore": 0,
+    "dimensions": {},
+    "judgeModel": "moonshotai/Kimi-K2.5"
+  }
+]

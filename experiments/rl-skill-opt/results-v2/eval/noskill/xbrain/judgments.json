@@ -1,0 +1,402 @@
+[
+  {
+    "caseId": "c074",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Diagnosis explicitly names NetworkPolicy `c074-deny-egress` as the root cause, matching the ground-truth localization exactly.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis correctly identifies the NetworkPolicy as the primary fault origin and notes the service/server pod are healthy, not blaming them as the root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Diagnosis explains that the NetworkPolicy selects the client pod via `app=c074-client` label and has `policyTypes: [\"Egress\"]` with empty `egress: []` rules, denying all outbound traffic including DNS and service traffic — matching the ground truth mechanism exactly.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The concrete detail is provided: `egress: []` (empty egress rules list) combined with `policyTypes: [\"Egress\"]` is the specific configuration that causes the deny-all behavior.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Diagnosis states impact is 'isolated to c074-client pod only' and mentions server pod and service are healthy, consistent with ground truth scope of traffic involving the client/server pods.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis neither overstates (doesn't claim cluster-wide impact) nor understates (correctly identifies both DNS and service connectivity are affected) the impact.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Cites observed YAML fields (policyTypes, empty egress list, pod label selector), DNS timeout output from nslookup, service ClusterIP and endpoint details, and pod restart count with exit code.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "All cited evidence is consistent: empty egress NetworkPolicy → DNS timeout → service unreachable. Service being healthy confirms the fault is on the client egress side, not the server.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation proposes adding egress allow rules for DNS (port 53) and TCP to the service, or replacing the deny-all policy — this directly addresses the empty-egress NetworkPolicy root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation is appropriately scoped (modifying only the specific NetworkPolicy), non-destructive, and offers a targeted fix rather than broad changes.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 62813,
+    "toolCallCount": 10,
+    "judgeModel": "claude-sonnet-4-6"
+  },
+  {
+    "caseId": "c075",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": false,
+    "totalScore": 0.3,
+    "dimensions": {
+      "localization": {
+        "score": 0
+      },
+      "mechanism": {
+        "score": 0
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 0.5
+      },
+      "remediation": {
+        "score": 0
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The agent identifies the service (c075-server-svc) and pods (c075-client, c075-server) but does NOT identify the NetworkPolicy (c075-deny-ingress) as the target resource or primary fault origin. The agent's primary localization is a port/protocol mismatch, not the NetworkPolicy.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The agent names 'Port/Protocol Mismatch' and client crash-looping as the primary fault origin, which are downstream symptoms or incorrect causes. The actual fault origin (NetworkPolicy c075-deny-ingress) is not identified as primary; it is only briefly mentioned as a remediation step to check.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The ground truth mechanism is a NetworkPolicy denying all ingress from the client to the server. The agent's stated mechanism is a port/protocol mismatch or server not listening on port 8080 — a fundamentally different root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The agent does not identify the specific NetworkPolicy or its deny-all-ingress rule. The 'concrete mutated detail' (a NetworkPolicy selecting the server and blocking client ingress) is absent from the diagnosis.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The agent correctly scopes the impact to the single c075-client/c075-server pair in the namespace, which is consistent with the ground-truth scope of traffic involving these specific pods.",
+        "confidence": "Medium"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The agent states 'Single workload affected: Only the c075-client/c075-server pair' which neither over-states nor under-states the impact relative to the ground truth scope.",
+        "confidence": "Medium"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The agent cites concrete observed data: 69 restarts on c075-client, server IP 172.16.36.213, ClusterIP 172.17.102.175, port mapping 80→8080, endpoint 172.16.36.213:8080, and both pods on the same node.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "No",
+        "evidence": "The cited evidence (endpoint correctly registered, 69 restarts, port mapping) is consistent with a connectivity failure but does NOT support the agent's stated root cause of port/protocol mismatch. The evidence is actually more consistent with a NetworkPolicy block, which the agent fails to conclude.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The primary remediation steps focus on verifying server port binding and client configuration for port mismatch — these would not fix a NetworkPolicy deny-ingress rule. NetworkPolicy review is mentioned only as step 4 and framed as a check, not as the fix.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The remediation is misaligned with the actual root cause (NetworkPolicy). While the steps are not destructive, they address the wrong problem and would not resolve the connectivity issue caused by c075-deny-ingress.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 26888,
+    "toolCallCount": 4,
+    "judgeModel": "claude-sonnet-4-6"
+  },
+  {
+    "caseId": "c076",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": false,
+    "totalScore": 0.3,
+    "dimensions": {
+      "localization": {
+        "score": 0.5
+      },
+      "mechanism": {
+        "score": 0
+      },
+      "scope": {
+        "score": 0.5
+      },
+      "evidence": {
+        "score": 0.5
+      },
+      "remediation": {
+        "score": 0
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis identifies pod/c076-client and pod/c076-server and service c076-server-svc as the affected resources, matching the ground truth target resources.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The diagnosis incorrectly identifies the CNI/overlay network and cross-node routing as the PRIMARY fault origin, rather than the client pod's DNS misconfiguration. The CNI layer is a healthy, unrelated component being blamed.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The ground truth mechanism is that c076-client overrides DNS with a TEST-NET nameserver (203.0.113.1), causing cluster DNS resolution to fail. The agent instead diagnoses a CNI/overlay network routing failure between nodes, which is a completely different mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The agent does not mention the custom DNS nameserver override (203.0.113.1) or any dnsConfig/dnsPolicy misconfiguration in the client pod. Instead it vaguely references 'cross-node network segmentation' without identifying the specific mutated detail.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The agent correctly scopes the impact to traffic between c076-client and c076-server via the service, which is consistent with the ground truth scope of traffic involving these specific client/server pods.",
+        "confidence": "Medium"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The agent overstates by suggesting 'intra-node services likely work' and implying a broader node-level CNI issue, while the actual fault is isolated to the client pod's DNS override affecting only that pod's resolution.",
+        "confidence": "Medium"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The agent cites concrete observations: pod IPs (172.16.36.215, 172.16.243.220), ClusterIP (172.17.95.141), node names, endpoint configuration, and 69 restarts on the client pod.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "No",
+        "evidence": "The cited evidence (different subnets, different nodes, restart count) is used to support a CNI routing failure hypothesis, but this evidence is equally consistent with DNS failure and does not actually support the cross-node routing conclusion. The evidence is irrelevant to or contradicts the actual root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The remediation suggests checking CNI health, node-to-node connectivity, and NetworkPolicies. None of these would fix the actual problem, which is a DNS nameserver override in the client pod's configuration that needs to be corrected.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "While not destructive, the remediation is entirely misaligned with the real fault. Restarting CNI pods or checking overlay routes would not address a pod-level dnsConfig misconfiguration pointing to 203.0.113.1.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 30284,
+    "toolCallCount": 4,
+    "judgeModel": "claude-sonnet-4-6"
+  },
+  {
+    "caseId": "c077",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": false,
+    "totalScore": 0.1,
+    "dimensions": {
+      "localization": {
+        "score": 0
+      },
+      "mechanism": {
+        "score": 0
+      },
+      "scope": {
+        "score": 0
+      },
+      "evidence": {
+        "score": 0.5
+      },
+      "remediation": {
+        "score": 0
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The agent identifies the fault as a cross-node network/CNI issue on node 'cpu-10-208-55-86', not the NetworkPolicy 'c077-deny-egress'. The ground truth localization is the NetworkPolicy resource, which the agent never mentions.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The agent names the node 'cpu-10-208-55-86' and CNI/BGP as the primary fault origin, which is an unrelated/incorrect resource. The actual fault is a NetworkPolicy denying egress from the client pod.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The agent diagnoses a Layer 3 cross-node connectivity failure (BGP/VXLAN/CNI issue), whereas the ground truth mechanism is a NetworkPolicy selecting the client pod and denying all egress including DNS and service traffic. These are fundamentally different mechanisms.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The agent does not identify any NetworkPolicy or its specific configuration (deny-all egress). Instead it speculates about BGP session failures and missing routes, which are not the actual mutated detail.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The agent states the blast radius is 'all pods on node cpu-10-208-55-86', implying a node-wide issue. The ground truth scope is limited to traffic involving the specific client/server pods in this case.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The agent materially overstates the impact by claiming all pods on the node are affected, when in reality only the specific client pod is affected due to a targeted NetworkPolicy.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The agent cites concrete observations: DNS timeout ('connection timed out; no servers could be reached'), 100% packet loss on direct ping, pod IPs and nodes, and service endpoint correctness.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "No",
+        "evidence": "The observed evidence (DNS timeout, ping loss) is consistent with a NetworkPolicy deny, but the agent interprets it as CNI/BGP failure. The evidence does not actually support the BGP/cross-node failure hypothesis — no BGP logs, no node-level routing failures, or CNI errors are cited.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The remediation (check BGP peers, verify node-to-node firewall, check ip routes, review Calico logs) addresses a CNI/BGP failure, not a NetworkPolicy deny-egress rule. It would not fix the actual problem.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "While the suggested steps are not destructive, they are entirely misdirected — they target CNI infrastructure rather than the NetworkPolicy that is the actual fault. The remediation does not match the real fault.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 62425,
+    "toolCallCount": 6,
+    "judgeModel": "claude-sonnet-4-6"
+  }
+]

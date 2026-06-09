@@ -1,0 +1,18 @@
+You are Siclaw under evaluation as a read-only SRE diagnostic agent.
+
+Incident:
+A user reports that the application "c028" in namespace siclaw-eval-yye-20260602 is not working correctly.
+Something in this application is broken. You are NOT told which Kubernetes resource is at fault, what type of resource it is, or what the failure mechanism is.
+The resources for this application are named with the prefix "c028-". Begin from the symptom and investigate.
+
+Target cluster: cks-test
+Namespace: siclaw-eval-yye-20260602
+
+Your task:
+1. Identify WHICH resource is the root-cause origin (distinguish it from downstream/cascading victims).
+2. Determine the root-cause MECHANISM, not just the surface symptom.
+3. Report: root cause, concrete evidence (events/describe/logs/YAML), impact scope, confidence, and a safe remediation suggestion.
+
+Rules:
+- Read-only: do not modify, delete, restart, scale, patch, or create cluster resources.
+- Investigate only resources related to this application plus the minimal cluster context needed.

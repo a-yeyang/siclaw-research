@@ -1,0 +1,517 @@
+{
+  "generatedAt": "2026-06-06T15:20:27.081Z",
+  "root": "experiments/rl-skill-opt/results-v2",
+  "methods": {
+    "noskill": {
+      "label": "noskill",
+      "sets": {
+        "train": null,
+        "heldout": {
+          "mean": 0.633,
+          "lo": 0.184,
+          "hi": 1.083,
+          "n": 4,
+          "basis": "cases",
+          "judge": 0.425,
+          "rubric": 0.417,
+          "rewardTruthGap": 0.008,
+          "mislabelRate": 0.5,
+          "spuriousMean": 0,
+          "perCaseComposite": {
+            "c074": 0.267,
+            "c075": 0.1,
+            "c076": 1.333,
+            "c077": 0.833
+          }
+        },
+        "audit": {
+          "mean": 0.545,
+          "lo": 0.2,
+          "hi": 1.167,
+          "n": 3,
+          "basis": "cases",
+          "judge": 0.433,
+          "rubric": 0.222,
+          "rewardTruthGap": 0.211,
+          "mislabelRate": 0.667,
+          "spuriousMean": 0,
+          "perCaseComposite": {
+            "ca1": 0.2,
+            "ca2": 0.267,
+            "ca3": 1.167
+          }
+        },
+        "xbrain": {
+          "mean": 0.55,
+          "lo": 0.15,
+          "hi": 1.2,
+          "n": 4,
+          "basis": "cases",
+          "judge": 0.425,
+          "rubric": 0.25,
+          "rewardTruthGap": 0.175,
+          "mislabelRate": 0.75,
+          "spuriousMean": 0,
+          "perCaseComposite": {
+            "c074": 1.5,
+            "c075": 0.3,
+            "c076": 0.3,
+            "c077": 0.1
+          }
+        }
+      }
+    },
+    "handcrafted": {
+      "label": "handcrafted",
+      "sets": {
+        "train": null,
+        "heldout": {
+          "mean": 0.8,
+          "lo": 0.158,
+          "hi": 1.333,
+          "n": 4,
+          "basis": "cases",
+          "judge": 0.675,
+          "rubric": 0.5,
+          "rewardTruthGap": 0.175,
+          "mislabelRate": 0.5,
+          "spuriousMean": 0.25,
+          "perCaseComposite": {
+            "c074": -0.233,
+            "c075": 1.333,
+            "c076": 0.767,
+            "c077": 1.333
+          }
+        },
+        "audit": {
+          "mean": 1.333,
+          "lo": 1.333,
+          "hi": 1.333,
+          "n": 3,
+          "basis": "cases",
+          "judge": 1,
+          "rubric": 0.667,
+          "rewardTruthGap": 0.333,
+          "mislabelRate": 0,
+          "spuriousMean": 0,
+          "perCaseComposite": {
+            "ca1": 1.333,
+            "ca2": 1.333,
+            "ca3": 1.333
+          }
+        },
+        "xbrain": {
+          "mean": 1.375,
+          "lo": 1.333,
+          "hi": 1.458,
+          "n": 4,
+          "basis": "cases",
+          "judge": 1,
+          "rubric": 0.75,
+          "rewardTruthGap": 0.25,
+          "mislabelRate": 0,
+          "spuriousMean": 0,
+          "perCaseComposite": {
+            "c074": 1.333,
+            "c075": 1.5,
+            "c076": 1.333,
+            "c077": 1.333
+          }
+        }
+      }
+    },
+    "foa": {
+      "label": "foa",
+      "sets": {
+        "train": null,
+        "heldout": {
+          "mean": 0.384,
+          "lo": -0.033,
+          "hi": 0.992,
+          "n": 4,
+          "basis": "cases",
+          "judge": 0.425,
+          "rubric": 0.417,
+          "rewardTruthGap": 0.009,
+          "mislabelRate": 0.75,
+          "spuriousMean": 0.5,
+          "perCaseComposite": {
+            "c074": -0.033,
+            "c075": 0.267,
+            "c076": 1.333,
+            "c077": -0.033
+          }
+        },
+        "audit": {
+          "mean": 0.7,
+          "lo": 0.267,
+          "hi": 1.167,
+          "n": 3,
+          "basis": "cases",
+          "judge": 0.533,
+          "rubric": 0.333,
+          "rewardTruthGap": 0.2,
+          "mislabelRate": 0.333,
+          "spuriousMean": 0,
+          "perCaseComposite": {
+            "ca1": 0.667,
+            "ca2": 0.267,
+            "ca3": 1.167
+          }
+        },
+        "xbrain": {
+          "mean": 0.458,
+          "lo": 0.1,
+          "hi": 1.025,
+          "n": 4,
+          "basis": "cases",
+          "judge": 0.375,
+          "rubric": 0.167,
+          "rewardTruthGap": 0.208,
+          "mislabelRate": 0.75,
+          "spuriousMean": 0,
+          "perCaseComposite": {
+            "c074": 0.1,
+            "c075": 1.333,
+            "c076": 0.3,
+            "c077": 0.1
+          }
+        }
+      }
+    },
+    "bon": {
+      "label": "bon",
+      "sets": {
+        "train": null,
+        "heldout": {
+          "mean": 0.458,
+          "lo": 0.117,
+          "hi": 1.041,
+          "n": 4,
+          "basis": "cases",
+          "judge": 0.5,
+          "rubric": 0.417,
+          "rewardTruthGap": 0.084,
+          "mislabelRate": 0.75,
+          "spuriousMean": 0.5,
+          "perCaseComposite": {
+            "c074": 0.167,
+            "c075": 0.267,
+            "c076": 1.333,
+            "c077": 0.067
+          }
+        },
+        "audit": {
+          "mean": 1.011,
+          "lo": 0.367,
+          "hi": 1.5,
+          "n": 3,
+          "basis": "cases",
+          "judge": 0.733,
+          "rubric": 0.555,
+          "rewardTruthGap": 0.178,
+          "mislabelRate": 0.333,
+          "spuriousMean": 0,
+          "perCaseComposite": {
+            "ca1": 1.5,
+            "ca2": 0.367,
+            "ca3": 1.167
+          }
+        },
+        "xbrain": {
+          "mean": 1.067,
+          "lo": 0.408,
+          "hi": 1.458,
+          "n": 4,
+          "basis": "cases",
+          "judge": 0.775,
+          "rubric": 0.584,
+          "rewardTruthGap": 0.192,
+          "mislabelRate": 0.25,
+          "spuriousMean": 0,
+          "perCaseComposite": {
+            "c074": 1.333,
+            "c075": 1.5,
+            "c076": 0.1,
+            "c077": 1.333
+          }
+        }
+      }
+    },
+    "gepa": {
+      "label": "gepa",
+      "sets": {
+        "train": null,
+        "heldout": {
+          "mean": 1.458,
+          "lo": 1.375,
+          "hi": 1.5,
+          "n": 4,
+          "basis": "cases",
+          "judge": 1,
+          "rubric": 0.917,
+          "rewardTruthGap": 0.083,
+          "mislabelRate": 0,
+          "spuriousMean": 0,
+          "perCaseComposite": {
+            "c074": 1.5,
+            "c075": 1.333,
+            "c076": 1.5,
+            "c077": 1.5
+          }
+        },
+        "audit": {
+          "mean": 0.978,
+          "lo": -0.067,
+          "hi": 1.5,
+          "n": 3,
+          "basis": "cases",
+          "judge": 0.7,
+          "rubric": 0.889,
+          "rewardTruthGap": -0.189,
+          "mislabelRate": 0.333,
+          "spuriousMean": 0.333,
+          "perCaseComposite": {
+            "ca1": 1.5,
+            "ca2": -0.067,
+            "ca3": 1.5
+          }
+        },
+        "xbrain": {
+          "mean": 0.9,
+          "lo": 0.033,
+          "hi": 1.417,
+          "n": 4,
+          "basis": "cases",
+          "judge": 0.775,
+          "rubric": 0.5,
+          "rewardTruthGap": 0.275,
+          "mislabelRate": 0.25,
+          "spuriousMean": 0.25,
+          "perCaseComposite": {
+            "c074": 1.5,
+            "c075": 1.333,
+            "c076": 1.167,
+            "c077": -0.4
+          }
+        }
+      }
+    },
+    "grpo": {
+      "label": "grpo",
+      "sets": {
+        "train": {
+          "mean": null,
+          "lo": null,
+          "hi": null,
+          "n": 0,
+          "basis": "seeds",
+          "judge": null,
+          "rubric": null,
+          "rewardTruthGap": null,
+          "mislabelRate": null,
+          "spuriousMean": null,
+          "seedMeans": []
+        },
+        "heldout": {
+          "mean": 1.183,
+          "lo": 1.025,
+          "hi": 1.333,
+          "n": 3,
+          "basis": "seeds",
+          "judge": 0.85,
+          "rubric": 0.75,
+          "rewardTruthGap": 0.1,
+          "mislabelRate": 0.083,
+          "spuriousMean": 0.083,
+          "seedMeans": [
+            1.025,
+            1.192,
+            1.333
+          ]
+        },
+        "audit": {
+          "mean": 1.252,
+          "lo": 1.222,
+          "hi": 1.278,
+          "n": 3,
+          "basis": "seeds",
+          "judge": 0.956,
+          "rubric": 0.815,
+          "rewardTruthGap": 0.141,
+          "mislabelRate": 0.333,
+          "spuriousMean": 0.222,
+          "seedMeans": [
+            1.222,
+            1.256,
+            1.278
+          ]
+        },
+        "xbrain": {
+          "mean": 1.167,
+          "lo": 1.117,
+          "hi": 1.217,
+          "n": 3,
+          "basis": "seeds",
+          "judge": 0.833,
+          "rubric": 0.667,
+          "rewardTruthGap": 0.167,
+          "mislabelRate": 0.167,
+          "spuriousMean": 0,
+          "seedMeans": [
+            1.217,
+            1.167,
+            1.117
+          ]
+        }
+      },
+      "basisNote": "trajectory-ckpts(3)",
+      "evalDirs": [
+        "grpo_s1",
+        "grpo_s1_r1",
+        "grpo_s1_r2"
+      ]
+    }
+  },
+  "comparisons": {
+    "heldout": {
+      "ours": {
+        "mean": 1.183,
+        "lo": 1.025,
+        "hi": 1.333
+      },
+      "gepa": {
+        "mean": 1.458,
+        "lo": 1.375,
+        "hi": 1.5
+      },
+      "oursMinusGepa": -0.275
+    },
+    "xbrain": {
+      "ours": {
+        "mean": 1.167,
+        "lo": 1.117,
+        "hi": 1.217
+      },
+      "gepa": {
+        "mean": 0.9,
+        "lo": 0.033,
+        "hi": 1.417
+      },
+      "oursMinusGepa": 0.267
+    },
+    "audit": {
+      "ours": {
+        "mean": 1.252,
+        "lo": 1.222,
+        "hi": 1.278
+      },
+      "gepa": {
+        "mean": 0.978,
+        "lo": -0.067,
+        "hi": 1.5
+      },
+      "oursMinusGepa": 0.274
+    }
+  },
+  "collapse": {
+    "raft_v1_netdns": {
+      "kind": "raft-naive-v1",
+      "runRoot": "experiments/rl-skill-opt/results/rl_netdns_main",
+      "rounds": [
+        {
+          "round": 0,
+          "meanReward": 0.7374999999999999,
+          "bestReward": 0.85,
+          "rewardSpread": 0.25,
+          "diversity": null,
+          "passAt1": null,
+          "passAt4": null,
+          "passAt8": null
+        },
+        {
+          "round": 1,
+          "meanReward": 0.5872499999999999,
+          "bestReward": 0.75,
+          "rewardSpread": 0.467,
+          "diversity": null,
+          "passAt1": null,
+          "passAt4": null,
+          "passAt8": null
+        },
+        {
+          "round": 2,
+          "meanReward": 0.58325,
+          "bestReward": 0.65,
+          "rewardSpread": 0.15,
+          "diversity": null,
+          "passAt1": null,
+          "passAt4": null,
+          "passAt8": null
+        }
+      ],
+      "model": "Qwen/Qwen2.5-3B-Instruct",
+      "provider": "kimi"
+    },
+    "grpo_netdns_s1": {
+      "kind": "grpo",
+      "runRoot": "experiments/rl-skill-opt/results-v2/grpo_netdns_s1",
+      "rounds": [
+        {
+          "round": 0,
+          "meanReward": 1.379,
+          "bestReward": 1.5,
+          "rewardSpread": 0.289,
+          "diversity": {
+            "mean_edit": 0.8624,
+            "token_entropy": 7.993
+          },
+          "passAt1": 1,
+          "passAt4": 1,
+          "passAt8": 1
+        },
+        {
+          "round": 1,
+          "meanReward": 1.34725,
+          "bestReward": 1.5,
+          "rewardSpread": 0.361,
+          "diversity": {
+            "mean_edit": 0.8321,
+            "token_entropy": 7.9624
+          },
+          "passAt1": 1,
+          "passAt4": 1,
+          "passAt8": 1
+        },
+        {
+          "round": 2,
+          "meanReward": 1.2582499999999999,
+          "bestReward": 1.444,
+          "rewardSpread": 0.666,
+          "diversity": {
+            "mean_edit": 0.1232,
+            "token_entropy": 7.3207
+          },
+          "passAt1": 1,
+          "passAt4": 1,
+          "passAt8": 1
+        }
+      ],
+      "model": "Qwen/Qwen2.5-3B-Instruct",
+      "provider": "gpt",
+      "prior": "experiments/rl-skill-opt/skills/network-dns-handcrafted.txt"
+    }
+  },
+  "budgets": {
+    "evalRollouts": 88,
+    "evalCompleted": 88,
+    "evalTokens": 7886952,
+    "gepaTrainRollouts": 42,
+    "gepaTrainTokens": 5567604,
+    "grpoTrainRollouts": 72,
+    "grpoTrainTokens": 6014959,
+    "totalRolloutsAllPhases": 202,
+    "totalTokensAllPhases": 19469515,
+    "note": "evalRollouts = headline-table eval rollouts (held-out/audit/xbrain for every method). gepaTrain/grpoTrain = optimizer search rollouts."
+  }
+}

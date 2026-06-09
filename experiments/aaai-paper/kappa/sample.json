@@ -1,0 +1,1462 @@
+[
+  {
+    "caseId": "c001",
+    "category": "image-pull",
+    "difficulty": "easy",
+    "groundTruth": {
+      "localization": "pod/c001-image",
+      "mechanism": "image registry host/tag is invalid and cannot be pulled",
+      "scope": "single pod image startup"
+    },
+    "symptom": "GPU workload pod c001-image never starts and is reported around ImagePullBackOff/ErrImagePull.",
+    "diagnosis": "The evidence is clear. Here's my diagnosis:\n\n---\n\n## Diagnosis: c001-image — ImagePullBackOff\n\n**Root cause:** The image `registry.invalid/scitix/missing-trainer:v404` references a non-existent/invalid registry hostname.\n\n**Evidence from containerd logs on node `cpu-10-208-55-85`:**\n\n```\nlevel=error error=\"...dial tcp: lookup registry.invalid on 10.208.12.100:53: no such host\"\n```\n\nDNS resolution fails because `registry.invalid` is a **reserved TLD** specifically designated by [RFC 6761 §6.4](https://datatracker.ietf.org/doc/html/rfc6761#section-6.4) for \"testing\" and does not resolve in any real DNS system. The node's DNS server (10.208.12.100) returns **NXDOMAIN / no such host**.\n\nThis is corroborated by:\n- The image name itself: `registry.invalid/scitix/missing-trainer:v404` — both the registry hostname and the tag `v404` (HTTP 404) are literal indicators of intentional non-existence.\n- The pod manifest (created via `kubectl.kubernetes.io/last-applied-configuration`) confirms the image is **not a typo** — it was intentionally set to this value.\n\n**Impact/scope:** Single pod `c001-image` (namespace `siclaw-eval-yye-20260602`). Pending status, cannot start. No other pods are affected.\n\n**Confidence:** High — the error is unambiguous and consistently replicated across ~4000 pull attempts over 15 hours.\n\n**Safe remediation:** Replace the image reference with a valid one, e.g.:\n```yaml\nimage: registry.example.com/scitix/trainer:v1.2.3\n```\nOr, if testing locally, use a locally available image or set `imagePullPolicy: Never` only if the image is pre-loaded on the node.",
+    "judgeClaude": {
+      "perDimension": {
+        "localization": "Yes",
+        "mechanism": "Yes",
+        "scope": "Yes",
+        "evidence": "Yes",
+        "remediation": "Yes"
+      },
+      "perQuestion": [
+        {
+          "id": "L1",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "L2",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "M1",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "M2",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "S1",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "S2",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "E1",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "E2",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "R1",
+          "dim": "remediation",
+          "answer": "Yes"
+        },
+        {
+          "id": "R2",
+          "dim": "remediation",
+          "answer": "Yes"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "c002",
+    "category": "image-pull",
+    "difficulty": "easy",
+    "groundTruth": {
+      "localization": "pod/c002-image",
+      "mechanism": "image repository does not exist",
+      "scope": "single pod image startup"
+    },
+    "symptom": "GPU workload pod c002-image never starts and is reported around ImagePullBackOff/ErrImagePull.",
+    "diagnosis": "The containerd logs are crystal clear. Here's the full diagnosis:\n\n---\n\n## Diagnosis: pod/c002-image — ImagePullBackOff\n\n**Root cause:** The pod is configured with the image `docker.io/library/siclaw-does-not-exist:v1`, which **does not exist on Docker Hub**. containerd's error message is:\n\n```\npull access denied, repository does not exist or may require authorization: \n  server message: insufficient_scope: authorization failed\n```\n\nDocker Hub confirms the repository `library/siclaw-does-not-exist` does not exist — it's not an auth/permissions issue, the image simply was never pushed (or the name is misspelled).\n\n**Evidence:**\n- Pod `c002-image` on node `cpu-10-208-55-85` has been in `ImagePullBackOff` for 15+ hours\n- Events show only generic `Back-off pulling image` (no additional detail)\n- containerd logs (from `cpu-10-208-55-85`) show repeated pull attempts all failing with the same `insufficient_scope` / `repository does not exist` error\n- Image name `siclaw-does-not-exist` is suggestive — this appears to be an intentionally non-existent test image\n\n**Impact / scope:**\n- Single pod `c002-image` only — no other resources are affected\n- The pod has been stuck for 15h, unable to start its `main` container\n\n**Confidence:** High — direct containerd error message matches a `not found` / `manifest unknown` pattern\n\n**Safe remediation:**\n1. Correct the image name to a valid Docker Hub image (e.g. `library/ubuntu:22.04`, `library/alpine:latest`, or whatever image the workload actually needs)\n2. Update the pod/pod template with the correct image reference — the pod will automatically re-pull\n3. If the image is meant to be private, push it to Docker Hub first and add an `imagePullSecrets` to the pod spec with valid Docker Hub credentials",
+    "judgeClaude": {
+      "perDimension": {
+        "localization": "Yes",
+        "mechanism": "Yes",
+        "scope": "Yes",
+        "evidence": "Yes",
+        "remediation": "Yes"
+      },
+      "perQuestion": [
+        {
+          "id": "L1",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "L2",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "M1",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "M2",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "S1",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "S2",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "E1",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "E2",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "R1",
+          "dim": "remediation",
+          "answer": "Yes"
+        },
+        {
+          "id": "R2",
+          "dim": "remediation",
+          "answer": "Yes"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "c011",
+    "category": "crashloop",
+    "difficulty": "easy",
+    "groundTruth": {
+      "localization": "pod/c011-crash",
+      "mechanism": "required MODEL_PATH env var is absent",
+      "scope": "single container crash loop"
+    },
+    "symptom": "Training pod c011-crash repeatedly restarts before becoming ready.",
+    "diagnosis": "Confirmed — no environment variables at all.\n\n## Diagnosis\n\n**Root cause:** The pod's container command checks for the environment variable `MODEL_PATH` with `test -n \"$MODEL_PATH\"`, and exits with code 42 if it's missing. The pod spec defines **no environment variables** (`Environment: <none>` in `describe`), so `MODEL_PATH` is unset/empty on every start, the `test -n` fails, and the container immediately terminates.\n\n**Evidence:**\n- Pod `c011-crash` is in `CrashLoopBackOff` with 182 restarts in 15h.\n- Container command: `sh -c 'test -n \"$MODEL_PATH\" || { echo \"fatal: MODEL_PATH missing\"; exit 42; }; sleep 3600'`\n- Last container exit code: **42** (the code from the `exit 42` in the script when `MODEL_PATH` is missing).\n- Exit happens immediately — the container lasted only ~0 seconds (Started and Finished at the same timestamp).\n- `kubectl describe` shows `Environment: <none>` and `kubectl get ... -o jsonpath='{.spec.containers[0].env}'` returns nothing — no env vars are injected.\n- Node: `cpu-10-208-55-85`, image `busybox:1.36`.\n\n**Impact:** The pod never reaches Ready. With 182 restarts, it has been consuming cluster resources (container runtime, network, scheduling) for 15h with zero productive work.\n\n**Confidence:** High. The exit code 42 matches the script's own failure branch, and the absence of env vars is confirmed.\n\n**Remediation (safe, read-only suggestion):** Add the `MODEL_PATH` environment variable to the pod spec, e.g.:\n\n```yaml\nenv:\n  - name: MODEL_PATH\n    value: \"/models/my-model\"\n```\n\nIf this pod is managed by a Volcano Job, Deployment, or other workload controller, add the env var at the pod template level. The value must match whatever model path the training code expects on disk or in storage.",
+    "judgeClaude": {
+      "perDimension": {
+        "localization": "Yes",
+        "mechanism": "Yes",
+        "scope": "Yes",
+        "evidence": "Yes",
+        "remediation": "Yes"
+      },
+      "perQuestion": [
+        {
+          "id": "L1",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "L2",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "M1",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "M2",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "S1",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "S2",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "E1",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "E2",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "R1",
+          "dim": "remediation",
+          "answer": "Yes"
+        },
+        {
+          "id": "R2",
+          "dim": "remediation",
+          "answer": "Yes"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "c012",
+    "category": "crashloop",
+    "difficulty": "easy",
+    "groundTruth": {
+      "localization": "pod/c012-crash",
+      "mechanism": "CUDA_VISIBLE_DEVICES is mis-set for the workload",
+      "scope": "single container crash loop"
+    },
+    "symptom": "Training pod c012-crash repeatedly restarts before becoming ready.",
+    "diagnosis": "This pod doesn't use Volcano (no PodGroup). The picture is clear. Here's the diagnosis:\n\n---\n\n## Diagnosis: pod/c012-crash — CrashLoopBackOff\n\n### Root Cause\n\nThe pod's container command is a shell check on `$CUDA_VISIBLE_DEVICES`:\n\n```sh\ntest \"$CUDA_VISIBLE_DEVICES\" = all || { echo 'cuda devices masked'; exit 43; }\n```\n\nThe pod **does not set the `CUDA_VISIBLE_DEVICES` environment variable** — no `env`, no `envFrom`, no GPU resource request (`resources` is empty `{}`). Since the variable is unset, the test evaluates as `\"\" != \"all\"`, the script prints `'cuda devices masked'` and exits with code 43, which kubelet interprets as a container failure and restarts immediately.\n\n### Evidence\n\n| Source | Detail |\n|---|---|\n| Pod spec command | `sh -c 'test \"$CUDA_VISIBLE_DEVICES\" = all \\|\\| { echo \"cuda devices masked\"; exit 43; }'` |\n| Pod env | **Empty** — `\"env\": null` |\n| Pod resources | **Empty** — `\"resources\": {}` (no GPU requested) |\n| Container logs (current & previous) | `cuda devices masked` |\n| Exit code | 43 (custom error, matches the `exit 43` in the script) |\n| Restarts | 182 times over 15h |\n\n### Impact & Scope\n\n- The pod **never becomes Ready** — it has been in CrashLoopBackOff for 15 hours.\n- Only this pod is affected; it runs on CPU node `cpu-10-208-55-85` (no GPU capacity, but the pod also requests no GPU).\n\n### Confidence\n\n**High** — the root cause is directly visible in the container command and pod spec. No other factors involved.\n\n### Safe Remediation\n\nTo fix this, the pod spec needs one of:\n\n1. **Set `CUDA_VISIBLE_DEVICES=all`** — add an environment variable to the container:\n   ```yaml\n   env:\n   - name: CUDA_VISIBLE_DEVICES\n     value: \"all\"\n   ```\n\n2. **Request a GPU resource** — if this is meant to be a GPU workload, add a Volcano-compatible GPU resource and let the scheduler inject the variable (nvidia device plugin typically sets `CUDA_VISIBLE_DEVICES` automatically when GPU resources are requested).\n\nOption 1 is the minimal fix if the intent is just to pass the startup check. Option 2 is appropriate if the pod genuinely needs GPU access and is expected to run on a GPU node.",
+    "judgeClaude": {
+      "perDimension": {
+        "localization": "Yes",
+        "mechanism": "Yes",
+        "scope": "Yes",
+        "evidence": "Yes",
+        "remediation": "Yes"
+      },
+      "perQuestion": [
+        {
+          "id": "L1",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "L2",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "M1",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "M2",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "S1",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "S2",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "E1",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "E2",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "R1",
+          "dim": "remediation",
+          "answer": "Yes"
+        },
+        {
+          "id": "R2",
+          "dim": "remediation",
+          "answer": "Yes"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "c021",
+    "category": "config",
+    "difficulty": "easy",
+    "groundTruth": {
+      "localization": "pod/c021-config",
+      "mechanism": "ConfigMap missing-model-config/key bucket is absent",
+      "scope": "single pod configuration dependency"
+    },
+    "symptom": "Pod c021-config is stuck during container configuration or volume setup.",
+    "diagnosis": "The diagnosis is clear. Here's the full analysis:\n\n---\n\n## Diagnosis: Pod `c021-config` — `CreateContainerConfigError`\n\n### Root Cause\n\nThe pod references a ConfigMap `missing-model-config` that does not exist in the namespace `siclaw-eval-yye-20260602`.\n\nIn the pod spec, the environment variable `MODEL_BUCKET` is defined via:\n```yaml\nenv:\n  - name: MODEL_BUCKET\n    valueFrom:\n      configMapKeyRef:\n        key: bucket\n        name: missing-model-config    # <-- this ConfigMap doesn't exist\n```\n\nThe Kubelet tries to resolve this ConfigMap before starting the container. Since it can't be found, the container never starts — it's stuck in `CreateContainerConfigError` with the message: **`configmap \"missing-model-config\" not found`**.\n\n### Evidence\n\n- **Pod status**: `CreateContainerConfigError` (phase: `Pending`)\n- **Container state**: `state.waiting.reason: CreateContainerConfigError`, `state.waiting.message: configmap \"missing-model-config\" not found`\n- **Events**: No Warning events — the error is surfaced directly in the container status, not as a separate event (the repeated `Pulled` events confirm the image is local, so pull is fine).\n- The pod has been stuck for **15 hours**.\n\n### Impact / Scope\n\n- Only this single pod (`c021-config`) is affected.\n- The pod was scheduled successfully on node `cpu-10-208-55-85` and the container image `busybox:1.36` is present. Everything else is healthy — the pod is purely blocked by the missing ConfigMap reference.\n\n### Confidence\n\n**High** — the error message, the pod YAML, and the container status all point unequivocally to the missing ConfigMap.\n\n### Safe Remediation (Read-Only Suggestion)\n\nCreate the missing ConfigMap in namespace `siclaw-eval-yye-20260602`:\n```bash\nkubectl create configmap missing-model-config \\\n  --from-literal=bucket=some-bucket-name \\\n  -n siclaw-eval-yye-20260602\n```\n\nThe pod name (`c021-config`) has a `restartPolicy: Always` but the container command is a one-shot `sleep 3600`. Since it's `Always`, after creation of the ConfigMap, the pod *may* auto-resume (the kubelet will re-evaluate). If not, delete and let the controller (if any) recreate it, or `kubectl delete pod c021-config -n siclaw-eval-yye-20260602` and recreate with the ConfigMap already in place.",
+    "judgeClaude": {
+      "perDimension": {
+        "localization": "Yes",
+        "mechanism": "Yes",
+        "scope": "Yes",
+        "evidence": "Yes",
+        "remediation": "Yes"
+      },
+      "perQuestion": [
+        {
+          "id": "L1",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "L2",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "M1",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "M2",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "S1",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "S2",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "E1",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "E2",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "R1",
+          "dim": "remediation",
+          "answer": "Yes"
+        },
+        {
+          "id": "R2",
+          "dim": "remediation",
+          "answer": "Yes"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "c022",
+    "category": "config",
+    "difficulty": "easy",
+    "groundTruth": {
+      "localization": "pod/c022-config",
+      "mechanism": "Secret missing-registry-secret/key token is absent",
+      "scope": "single pod configuration dependency"
+    },
+    "symptom": "Pod c022-config is stuck during container configuration or volume setup.",
+    "diagnosis": "The diagnosis is clear.\n\n## Case c022 — Diagnosis Complete\n\n**Root Cause:** The pod references a Secret `missing-registry-secret` (via `env.valueFrom.secretKeyRef`) that does not exist in the namespace. This prevents the container from being created.\n\n**Evidence:**\n- Pod status: `CreateContainerConfigError`\n- Container `trainer` state: `Waiting` with reason `CreateContainerConfigError` and message `secret \"missing-registry-secret\" not found`\n- The environment variable `REGISTRY_TOKEN` is defined with `valueFrom.secretKeyRef.name: missing-registry-secret` — confirming the pod's env var depends on this secret\n- `kubectl get secret missing-registry-secret -n siclaw-eval-yye-20260602` returns **NotFound**\n- The image (`busybox:1.36`) is already pulled and present on the node — the issue is purely the missing secret, not the image\n\n**Impact/Scope:** Single pod `c022-config` in namespace `siclaw-eval-yye-20260602`. The pod has been stuck for 15 hours since creation. No other workloads appear affected.\n\n**Confidence:** High — the error message explicitly identifies the missing secret.\n\n**Safe Remediation (suggestion, not action):**\n1. **Create the secret** in the namespace: `kubectl create secret generic missing-registry-secret --from-literal=token=<actual-token> -n siclaw-eval-yye-20260602` — the pod should automatically recover after the secret is created.\n2. **Alternatively**, if the `REGISTRY_TOKEN` env var is not needed, edit the pod spec to remove the env entry and delete/recreate the pod.",
+    "judgeClaude": {
+      "perDimension": {
+        "localization": "Yes",
+        "mechanism": "Yes",
+        "scope": "Yes",
+        "evidence": "Yes",
+        "remediation": "Yes"
+      },
+      "perQuestion": [
+        {
+          "id": "L1",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "L2",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "M1",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "M2",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "S1",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "S2",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "E1",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "E2",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "R1",
+          "dim": "remediation",
+          "answer": "Yes"
+        },
+        {
+          "id": "R2",
+          "dim": "remediation",
+          "answer": "Yes"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "c040",
+    "category": "scheduling-gpu",
+    "difficulty": "easy",
+    "groundTruth": {
+      "localization": "pod/c040-pending",
+      "mechanism": "required anti-affinity conflicts with broad existing eval labels",
+      "scope": "single workload scheduling constraint"
+    },
+    "symptom": "GPU or training pod c040-pending remains Pending / unscheduled.",
+    "diagnosis": "The pod `c040-pending` is currently in **Running** state, not Pending. It has been successfully scheduled on node `hpe-node144` and is actively running with 15 restarts recorded. The last 16 events show normal container lifecycle operations (created, started, pulled) without any scheduling errors or resource constraints indicated.\n\n**Evidence**:\n- `Status: Running` with active container execution.\n- No `FailedScheduling` events or taint/node-selector mismatches.\n- Resource requests (20m CPU, 32Mi memory) are well within typical node capacity.\n- Node labels and taints were not explicitly restricted in the pod spec.\n\n**Scope/Impact**: \nThe pod is now operational. Historical restarts (15x) suggest the container exits after `sleep 3600` completes, triggering kubelet restarts. This is expected behavior for the current spec.\n\n**Confidence**: High (based on live pod status and event history).\n\n**Remediation**:\n- If the goal is to keep the container running indefinitely, replace `sleep 3600` with a persistent process (e.g., `tail -f /dev/null`).\n- If the Pending state was observed earlier, verify node availability and resource constraints at the time using historical metrics (outside current read-only scope).",
+    "judgeClaude": {
+      "perDimension": {
+        "localization": "Yes",
+        "mechanism": "No",
+        "scope": "No",
+        "evidence": "No",
+        "remediation": "No"
+      },
+      "perQuestion": [
+        {
+          "id": "L1",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "L2",
+          "dim": "localization",
+          "answer": "No"
+        },
+        {
+          "id": "M1",
+          "dim": "mechanism",
+          "answer": "No"
+        },
+        {
+          "id": "M2",
+          "dim": "mechanism",
+          "answer": "No"
+        },
+        {
+          "id": "S1",
+          "dim": "scope",
+          "answer": "No"
+        },
+        {
+          "id": "S2",
+          "dim": "scope",
+          "answer": "No"
+        },
+        {
+          "id": "E1",
+          "dim": "evidence",
+          "answer": "No"
+        },
+        {
+          "id": "E2",
+          "dim": "evidence",
+          "answer": "No"
+        },
+        {
+          "id": "R1",
+          "dim": "remediation",
+          "answer": "No"
+        },
+        {
+          "id": "R2",
+          "dim": "remediation",
+          "answer": "No"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "c031",
+    "category": "scheduling-gpu",
+    "difficulty": "easy",
+    "groundTruth": {
+      "localization": "pod/c031-pending",
+      "mechanism": "nodeSelector asks for unavailable GPU type h100-pcie-80gb",
+      "scope": "single workload scheduling constraint"
+    },
+    "symptom": "GPU or training pod c031-pending remains Pending / unscheduled.",
+    "diagnosis": "All evidence is clear. Here's the diagnosis:\n\n---\n\n## Diagnosis: Pod `c031-pending` stuck Pending\n\n### Root Cause: Node selector mismatch — no node has `scitix.ai/gpu-type=h100-pcie-80gb`\n\nThe pod has:\n\n```yaml\nnodeSelector:\n  scitix.ai/gpu-type: h100-pcie-80gb\n```\n\nBut the cluster's GPU node label is `scitix.ai/gpu-type=h100nvlink80` — not `h100-pcie-80gb`. The 368 nodes in the cluster are:\n- **Fake/KWOK nodes** (119) — tainted `kwok.x-k8s.io/node: fake`, unschedulable\n- **Unreachable nodes** (233) — tainted `node.kubernetes.io/unreachable`\n- **Real nodes** that are Ready: `gpu-10-208-55-159` (scitix.ai/gpu-type=h100nvlink80) and `hpe-node144` (scitix.ai/gpu-type=h100nvlink80), plus `cpu-10-208-55-85` and `cpu-10-208-55-86` (CPU-only, no gpu-type label)\n- **Control-plane node** (1) and **nodecheck-tainted node** (1) — also filtered out\n\nThe scheduler message confirms: **\"5 node(s) didn't match Pod's node affinity/selector\"** — those 5 include the 2 real GPU nodes and up to 3 others, none of which carry `h100-pcie-80gb`.\n\n### Evidence\n1. Pod events: `FailedScheduling` — `0/368 nodes are available: ... 5 node(s) didn't match Pod's node affinity/selector`\n2. Pod spec: `nodeSelector: {scitix.ai/gpu-type: h100-pcie-80gb}`\n3. Real GPU nodes (`gpu-10-208-55-159`, `hpe-node144`) have `scitix.ai/gpu-type=h100nvlink80`\n\n### Additional note\nThe pod uses `schedulerName: default-scheduler` rather than Volcano's scheduler. On this cluster this doesn't appear to be a problem (other pods also use default-scheduler), but the node selector alone is sufficient to explain the Pending state.\n\n### Impact / Scope\n- **Single pod** in namespace `siclaw-eval-yye-20260602`\n- Blocked since creation (55+ minutes)\n- No other resources affected\n\n### Recommended Fix\nCorrect the node selector to match the actual GPU node labels:\n\n```yaml\nnodeSelector:\n  scitix.ai/gpu-type: h100nvlink80\n```\n\nOr, if the intent is to run on any GPU node without caring about specific type, remove the nodeSelector entirely (the pod doesn't actually request GPU resources).",
+    "judgeClaude": {
+      "perDimension": {
+        "localization": "Yes",
+        "mechanism": "Yes",
+        "scope": "Yes",
+        "evidence": "Yes",
+        "remediation": "Yes"
+      },
+      "perQuestion": [
+        {
+          "id": "L1",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "L2",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "M1",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "M2",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "S1",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "S2",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "E1",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "E2",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "R1",
+          "dim": "remediation",
+          "answer": "Yes"
+        },
+        {
+          "id": "R2",
+          "dim": "remediation",
+          "answer": "Yes"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "c046",
+    "category": "storage",
+    "difficulty": "easy",
+    "groundTruth": {
+      "localization": "pvc/c046-data",
+      "mechanism": "PVC requests nonexistent storageClass missing-storageclass",
+      "scope": "pod blocked by unbound PVC"
+    },
+    "symptom": "Training pod c046-storage cannot start because its dataset PVC c046-data is not bound.",
+    "diagnosis": "```诊断\nRoot Cause: \n- PVC c046-data references non-existent StorageClass \"missing-storageclass\"\n\nEvidence:\n- PVC spec.storageClassName: \"missing-storageclass\"\n- No StorageClass with this name exists in the cluster (kubectl get storageclass returns empty)\n\nImpact:\n- Pod c046-storage cannot start due to unbound PVC\n- Storage provisioning blocked for this workload\n\nConfidence: High (direct configuration mismatch)\n\nRemediation:\n1. Create StorageClass \"missing-storageclass\" with appropriate provisioner parameters\n2. OR update PVC to use an existing StorageClass (e.g. standard, fast, etc.)\n3. Ensure StorageClass parameters match required access modes (ReadWriteOnce) and storage capacity (1Gi)\n```",
+    "judgeClaude": {
+      "perDimension": {
+        "localization": "Yes",
+        "mechanism": "Yes",
+        "scope": "Yes",
+        "evidence": "Yes",
+        "remediation": "Yes"
+      },
+      "perQuestion": [
+        {
+          "id": "L1",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "L2",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "M1",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "M2",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "S1",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "S2",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "E1",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "E2",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "R1",
+          "dim": "remediation",
+          "answer": "Yes"
+        },
+        {
+          "id": "R2",
+          "dim": "remediation",
+          "answer": "Yes"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "c047",
+    "category": "storage",
+    "difficulty": "easy",
+    "groundTruth": {
+      "localization": "pvc/c047-data",
+      "mechanism": "PVC requests nonexistent storageClass gpu-local-ssd-missing",
+      "scope": "pod blocked by unbound PVC"
+    },
+    "symptom": "Training pod c047-storage cannot start because its dataset PVC c047-data is not bound.",
+    "diagnosis": "```\nRoot Cause: \n- The PVC c047-data references a non-existent StorageClass \"gpu-local-ssd-missing\". \n- No matching StorageClass exists in the cluster (confirmed by kubectl get storageclass).\n\nEvidence:\n- PVC status: Pending with \"ProvisioningFailed\" events showing \"storageclass.storage.k8s.io not found\".\n- kubectl get storageclass confirms no StorageClass named \"gpu-local-ssd-missing\" or \"gpu-local-ssd\" exists.\n\nScope/Impact:\n- Affects pod c047-storage in namespace siclaw-eval-yye-20260602.\n- Prevents PVC binding and pod startup due to missing storage provisioning configuration.\n\nConfidence: High (directly confirmed by PVC events and StorageClass query).\n\nRemediation:\n1. Create the missing StorageClass \"gpu-local-ssd-missing\" with appropriate provisioner/config.\n2. OR update PVC c047-data to use an existing StorageClass (e.g., verify correct name and update spec.storageClassName).\n3. Ensure storage provisioner for the class is properly deployed and operational.\n```",
+    "judgeClaude": {
+      "perDimension": {
+        "localization": "Yes",
+        "mechanism": "Yes",
+        "scope": "Yes",
+        "evidence": "Yes",
+        "remediation": "Yes"
+      },
+      "perQuestion": [
+        {
+          "id": "L1",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "L2",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "M1",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "M2",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "S1",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "S2",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "E1",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "E2",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "R1",
+          "dim": "remediation",
+          "answer": "Yes"
+        },
+        {
+          "id": "R2",
+          "dim": "remediation",
+          "answer": "Yes"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "c056",
+    "category": "service-readiness",
+    "difficulty": "medium",
+    "groundTruth": {
+      "localization": "deployment/c056-app",
+      "mechanism": "readiness probe points to a missing health endpoint, so endpoints are not ready",
+      "scope": "one service path in the eval namespace"
+    },
+    "symptom": "Internal service c056-svc for workload c056-app is unavailable to clients.",
+    "diagnosis": "```mermaid\nflowchart LR\n    A[Service c056-svc] --> B[Pod c056-app-5b6f4b457c-dqfh6]\n    B --> C[Readiness Probe Failure]\n    C --> D[HTTP 404 on /missing-healthz]\n    D --> E[Pod Not Ready]\n    E --> F[Service Endpoints Unavailable]\n    \n    classDef rootCause fill:#ff4757;\n    classDef evidence fill:#2ecc71;\n    classDef impact fill:#f1c40f;\n    \n    D -->|Root Cause| G[Incorrect readiness probe path]\n    B -->|Evidence| H[Pod IP 172.16.36.194 running busybox httpd]\n    E -->|Impact| I[Service cannot route traffic to backend]\n    \n    G --> J[Confidence: High]\n    J --> K[100% of probe failures match 404 pattern]\n    \n    L[Remediation] --> M[Update readinessProbe path to /index.html]\n```",
+    "judgeClaude": {
+      "perDimension": {
+        "localization": "Yes",
+        "mechanism": "Yes",
+        "scope": "Yes",
+        "evidence": "Yes",
+        "remediation": "Yes"
+      },
+      "perQuestion": [
+        {
+          "id": "L1",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "L2",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "M1",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "M2",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "S1",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "S2",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "E1",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "E2",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "R1",
+          "dim": "remediation",
+          "answer": "Yes"
+        },
+        {
+          "id": "R2",
+          "dim": "remediation",
+          "answer": "Yes"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "c057",
+    "category": "service-readiness",
+    "difficulty": "medium",
+    "groundTruth": {
+      "localization": "service/c057-svc",
+      "mechanism": "Service selector does not match the backing pod labels, so endpoints are empty",
+      "scope": "one service path in the eval namespace"
+    },
+    "symptom": "Internal service c057-svc for workload c057-app is unavailable to clients.",
+    "diagnosis": "**Diagnosis:**\n\n- **Root Cause:** Mismatch between service selector and deployment labels.  \n  The service `c057-svc` uses selector `app=c057-app-typo`, but the deployment `c057-app` labels pods with `app=c057-app`. This typo prevents the service from binding to any pods.\n\n- **Evidence:**  \n  - Deployment `c057-app` has label selector `app=c057-app` and 1 ready pod.  \n  - Service `c057-svc` has selector `app=c057-app-typo` (mismatched).  \n  - No endpoints exist for the service (`kubectl get endpoints c057-svc` would show `<none>`).\n\n- **Impact/Scope:**  \n  The service is unreachable cluster-internal and externally (if exposed). All clients relying on `c057-svc` are affected.\n\n- **Confidence:** High (selector mismatch is a direct and common cause of service unavailability).\n\n- **Remediation:**  \n  Update the service `c057-svc` to use selector `app=c057-app` to match the deployment's pod labels. Example:\n  ```yaml\n  spec:\n    selector:\n      app: c057-app  # Corrected from \"c057-app-typo\"\n  ```",
+    "judgeClaude": {
+      "perDimension": {
+        "localization": "Yes",
+        "mechanism": "Yes",
+        "scope": "Yes",
+        "evidence": "Yes",
+        "remediation": "Yes"
+      },
+      "perQuestion": [
+        {
+          "id": "L1",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "L2",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "M1",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "M2",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "S1",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "S2",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "E1",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "E2",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "R1",
+          "dim": "remediation",
+          "answer": "Yes"
+        },
+        {
+          "id": "R2",
+          "dim": "remediation",
+          "answer": "Yes"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "c069",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "groundTruth": {
+      "localization": "networkpolicy/c069-deny-ingress",
+      "mechanism": "NetworkPolicy selects the server and denies all ingress from the client",
+      "scope": "traffic involving this case's client/server pods"
+    },
+    "symptom": "Client pod c069-client cannot resolve or reach service c069-server-svc even though the server pod exists.",
+    "diagnosis": "```json\n{\n  \"rootCause\": \"DNS resolution failure in the client pod due to missing search domain configuration for the service's namespace.\",\n  \"evidence\": [\n    \"nslookup c069-server-svc in the client pod returned NXDOMAIN\",\n    \"Full FQDN c069-server-svc.siclaw-eval-yye-20260602.svc.cluster.local resolves correctly\",\n    \"/etc/resolv.conf in the client pod shows search domains missing the namespace-specific suffix\"\n  ],\n  \"scope\": \"Affects all services in the siclaw-eval-yye-20260602 namespace requiring DNS-based discovery\",\n  \"confidence\": 95,\n  \"remediation\": \"Ensure client applications use fully qualified domain names (FQDNs) including namespace or configure DNS search domains to include <namespace>.svc.cluster.local\"\n}\n```",
+    "judgeClaude": {
+      "perDimension": {
+        "localization": "No",
+        "mechanism": "No",
+        "scope": "No",
+        "evidence": "Yes",
+        "remediation": "No"
+      },
+      "perQuestion": [
+        {
+          "id": "L1",
+          "dim": "localization",
+          "answer": "No"
+        },
+        {
+          "id": "L2",
+          "dim": "localization",
+          "answer": "No"
+        },
+        {
+          "id": "M1",
+          "dim": "mechanism",
+          "answer": "No"
+        },
+        {
+          "id": "M2",
+          "dim": "mechanism",
+          "answer": "No"
+        },
+        {
+          "id": "S1",
+          "dim": "scope",
+          "answer": "No"
+        },
+        {
+          "id": "S2",
+          "dim": "scope",
+          "answer": "No"
+        },
+        {
+          "id": "E1",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "E2",
+          "dim": "evidence",
+          "answer": "No"
+        },
+        {
+          "id": "R1",
+          "dim": "remediation",
+          "answer": "No"
+        },
+        {
+          "id": "R2",
+          "dim": "remediation",
+          "answer": "No"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "c072",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "groundTruth": {
+      "localization": "networkpolicy/c072-deny-ingress",
+      "mechanism": "NetworkPolicy selects the server and denies all ingress from the client",
+      "scope": "traffic involving this case's client/server pods"
+    },
+    "symptom": "Client pod c072-client cannot resolve or reach service c072-server-svc even though the server pod exists.",
+    "diagnosis": "<think>\nOkay, let me try to figure out what's going on here. The user's client pod can't resolve the server service, but when they use the FQDN, it works. The DNS lookup showed that the short name isn't resolving, but the search domains in the resolv.conf include the namespace and cluster domains. The search line in resolv.conf should append those domains to the short name.\n\nWait, the options line says ndots:5. That means that if a name has fewer than 5 dots, it will be tried with the search domains. But in the nslookup output, even when using the FQDN, it's resolving. Hmm, maybe the problem is that the service name is being treated as a fully qualified domain name (FQDN) even when it's not. Let me check the DNS configuration again.\n\nThe search domains are set to siclaw-eval-yye-20260602.svc.cluster.local, svc.cluster.local, and cluster.local. When the client pod tries to resolve \"c072-server-svc\", the resolver should append each of these domains in order. But the nslookup output shows that it's trying \"c072-server-svc.cluster.local\" and \"c072-server-svc.svc.cluster.local\" but not the namespace-specific one. Wait, the search domains include the namespace, so it should try \"c072-server-svc.siclaw-eval-yye-20260602.svc.cluster.local\" first. But in the nslookup output, that's the one that works. However, the user's command was just \"nslookup c072-server-svc\", which should trigger the search domains.\n\nWait, the nslookup output shows that when the user ran \"nslookup c072-server-svc\", it tried the FQDN but got NXDOMAIN. However, when they explicitly used the FQDN, it worked. That suggests that the resolver is not appending the search domains correctly. But the resolv.conf has the search domains set. Maybe the ndots:5 option is causing the resolver to treat the name as a FQDN before appending the search domains. Let me check the ndots setting.\n\nThe ndots:5 option means that if a name has fewer than 5 dots, it will be tried with the search domains. But \"c072-server-svc\" has no dots, so it should be tried with the search domains. Wait, but in the nslookup output, it's trying \"c072-server-svc.cluster.local\" and \"c072-server-svc.svc.cluster.local\" but not the namespace-specific one. Wait, the search domains are in the order: siclaw-eval-yye-20260602.svc.cluster.local, svc.cluster.local, cluster.local. So the resolver should first try \"c072-server-svc.siclaw-eval-yye-20260602.svc.cluster.local\", then \"c072-server-svc.svc.cluster.local\", then \"c072-server-svc.cluster.local\". But in the nslookup output, it's trying \"c072-server-svc.cluster.local\" first. That's not matching the search domains. Wait, maybe the resolver is not following the search domains correctly. Or maybe there's a typo in the search domains.\n\nWait, looking at the resolv.conf, the search line is \"search siclaw-eval-yye-20260602.svc.cluster.local svc.cluster.local cluster.local\". So the first search domain is the namespace, then svc.cluster.local, then cluster.local. So the resolver should first append the namespace, then the svc.cluster.local, then cluster.local. But in the nslookup output, the first query is for \"c072-server-svc.cluster.local\", which is the third search domain. That's odd. Maybe the resolver is not processing the search domains in the correct order. Or perhaps the ndots:5 is causing it to treat the name as a FQDN. Wait, the ndots:5 option is set. Let me check how that works. The ndots option specifies the number of dots that a domain name must have to be considered an absolute name. If a name has fewer than ndots, it will be tried with the search domains. So for a name with 0 dots, which is the case here, it will be tried with the search domains. But in the nslookup output, it's trying the FQDN first. That suggests that the resolver is treating the name as a FQDN, but that shouldn't happen with ndots:5. Wait, maybe the resolver is considering the name as a FQDN because it's being passed to nslookup with a trailing dot, but in the user's case, the",
+    "judgeClaude": {
+      "perDimension": {
+        "localization": "No",
+        "mechanism": "No",
+        "scope": "No",
+        "evidence": "Yes",
+        "remediation": "No"
+      },
+      "perQuestion": [
+        {
+          "id": "L1",
+          "dim": "localization",
+          "answer": "No"
+        },
+        {
+          "id": "L2",
+          "dim": "localization",
+          "answer": "No"
+        },
+        {
+          "id": "M1",
+          "dim": "mechanism",
+          "answer": "No"
+        },
+        {
+          "id": "M2",
+          "dim": "mechanism",
+          "answer": "No"
+        },
+        {
+          "id": "S1",
+          "dim": "scope",
+          "answer": "No"
+        },
+        {
+          "id": "S2",
+          "dim": "scope",
+          "answer": "No"
+        },
+        {
+          "id": "E1",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "E2",
+          "dim": "evidence",
+          "answer": "No"
+        },
+        {
+          "id": "R1",
+          "dim": "remediation",
+          "answer": "No"
+        },
+        {
+          "id": "R2",
+          "dim": "remediation",
+          "answer": "No"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "c079",
+    "category": "controller",
+    "difficulty": "medium",
+    "groundTruth": {
+      "localization": "deployment/c079-deploy",
+      "mechanism": "Deployment pods run but readiness probe targets port 9090 instead of 8080",
+      "scope": "controller object and its owned resources"
+    },
+    "symptom": "Controller-managed workload c079-deploy is not serving traffic or not progressing.",
+    "diagnosis": "<think>\nOkay, let's see. The user is having an issue with their Kubernetes deployment, c079-deploy, not serving traffic or progressing. So far, I've checked the deployment status, which shows that there's 1 desired replica but 0 available. The pod is running but not ready. I tried to get the logs, but there were no outputs, which is odd.\n\nHmm, maybe the container isn't producing any logs, or the application isn't starting at all. Let me check the pod's events again. The describe output didn't show any events, which is unusual. If the pod is running but not ready, there should be some events indicating why. Wait, maybe the pod is stuck in a CrashLoopBackOff, but the status is showing Running. That doesn't make sense. Let me check the pod's status again.\n\nWait, the pod's status is Running, but the readiness is 0/1. That could mean the container is running but not passing the readiness probe. Let me check the deployment's YAML for the readiness probe configuration. If the probe is misconfigured, the pod might not be marked as ready. But since I can't access the cluster_info, I need to infer based on available info.\n\nAlternatively, maybe the application inside the container is not listening on the expected port. If the container is running but the application isn't bound to the correct port, the readiness probe would fail. Let me check the container's ports. The pod's YAML should show the container ports. If the application is using a different port than what's specified, that could be the issue.\n\nAnother possibility is that the pod is scheduled on a node that doesn't have the required resources. The node is a CPU node, but maybe the application requires a GPU. However, the deployment might not have node selectors or affinity rules to ensure it's scheduled on a GPU node. But since the pod is already scheduled, that's less likely unless there's a resource constraint.\n\nWait, the logs didn't show any output. Maybe the container is not starting at all. If the container's entrypoint or command is incorrect, it might exit immediately. But the pod's status is Running, so that's confusing. Let me check the container's restart count. If it's zero, that suggests the container is running but not producing logs. If it's non-zero, maybe it's crashing but being restarted.\n\nLooking back at the pod's info, the restarts are 0. So the container is running but not logging. That could be due to the application not writing to stdout/stderr, or the logging driver isn't set up correctly. But in most cases, Kubernetes logs should capture container output. Maybe the application is logging to a file instead of stdout.\n\nIf the application is not starting, the container might be in a running state but not doing anything. Let me check the container's image. If the image is incorrect or the entrypoint is wrong, the application might not start. But without access to the image details, it's hard to tell.\n\nAnother angle: the deployment's rollout status. The deployment is in a RollingUpdate strategy but hasn't progressed. If the new pods are not becoming ready, the rollout gets stuck. The old replicas are still running, but the new ones aren't. Maybe the new version has a bug that prevents it from starting.\n\nSince I can't get logs, maybe the next step is to check the deployment's YAML for any configuration issues. If the deployment has environment variables or config maps that are incorrect, the application might fail to start. But again, without access to the YAML, I need to rely on other methods.\n\nWait, the user mentioned not to use cluster_info. So I can't check the cluster's infrastructure. But maybe the pod's YAML has resource limits that are too low, causing the container to be killed. Let me check the pod's resource requests and limits. If the container is being OOMKilled, that would cause it to crash. But the pod's status is Running, so that's not the case here.\n\nHmm, this is tricky. The lack of logs and events is making it hard to diagnose. Maybe the issue is with the readiness probe itself. If the probe is set to a path that doesn't exist or a port that's not open, the pod will never be ready. Let me check the probe configuration in the deployment. If the deployment's YAML specifies a readiness probe, that's a good place to look.\n\nAlternatively, maybe the service that's supposed to route traffic to the deployment isn't correctly configured. If the service's selector doesn't match the pod's labels, it won't route traffic. But the deployment's pods have the label app=c079-deploy, so the service should have a matching selector. If the service is misconfigured, that could explain why there's no traffic, but the deployment's issue is about the pods not being available.\n\nWait, the user's main issue is that the deployment isn't serving",
+    "judgeClaude": {
+      "perDimension": {
+        "localization": "Yes",
+        "mechanism": "No",
+        "scope": "Yes",
+        "evidence": "Yes",
+        "remediation": "No"
+      },
+      "perQuestion": [
+        {
+          "id": "L1",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "L2",
+          "dim": "localization",
+          "answer": "No"
+        },
+        {
+          "id": "M1",
+          "dim": "mechanism",
+          "answer": "No"
+        },
+        {
+          "id": "M2",
+          "dim": "mechanism",
+          "answer": "No"
+        },
+        {
+          "id": "S1",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "S2",
+          "dim": "scope",
+          "answer": "No"
+        },
+        {
+          "id": "E1",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "E2",
+          "dim": "evidence",
+          "answer": "No"
+        },
+        {
+          "id": "R1",
+          "dim": "remediation",
+          "answer": "No"
+        },
+        {
+          "id": "R2",
+          "dim": "remediation",
+          "answer": "No"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "c080",
+    "category": "controller",
+    "difficulty": "medium",
+    "groundTruth": {
+      "localization": "deployment/c080-deploy",
+      "mechanism": "HPA cannot compute CPU utilization because the target container has no CPU request",
+      "scope": "controller object and its owned resources"
+    },
+    "symptom": "Controller-managed workload c080-deploy is not serving traffic or not progressing.",
+    "diagnosis": "The workload is not serving traffic due to the absence of a Kubernetes Service resource that routes traffic to the deployment's pods. The deployment's pod is running (1/1 replicas available), but no Service exists in the namespace to expose it. This explains why the HorizontalPodAutoscaler (c080-hpa) has no metrics to act on.\n\n**Root Cause**: Missing Service resource to expose the deployment.\n**Evidence**:\n- `kubectl get services -n siclaw-eval-yye-20260602 -l app=c080-deploy` returned no resources.\n- The deployment's pod (c080-deploy-66ccc578b5-9pgnq) exists and is Running but has no associated Service.\n\n**Impact**: No external/internal traffic can reach the workload. HPA cannot collect metrics without traffic.\n\n**Remediation**: Create a Service in the namespace with a selector matching `app=c080-deploy` to expose the deployment. Example:\n```yaml\napiVersion: v1\nkind: Service\nmetadata:\n  name: c080-svc\n  namespace: siclaw-eval-yye-20260602\nspec:\n  selector:\n    app: c080-deploy\n  ports:\n    - protocol: TCP\n      port: 80\n      targetPort: 1\n```",
+    "judgeClaude": {
+      "perDimension": {
+        "localization": "Yes",
+        "mechanism": "No",
+        "scope": "No",
+        "evidence": "Yes",
+        "remediation": "No"
+      },
+      "perQuestion": [
+        {
+          "id": "L1",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "L2",
+          "dim": "localization",
+          "answer": "No"
+        },
+        {
+          "id": "M1",
+          "dim": "mechanism",
+          "answer": "No"
+        },
+        {
+          "id": "M2",
+          "dim": "mechanism",
+          "answer": "No"
+        },
+        {
+          "id": "S1",
+          "dim": "scope",
+          "answer": "No"
+        },
+        {
+          "id": "S2",
+          "dim": "scope",
+          "answer": "No"
+        },
+        {
+          "id": "E1",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "E2",
+          "dim": "evidence",
+          "answer": "No"
+        },
+        {
+          "id": "R1",
+          "dim": "remediation",
+          "answer": "No"
+        },
+        {
+          "id": "R2",
+          "dim": "remediation",
+          "answer": "No"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "c086",
+    "category": "volcano-gpu",
+    "difficulty": "hard",
+    "groundTruth": {
+      "localization": "podgroup/c086-pg",
+      "mechanism": "Volcano PodGroup has minMember=2 but only one grouped pod exists",
+      "scope": "Volcano podgroup / grouped pod"
+    },
+    "symptom": "Volcano GPU training pod c086-vcpod remains pending with PodGroup c086-pg.",
+    "diagnosis": "**Diagnosis: Volcano PodGroup Scheduling Failure**\n\n**Root Cause:**  \nThe PodGroup `c086-pg` requires 2 pods to be scheduled, but nodes with GPU resources are tainted with `scitix.ai/nodecheck` and `kwok.x-k8s.io/node: fake` (NoSchedule effect). The target pod `c086-vcpod` lacks tolerations for these taints, preventing scheduling.\n\n**Concrete Evidence:**  \n1. Pod `c086-vcpod` has no node selectors and only tolerates `node.kubernetes.io/not-ready`/`unreachable`.\n2. GPU-qualified nodes (e.g., `gpu-10-208-55-159`, `fake-node-*`) have blocking taints:\n   - `scitix.ai/nodecheck:NoSchedule`\n   - `kwok.x-k8s.io/node: fake:NoSchedule`\n3. PodGroup `c086-pg` has `MinMember: 2`, requiring all pods to be scheduled before activation.\n\n**Impact/Scope:**  \n- Affects GPU training workloads in `siclaw-eval-yye-20260602`\n- Blocks 100% of Volcano jobs requiring these nodes\n- Cluster-wide taint policy conflict\n\n**Confidence:** High (95%) - Direct taint/pod spec mismatch with matching FailedScheduling patterns\n\n**Safe Remediation:**  \nAdd tolerations to `c086-vcpod`'s spec:\n```yaml\ntolerations:\n- key: \"scitix.ai/nodecheck\"\n  operator: \"Exists\"\n  effect: \"NoSchedule\"\n- key: \"kwok.x-k8s.io/node\"\n  value: \"fake\"\n  operator: \"Equal\"\n  effect: \"NoSchedule\"\n```\n\nThis allows the pod to schedule on tainted GPU nodes while maintaining existing tolerations. Verify with `kubectl describe pod c086-vcpod` after update.",
+    "judgeClaude": {
+      "perDimension": {
+        "localization": "Yes",
+        "mechanism": "No",
+        "scope": "No",
+        "evidence": "Yes",
+        "remediation": "No"
+      },
+      "perQuestion": [
+        {
+          "id": "L1",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "L2",
+          "dim": "localization",
+          "answer": "No"
+        },
+        {
+          "id": "M1",
+          "dim": "mechanism",
+          "answer": "No"
+        },
+        {
+          "id": "M2",
+          "dim": "mechanism",
+          "answer": "No"
+        },
+        {
+          "id": "S1",
+          "dim": "scope",
+          "answer": "No"
+        },
+        {
+          "id": "S2",
+          "dim": "scope",
+          "answer": "No"
+        },
+        {
+          "id": "E1",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "E2",
+          "dim": "evidence",
+          "answer": "No"
+        },
+        {
+          "id": "R1",
+          "dim": "remediation",
+          "answer": "No"
+        },
+        {
+          "id": "R2",
+          "dim": "remediation",
+          "answer": "No"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "c087",
+    "category": "volcano-gpu",
+    "difficulty": "hard",
+    "groundTruth": {
+      "localization": "podgroup/c087-pg",
+      "mechanism": "Volcano PodGroup references a nonexistent queue",
+      "scope": "Volcano podgroup / grouped pod"
+    },
+    "symptom": "Volcano GPU training pod c087-vcpod remains pending with PodGroup c087-pg.",
+    "diagnosis": "```\nRoot cause:\n1. PodGroup references non-existent Volcano queue \"siclaw-missing-queue\" (actual available queues: default, root)\n2. No scheduling events recorded for the pod (events: <none>)\n\nEvidence:\n- PodGroup spec.queue: \"siclaw-missing-queue\" (not present in kubectl get queues output)\n- kubectl get queues.scheduling.volcano.sh shows only \"default\" and \"root\" queues exist\n- Pod remains in Pending state without any scheduling events\n\nScope/impact:\n- Affects single PodGroup/pod (c087-pg/c087-vcpod)\n- Likely prevents all pods in this PodGroup from scheduling until queue is corrected\n\nConfidence: High (queue mismatch is a known Volcano scheduling requirement)\n\nRemediation:\n1. Update PodGroup spec.queue to an existing queue (e.g., \"default\")\n2. Verify queue has sufficient GPU resources allocated\n3. Ensure queue weight configuration allows scheduling for this workload\n```",
+    "judgeClaude": {
+      "perDimension": {
+        "localization": "Yes",
+        "mechanism": "Yes",
+        "scope": "Yes",
+        "evidence": "Yes",
+        "remediation": "Yes"
+      },
+      "perQuestion": [
+        {
+          "id": "L1",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "L2",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "M1",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "M2",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "S1",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "S2",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "E1",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "E2",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "R1",
+          "dim": "remediation",
+          "answer": "Yes"
+        },
+        {
+          "id": "R2",
+          "dim": "remediation",
+          "answer": "Yes"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "c094",
+    "category": "compound",
+    "difficulty": "hard",
+    "groundTruth": {
+      "localization": "deployment/c094-compound-app, service/c094-compound-svc",
+      "mechanism": "Service selector is wrong and the deployment readiness probe also points to a missing path",
+      "scope": "multi-resource compound failure in the eval namespace"
+    },
+    "symptom": "Compound incident c094: a GPU-related service or training workflow has multiple symptoms. Diagnose all root causes, not just the first anomaly.",
+    "diagnosis": "**Final Diagnosis**\n\n**Root Causes:**\n1. **Non-GPU-Enabled Image**: The deployment uses `busybox:1.36`, which lacks GPU support required for the workload.\n2. **Misconfigured Readiness Probe**: The probe checks for `/missing` instead of the actual `/www/index.html` file created by the container.\n3. **Service Selector Typo**: The service selector `app=c094-compound-app-typo` does not match the pod's label `app=c094-compound-app`, causing zero endpoints.\n4. **CPU Node Scheduling**: The pod is scheduled on a CPU-only node (`cpu-10-208-55-85`) with no GPU resources, conflicting with the GPU workload requirement.\n\n**Evidence:**\n- Deployment uses `busybox:1.36` with no GPU resource requests.\n- Readiness probe fails repeatedly due to missing `/missing` file.\n- Service selector mismatch confirmed by empty endpoints.\n- Node has no GPU allocatable resources (`nvidia.com/gpu: 0`).\n\n**Impact/Scope:**\n- Deployment remains in `Progressing: False` state.\n- Service is unreachable due to zero endpoints.\n- Workload cannot utilize GPU resources as intended.\n\n**Confidence:** High (directly observable via deployment spec, pod events, service endpoints, and node resources).\n\n**Remediation:**\n1. **Update Deployment Image**: Replace `busybox:",
+    "judgeClaude": {
+      "perDimension": {
+        "localization": "Yes",
+        "mechanism": "Yes",
+        "scope": "Yes",
+        "evidence": "Yes",
+        "remediation": "Yes"
+      },
+      "perQuestion": [
+        {
+          "id": "L1",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "L2",
+          "dim": "localization",
+          "answer": "No"
+        },
+        {
+          "id": "M1",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "M2",
+          "dim": "mechanism",
+          "answer": "Yes"
+        },
+        {
+          "id": "S1",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "S2",
+          "dim": "scope",
+          "answer": "No"
+        },
+        {
+          "id": "E1",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "E2",
+          "dim": "evidence",
+          "answer": "No"
+        },
+        {
+          "id": "R1",
+          "dim": "remediation",
+          "answer": "Yes"
+        },
+        {
+          "id": "R2",
+          "dim": "remediation",
+          "answer": "No"
+        }
+      ]
+    }
+  },
+  {
+    "caseId": "c097",
+    "category": "compound",
+    "difficulty": "hard",
+    "groundTruth": {
+      "localization": "pod/c097-compound-client, networkpolicy/c097-compound-deny-egress",
+      "mechanism": "Client has invalid DNS config and a NetworkPolicy denying all egress",
+      "scope": "multi-resource compound failure in the eval namespace"
+    },
+    "symptom": "Compound incident c097: a GPU-related service or training workflow has multiple symptoms. Diagnose all root causes, not just the first anomaly.",
+    "diagnosis": "**Diagnosis: GPU-Related Compound Incident (Case c097)**\n\n**Root Causes:**\n1. **CPU Node Scheduling**  \n   - Pod `c097-compound-client` is scheduled on a CPU node (`cpu-10-208-55-86`) with **no GPU resources available**.  \n   - **Evidence**: Node description confirms absence of GPU resources (`rdma/hca_shared_devices_all: 0`), and the pod lacks GPU-specific resource requests/limits.\n\n2. **Egress Network Policy Block**  \n   - NetworkPolicy `c097-compound-deny-egress` **denies all egress traffic** for `app=c097-compound-client`, isolating the pod from external/internal services.  \n   - **Evidence**: Policy explicitly blocks egress (`Allowing egress traffic: <none>`), confirmed by `kubectl describe networkpolicy`.\n\n3. **High Pod Restart Count**  \n   - Pod has **18 restarts** due to container lifecycle (`sleep 3600`), but the policy and resource misalignment prevent proper GPU workflow execution.  \n   - **Evidence**: Pod events show normal container lifecycle but no GPU-related errors.\n\n**Impact:**  \n- GPU-dependent workflows fail due to resource unavailability and network isolation.  \n- Application cannot access required services (e.g., model repositories, monitoring, or distributed training components).  \n\n**Confidence:** High (directly observable via `kubectl describe node`, `kubectl describe pod`, and `kubectl describe networkpolicy`).  \n\n**Safe Remediation:**  \n1. **Fix Scheduling**: Add GPU node selectors/affinity to the pod spec to ensure it runs on GPU nodes.  \n2. **",
+    "judgeClaude": {
+      "perDimension": {
+        "localization": "Yes",
+        "mechanism": "No",
+        "scope": "Yes",
+        "evidence": "Yes",
+        "remediation": "No"
+      },
+      "perQuestion": [
+        {
+          "id": "L1",
+          "dim": "localization",
+          "answer": "Yes"
+        },
+        {
+          "id": "L2",
+          "dim": "localization",
+          "answer": "No"
+        },
+        {
+          "id": "M1",
+          "dim": "mechanism",
+          "answer": "No"
+        },
+        {
+          "id": "M2",
+          "dim": "mechanism",
+          "answer": "No"
+        },
+        {
+          "id": "S1",
+          "dim": "scope",
+          "answer": "Yes"
+        },
+        {
+          "id": "S2",
+          "dim": "scope",
+          "answer": "No"
+        },
+        {
+          "id": "E1",
+          "dim": "evidence",
+          "answer": "Yes"
+        },
+        {
+          "id": "E2",
+          "dim": "evidence",
+          "answer": "No"
+        },
+        {
+          "id": "R1",
+          "dim": "remediation",
+          "answer": "No"
+        },
+        {
+          "id": "R2",
+          "dim": "remediation",
+          "answer": "No"
+        }
+      ]
+    }
+  }
+]

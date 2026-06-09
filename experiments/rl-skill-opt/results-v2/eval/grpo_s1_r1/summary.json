@@ -1,0 +1,77 @@
+{
+  "label": "grpo_s1_r1",
+  "skillFile": "experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round1/best_skill_round1.txt",
+  "skillChars": 2946,
+  "sets": {
+    "heldout": {
+      "composite": 1.192,
+      "judge": 0.775,
+      "rubricMean": 0.834,
+      "rewardTruthGap": -0.058,
+      "mislabelRate": 0,
+      "spuriousMean": 0,
+      "passRate": 0.75,
+      "advantage": 0.35,
+      "perCaseJudge": {
+        "c074": 1,
+        "c075": 0.1,
+        "c076": 1,
+        "c077": 1
+      },
+      "perCaseComposite": {
+        "c074": 1.333,
+        "c075": 0.433,
+        "c076": 1.5,
+        "c077": 1.5
+      },
+      "tokens": 317053,
+      "provider": "gpt"
+    },
+    "audit": {
+      "composite": 1.256,
+      "judge": 0.867,
+      "rubricMean": 0.778,
+      "rewardTruthGap": 0.089,
+      "mislabelRate": 0.333,
+      "spuriousMean": 0,
+      "passRate": 0.6666666666666666,
+      "advantage": 0.434,
+      "perCaseJudge": {
+        "ca1": 1,
+        "ca2": 1,
+        "ca3": 0.6
+      },
+      "perCaseComposite": {
+        "ca1": 1.5,
+        "ca2": 1.5,
+        "ca3": 0.767
+      },
+      "tokens": 475370,
+      "provider": "gpt"
+    },
+    "xbrain": {
+      "composite": 1.167,
+      "judge": 0.875,
+      "rubricMean": 0.584,
+      "rewardTruthGap": 0.292,
+      "mislabelRate": 0.25,
+      "spuriousMean": 0,
+      "passRate": 0.75,
+      "advantage": 0.45,
+      "perCaseJudge": {
+        "c074": 1,
+        "c075": 1,
+        "c076": 0.5,
+        "c077": 1
+      },
+      "perCaseComposite": {
+        "c074": 1.333,
+        "c075": 1.333,
+        "c076": 0.667,
+        "c077": 1.333
+      },
+      "tokens": 291803,
+      "provider": "kimi"
+    }
+  }
+}

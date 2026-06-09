@@ -1,0 +1,224 @@
+{
+  "category": "network-dns",
+  "model": "Qwen/Qwen2.5-3B-Instruct",
+  "provider": "gpt",
+  "seedTag": "s1",
+  "trainCases": [
+    "c068",
+    "c069",
+    "c070",
+    "c071",
+    "c072",
+    "c073"
+  ],
+  "prior": "experiments/rl-skill-opt/skills/network-dns-handcrafted.txt",
+  "trajectory": [
+    {
+      "round": 0,
+      "meanReward": 1.379,
+      "bestReward": 1.5,
+      "bestJudge": 1,
+      "bestIdx": 1,
+      "rewards": [
+        1.5,
+        1.472,
+        1.333,
+        1.211
+      ],
+      "diversity": {
+        "mean_edit": 0.8624,
+        "token_entropy": 7.993
+      },
+      "roundTokens": 2218785,
+      "bestSkillPath": "experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round0/best_skill_round0.txt",
+      "perCandPerCase": [
+        {
+          "idx": 1,
+          "perCase": {
+            "c068": 1.5,
+            "c069": 1.5,
+            "c070": 1.5,
+            "c071": 1.5,
+            "c072": 1.5,
+            "c073": 1.5
+          },
+          "reward": 1.5
+        },
+        {
+          "idx": 0,
+          "perCase": {
+            "c068": 1.5,
+            "c069": 1.5,
+            "c070": 1.5,
+            "c071": 1.333,
+            "c072": 1.5,
+            "c073": 1.5
+          },
+          "reward": 1.472
+        },
+        {
+          "idx": 2,
+          "perCase": {
+            "c068": 1.333,
+            "c069": 1.5,
+            "c070": 0.667,
+            "c071": 1.5,
+            "c072": 1.5,
+            "c073": 1.5
+          },
+          "reward": 1.333
+        },
+        {
+          "idx": 3,
+          "perCase": {
+            "c068": 1.333,
+            "c069": 1.333,
+            "c070": 0.867,
+            "c071": 1.5,
+            "c072": 0.733,
+            "c073": 1.5
+          },
+          "reward": 1.211
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "meanReward": 1.34725,
+      "bestReward": 1.5,
+      "bestJudge": 1,
+      "bestIdx": 1,
+      "rewards": [
+        1.5,
+        1.389,
+        1.361,
+        1.139
+      ],
+      "diversity": {
+        "mean_edit": 0.8321,
+        "token_entropy": 7.9624
+      },
+      "roundTokens": 1937977,
+      "bestSkillPath": "experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round1/best_skill_round1.txt",
+      "perCandPerCase": [
+        {
+          "idx": 1,
+          "perCase": {
+            "c068": 1.5,
+            "c069": 1.5,
+            "c070": 1.5,
+            "c071": 1.5,
+            "c072": 1.5,
+            "c073": 1.5
+          },
+          "reward": 1.5
+        },
+        {
+          "idx": 0,
+          "perCase": {
+            "c068": 1.333,
+            "c069": 1.5,
+            "c070": 1.333,
+            "c071": 1.5,
+            "c072": 1.333,
+            "c073": 1.333
+          },
+          "reward": 1.389
+        },
+        {
+          "idx": 3,
+          "perCase": {
+            "c068": 1.5,
+            "c069": 1.5,
+            "c070": 1.333,
+            "c071": 1.333,
+            "c072": 1.333,
+            "c073": 1.167
+          },
+          "reward": 1.361
+        },
+        {
+          "idx": 2,
+          "perCase": {
+            "c068": 1.5,
+            "c069": 1.333,
+            "c070": 1.167,
+            "c071": 0.167,
+            "c072": 1.333,
+            "c073": 1.333
+          },
+          "reward": 1.139
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "meanReward": 1.2582499999999999,
+      "bestReward": 1.444,
+      "bestJudge": 1,
+      "bestIdx": 0,
+      "rewards": [
+        1.444,
+        1.417,
+        1.394,
+        0.778
+      ],
+      "diversity": {
+        "mean_edit": 0.1232,
+        "token_entropy": 7.3207
+      },
+      "roundTokens": 1858197,
+      "bestSkillPath": "experiments/rl-skill-opt/results-v2/grpo_netdns_s1/round2/best_skill_round2.txt",
+      "perCandPerCase": [
+        {
+          "idx": 0,
+          "perCase": {
+            "c068": 1.5,
+            "c069": 1.333,
+            "c070": 1.5,
+            "c071": 1.333,
+            "c072": 1.5,
+            "c073": 1.5
+          },
+          "reward": 1.444
+        },
+        {
+          "idx": 2,
+          "perCase": {
+            "c068": 1.333,
+            "c069": 1.5,
+            "c070": 1.5,
+            "c071": 1.333,
+            "c072": 1.333,
+            "c073": 1.5
+          },
+          "reward": 1.417
+        },
+        {
+          "idx": 1,
+          "perCase": {
+            "c068": 1.333,
+            "c069": 1.5,
+            "c070": 1.5,
+            "c071": 1.5,
+            "c072": 1.5,
+            "c073": 1.033
+          },
+          "reward": 1.394
+        },
+        {
+          "idx": 3,
+          "perCase": {
+            "c068": 1.5,
+            "c069": 1.5,
+            "c070": 0.5,
+            "c071": 0.333,
+            "c072": 0.5,
+            "c073": 0.333
+          },
+          "reward": 0.778
+        }
+      ]
+    }
+  ]
+}

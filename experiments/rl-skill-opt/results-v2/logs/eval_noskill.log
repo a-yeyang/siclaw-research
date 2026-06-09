@@ -1,0 +1,92 @@
+=== eval-matrix label=noskill skill=(none) chars=0 sets=heldout,audit,xbrain ===
+
+--- eval set=heldout provider=gpt cases=c074,c075,c076,c077 ---
+[reward] provider=gpt cases=c074,c075,c076,c077 skill=(none/baseline) skillChars=0
+[reward] agent c074 -> completed
+[reward] agent c075 -> completed
+[reward] agent c076 -> completed
+[reward] agent c077 -> completed
+[reward] agent done in 55s | tokens in=82159 out=4109 total=319356 toolCalls=18 completed=4/4
+
+=== LLM-judge (claude-sonnet-4-6) over 4 graded / 4 cases ===
+pass(>0.65) = 25.0%   mean total = 0.425
+  localization  0.250
+  mechanism     0.250
+  scope         0.500
+  evidence      0.750
+  remediation   0.375
+
+=== keyword scorer vs LLM judge (n=4) ===
+  keyword mean total = 0.898
+  LLM     mean total = 0.425   (delta -0.473)
+  largest disagreements (id  keyword -> llm):
+    c075  0.91 -> 0.10  (-0.81)
+    c074  0.90 -> 0.10  (-0.80)
+    c077  0.90 -> 0.50  (-0.40)
+    c076  0.88 -> 1.00  (+0.12)
+
+wrote experiments/rl-skill-opt/results-v2/eval/noskill/heldout/judgments.json
+[reward] judge meanScore=0.425 passRate=25% graded=4/4
+[reward] composite=0.633 rubric=0.417 rewardTruthGap=0.008 mislabelRate=0.5 spurious=0
+{"reward":0.633,"judgeReward":0.425,"composite":0.633,"rubricMean":0.417,"rewardTruthGap":0.008,"mislabelRate":0.5,"advantage":null,"passRate":0.25,"tokensTotal":319356,"completed":4,"runDir":"experiments/rl-skill-opt/results-v2/eval/noskill/heldout"}
+  set heldout: composite=0.633 judge=0.425 mislabel=0.5 adv=null
+
+--- eval set=audit provider=gpt cases=ca1,ca2,ca3 ---
+[reward] provider=gpt cases=ca1,ca2,ca3 skill=(none/baseline) skillChars=0
+[reward] agent ca3 -> completed
+[reward] agent ca2 -> completed
+[reward] agent ca1 -> completed
+[reward] agent done in 40s | tokens in=90203 out=3636 total=252175 toolCalls=18 completed=3/3
+
+=== LLM-judge (claude-sonnet-4-6) over 3 graded / 3 cases ===
+pass(>0.65) = 33.3%   mean total = 0.433
+  localization  0.333
+  mechanism     0.333
+  scope         0.333
+  evidence      0.667
+  remediation   0.500
+
+=== keyword scorer vs LLM judge (n=0) ===
+  keyword mean total = 0.000
+  LLM     mean total = 0.000   (delta 0.000)
+  largest disagreements (id  keyword -> llm):
+
+wrote experiments/rl-skill-opt/results-v2/eval/noskill/audit/judgments.json
+[reward] judge meanScore=0.433 passRate=33% graded=3/3
+[reward] composite=0.545 rubric=0.222 rewardTruthGap=0.211 mislabelRate=0.667 spurious=0
+{"reward":0.545,"judgeReward":0.433,"composite":0.545,"rubricMean":0.222,"rewardTruthGap":0.211,"mislabelRate":0.667,"advantage":null,"passRate":0.3333333333333333,"tokensTotal":252175,"completed":3,"runDir":"experiments/rl-skill-opt/results-v2/eval/noskill/audit"}
+  set audit: composite=0.545 judge=0.433 mislabel=0.667 adv=null
+
+--- eval set=xbrain provider=kimi cases=c074,c075,c076,c077 ---
+[reward] provider=kimi cases=c074,c075,c076,c077 skill=(none/baseline) skillChars=0
+[reward] agent c075 -> completed
+[reward] agent c076 -> completed
+[reward] agent c074 -> completed
+[reward] agent c077 -> completed
+[reward] agent done in 90s | tokens in=53258 out=6975 total=393929 toolCalls=24 completed=4/4
+
+=== LLM-judge (claude-sonnet-4-6) over 4 graded / 4 cases ===
+pass(>0.65) = 25.0%   mean total = 0.425
+  localization  0.375
+  mechanism     0.250
+  scope         0.625
+  evidence      0.625
+  remediation   0.250
+
+=== keyword scorer vs LLM judge (n=4) ===
+  keyword mean total = 0.898
+  LLM     mean total = 0.425   (delta -0.473)
+  largest disagreements (id  keyword -> llm):
+    c077  0.90 -> 0.10  (-0.80)
+    c075  0.91 -> 0.30  (-0.61)
+    c076  0.88 -> 0.30  (-0.58)
+    c074  0.90 -> 1.00  (+0.10)
+
+wrote experiments/rl-skill-opt/results-v2/eval/noskill/xbrain/judgments.json
+[reward] judge meanScore=0.425 passRate=25% graded=4/4
+[reward] composite=0.55 rubric=0.25 rewardTruthGap=0.175 mislabelRate=0.75 spurious=0
+{"reward":0.55,"judgeReward":0.425,"composite":0.55,"rubricMean":0.25,"rewardTruthGap":0.175,"mislabelRate":0.75,"advantage":null,"passRate":0.25,"tokensTotal":393929,"completed":4,"runDir":"experiments/rl-skill-opt/results-v2/eval/noskill/xbrain"}
+  set xbrain: composite=0.55 judge=0.425 mislabel=0.75 adv=null
+
+=== eval-matrix done -> experiments/rl-skill-opt/results-v2/eval/noskill/summary.json
+{"label":"noskill","sets":{"heldout":0.633,"audit":0.545,"xbrain":0.55}}

@@ -1,0 +1,266 @@
+{
+  "claude": {
+    "n": 100,
+    "pass": 0.88,
+    "total": 0.898,
+    "dims": {
+      "localization": 0.92,
+      "mechanism": 0.9,
+      "scope": 0.86,
+      "evidence": 0.925,
+      "remediation": 0.885
+    },
+    "tools": 7.39,
+    "durS": 50.80769999999998,
+    "byCat": {
+      "image-pull": {
+        "pass": 1,
+        "total": 0.9600000000000002,
+        "n": 10
+      },
+      "crashloop": {
+        "pass": 1,
+        "total": 1,
+        "n": 10
+      },
+      "config": {
+        "pass": 1,
+        "total": 1,
+        "n": 10
+      },
+      "scheduling-gpu": {
+        "pass": 0.9333333333333333,
+        "total": 0.92,
+        "n": 15
+      },
+      "storage": {
+        "pass": 1,
+        "total": 1,
+        "n": 10
+      },
+      "service-readiness": {
+        "pass": 1,
+        "total": 1,
+        "n": 12
+      },
+      "network-dns": {
+        "pass": 0.7,
+        "total": 0.72,
+        "n": 10
+      },
+      "controller": {
+        "pass": 0.5,
+        "total": 0.6000000000000001,
+        "n": 8
+      },
+      "volcano-gpu": {
+        "pass": 0.875,
+        "total": 0.9,
+        "n": 8
+      },
+      "compound": {
+        "pass": 0.5714285714285714,
+        "total": 0.7428571428571429,
+        "n": 7
+      }
+    }
+  },
+  "kimi": {
+    "n": 100,
+    "pass": 0.88,
+    "total": 0.9059999999999999,
+    "dims": {
+      "localization": 0.9,
+      "mechanism": 0.875,
+      "scope": 0.92,
+      "evidence": 0.945,
+      "remediation": 0.89
+    },
+    "tools": 4.86,
+    "durS": 29.757519999999996,
+    "byCat": {
+      "image-pull": {
+        "pass": 1,
+        "total": 0.96,
+        "n": 10
+      },
+      "crashloop": {
+        "pass": 0.9,
+        "total": 0.96,
+        "n": 10
+      },
+      "config": {
+        "pass": 1,
+        "total": 1,
+        "n": 10
+      },
+      "scheduling-gpu": {
+        "pass": 1,
+        "total": 1,
+        "n": 15
+      },
+      "storage": {
+        "pass": 1,
+        "total": 1,
+        "n": 10
+      },
+      "service-readiness": {
+        "pass": 1,
+        "total": 0.9833333333333334,
+        "n": 12
+      },
+      "network-dns": {
+        "pass": 0.4,
+        "total": 0.54,
+        "n": 10
+      },
+      "controller": {
+        "pass": 0.875,
+        "total": 0.8875,
+        "n": 8
+      },
+      "volcano-gpu": {
+        "pass": 0.875,
+        "total": 0.925,
+        "n": 8
+      },
+      "compound": {
+        "pass": 0.5714285714285714,
+        "total": 0.6714285714285715,
+        "n": 7
+      }
+    }
+  },
+  "deepseek": {
+    "n": 100,
+    "pass": 0.9,
+    "total": 0.93,
+    "dims": {
+      "localization": 0.94,
+      "mechanism": 0.9,
+      "scope": 0.935,
+      "evidence": 0.955,
+      "remediation": 0.92
+    },
+    "tools": 6.05,
+    "durS": 19.167319999999997,
+    "byCat": {
+      "image-pull": {
+        "pass": 1,
+        "total": 1,
+        "n": 10
+      },
+      "crashloop": {
+        "pass": 1,
+        "total": 1,
+        "n": 10
+      },
+      "config": {
+        "pass": 1,
+        "total": 1,
+        "n": 10
+      },
+      "scheduling-gpu": {
+        "pass": 0.8666666666666667,
+        "total": 0.9199999999999999,
+        "n": 15
+      },
+      "storage": {
+        "pass": 1,
+        "total": 1,
+        "n": 10
+      },
+      "service-readiness": {
+        "pass": 0.9166666666666666,
+        "total": 0.9666666666666667,
+        "n": 12
+      },
+      "network-dns": {
+        "pass": 0.7,
+        "total": 0.8,
+        "n": 10
+      },
+      "controller": {
+        "pass": 0.75,
+        "total": 0.7875,
+        "n": 8
+      },
+      "volcano-gpu": {
+        "pass": 1,
+        "total": 1,
+        "n": 8
+      },
+      "compound": {
+        "pass": 0.7142857142857143,
+        "total": 0.7571428571428571,
+        "n": 7
+      }
+    }
+  },
+  "qwen": {
+    "n": 100,
+    "pass": 0.89,
+    "total": 0.9009999999999999,
+    "dims": {
+      "localization": 0.91,
+      "mechanism": 0.87,
+      "scope": 0.9,
+      "evidence": 0.945,
+      "remediation": 0.88
+    },
+    "tools": 4.32,
+    "durS": 44.178190000000015,
+    "byCat": {
+      "image-pull": {
+        "pass": 1,
+        "total": 0.95,
+        "n": 10
+      },
+      "crashloop": {
+        "pass": 1,
+        "total": 1,
+        "n": 10
+      },
+      "config": {
+        "pass": 1,
+        "total": 1,
+        "n": 10
+      },
+      "scheduling-gpu": {
+        "pass": 0.8666666666666667,
+        "total": 0.8800000000000001,
+        "n": 15
+      },
+      "storage": {
+        "pass": 1,
+        "total": 1,
+        "n": 10
+      },
+      "service-readiness": {
+        "pass": 1,
+        "total": 1,
+        "n": 12
+      },
+      "network-dns": {
+        "pass": 0.5,
+        "total": 0.53,
+        "n": 10
+      },
+      "controller": {
+        "pass": 0.75,
+        "total": 0.8,
+        "n": 8
+      },
+      "volcano-gpu": {
+        "pass": 1,
+        "total": 1,
+        "n": 8
+      },
+      "compound": {
+        "pass": 0.7142857142857143,
+        "total": 0.8142857142857143,
+        "n": 7
+      }
+    }
+  }
+}

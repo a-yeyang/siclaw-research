@@ -1,0 +1,159 @@
+# Adversarial AUDIT fixtures for the RL-skill-opt experiment (AAAI v2).
+#
+# Purpose: punish DNS tunnel-vision. The prior RL-learned skill over-specialised
+# to "DNS" keywords and mislabeled a NetworkPolicy egress-deny as a "DNS failure"
+# (held-out c074: 1.0 -> 0.1). These three cases all present the SAME user-facing
+# symptom ("client cannot resolve or reach the service") but have DIFFERENT root
+# causes, none of which is a DNS override. A skill that blames DNS will be wrong
+# on all three; a skill that actually enumerates NetworkPolicies and checks the
+# Service selector/endpoints will get them right.
+#
+#   ca1  NetworkPolicy denies EGRESS from the client      (looks like DNS, is NetPol)
+#   ca2  NetworkPolicy denies INGRESS to the server       (looks like DNS, is NetPol)
+#   ca3  Service selector typo -> zero endpoints           (looks like DNS, is selector)
+#
+# All pods use the cluster-default DNS (dnsPolicy: ClusterFirst, no dnsConfig),
+# so any diagnosis that claims a DNS override / bad nameserver is verifiably wrong.
+# namespace is the live eval namespace already used by c068-c077.
+---
+# ───────────────────────────── ca1: NetPol deny-egress ─────────────────────────
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ca1-client
+  namespace: siclaw-eval-yye-20260602
+  labels: { app: ca1-client, siclaw.ai/eval-case: ca1, siclaw.ai/eval-run: audit }
+spec:
+  containers:
+    - name: client
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command: ["sh", "-c", "sleep 36000"]
+  restartPolicy: Always
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ca1-server
+  namespace: siclaw-eval-yye-20260602
+  labels: { app: ca1-server, siclaw.ai/eval-case: ca1, siclaw.ai/eval-run: audit }
+spec:
+  containers:
+    - name: server
+      image: registry.k8s.io/e2e-test-images/agnhost:2.39
+      imagePullPolicy: IfNotPresent
+      args: ["netexec", "--http-port=8080"]
+  restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ca1-server-svc
+  namespace: siclaw-eval-yye-20260602
+  labels: { siclaw.ai/eval-case: ca1, siclaw.ai/eval-run: audit }
+spec:
+  selector: { app: ca1-server }
+  ports: [{ name: http, port: 80, protocol: TCP, targetPort: 8080 }]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ca1-deny-egress
+  namespace: siclaw-eval-yye-20260602
+  labels: { siclaw.ai/eval-case: ca1, siclaw.ai/eval-run: audit }
+spec:
+  podSelector: { matchLabels: { app: ca1-client } }
+  policyTypes: ["Egress"]
+  # No egress rules -> denies ALL egress from the client, including DNS (UDP/TCP 53).
+---
+# ───────────────────────────── ca2: NetPol deny-ingress ────────────────────────
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ca2-client
+  namespace: siclaw-eval-yye-20260602
+  labels: { app: ca2-client, siclaw.ai/eval-case: ca2, siclaw.ai/eval-run: audit }
+spec:
+  containers:
+    - name: client
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command: ["sh", "-c", "sleep 36000"]
+  restartPolicy: Always
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ca2-server
+  namespace: siclaw-eval-yye-20260602
+  labels: { app: ca2-server, siclaw.ai/eval-case: ca2, siclaw.ai/eval-run: audit }
+spec:
+  containers:
+    - name: server
+      image: registry.k8s.io/e2e-test-images/agnhost:2.39
+      imagePullPolicy: IfNotPresent
+      args: ["netexec", "--http-port=8080"]
+  restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ca2-server-svc
+  namespace: siclaw-eval-yye-20260602
+  labels: { siclaw.ai/eval-case: ca2, siclaw.ai/eval-run: audit }
+spec:
+  selector: { app: ca2-server }
+  ports: [{ name: http, port: 80, protocol: TCP, targetPort: 8080 }]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ca2-deny-ingress
+  namespace: siclaw-eval-yye-20260602
+  labels: { siclaw.ai/eval-case: ca2, siclaw.ai/eval-run: audit }
+spec:
+  podSelector: { matchLabels: { app: ca2-server } }
+  policyTypes: ["Ingress"]
+  # No ingress rules -> denies ALL ingress to the server, including from the client.
+---
+# ───────────────────────────── ca3: Service selector typo ──────────────────────
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ca3-client
+  namespace: siclaw-eval-yye-20260602
+  labels: { app: ca3-client, siclaw.ai/eval-case: ca3, siclaw.ai/eval-run: audit }
+spec:
+  containers:
+    - name: client
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command: ["sh", "-c", "sleep 36000"]
+  restartPolicy: Always
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ca3-server
+  namespace: siclaw-eval-yye-20260602
+  labels: { app: ca3-server, siclaw.ai/eval-case: ca3, siclaw.ai/eval-run: audit }
+spec:
+  containers:
+    - name: server
+      image: registry.k8s.io/e2e-test-images/agnhost:2.39
+      imagePullPolicy: IfNotPresent
+      args: ["netexec", "--http-port=8080"]
+  restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ca3-server-svc
+  namespace: siclaw-eval-yye-20260602
+  labels: { siclaw.ai/eval-case: ca3, siclaw.ai/eval-run: audit }
+spec:
+  # BUG: selector points at app=ca3-srv but the pod is labeled app=ca3-server.
+  # The Service resolves in DNS (it has a ClusterIP) but has ZERO endpoints, so
+  # connections are refused. This is NOT a DNS fault and NOT a NetworkPolicy.
+  selector: { app: ca3-srv }
+  ports: [{ name: http, port: 80, protocol: TCP, targetPort: 8080 }]

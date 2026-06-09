@@ -1,0 +1,36 @@
+When a client pod cannot resolve or reach a Service, investigate in a strict layered order and require direct evidence before naming the failing layer.
+
+1. Confirm objects and namespace context:
+- Get the client pod, Service, EndpointSlice/endpoints, and backend pods in the correct namespace.
+- Verify pods are Running/Ready, Service selector matches backend labels, ports/targetPorts are correct, and at least one ready endpoint exists.
+
+2. Inspect the client pod’s DNS configuration before interpreting lookup failures:
+- Read `/etc/resolv.conf` from the client pod.
+- Record nameserver IP(s), search domains, and `ndots`.
+- If `nslookup`/`dig` output shows search-path NXDOMAINs, only treat DNS as broken if the final intended Service FQDN fails or the resolver cannot contact its configured nameserver.
+
+3. Test DNS with explicit names and classify the failure:
+- From the client pod, query:
+  - short Service name,
+  - fully qualified in-namespace Service name,
+  - if possible, the cluster DNS server directly.
+- Distinguish:
+  - NXDOMAIN for final FQDN = name does not exist / wrong namespace/name,
+  - timeout or “no servers could be reached” = DNS path/reachability problem,
+  - successful resolution = move on to transport/app checks.
+
+4. If DNS times out, immediately verify the DNS path, not just Service health:
+- Check whether the client pod can reach its configured DNS server IP on UDP/TCP 53 using any available tool.
+- Inspect CoreDNS/kube-dns Service/endpoints in the cluster.
+- Enumerate all NetworkPolicies affecting the client pod and DNS pods/service path; determine whether client egress to DNS and DNS ingress are allowed.
+
+5. If DNS resolves, test data-path reachability:
+- Probe Service VIP and backend Pod IP:targetPort from the client pod if possible.
+- Compare results to separate Service routing, NetworkPolicy, and app-listener issues.
+
+6. Consider other blockers:
+- Wrong protocol, named-port mismatch, backend not listening, readiness masking, hostNetwork, CNI failures, or cross-namespace confusion.
+
+7. Report:
+- Name the failing layer only with direct evidence.
+- If tools are missing, state what remains unproven and keep confidence low rather than defaulting to Service or app causes.

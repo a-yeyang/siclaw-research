@@ -1,0 +1,30 @@
+SKILL: Diagnosing network-dns connectivity and DNS-resolution failures
+
+WHEN TO APPLY
+A client pod is unable to resolve or reach a Service even though the corresponding server pod exists and is Running. The client pods may crashloop or restart due to failed connections. Treating those restarts as symptoms, not the root cause, you must positively rule in/out each controllable layer before identifying the root issue.
+
+PRECISE ORDER OF READ-ONLY CHECKS
+1. ENUMERATE ALL NETWORKPOLICIES IN THE NAMESPACE.
+   - List all network policies using `kubectl get networkpolicy -n <your-namespace>`
+   - Describe each policy for details: `describe networkpolicy <policy-name>`
+   - Compare the policy’s selector labels against the client pod’s labels using `kubectl get pod <client-pod> -o yaml` and its service’s selector labels using `kubectl get svc <service-name> -o yaml`
+
+2. VERIFY EGRESS AND INGRESS NETWORKPOLICY RULES
+   - Confirm if any deny-egress policy has a selector matching the client pod (e.g., `kubectl get networkpolicy -n <namespace> -o jsonpath='{range.items[?(@.spec.policyTypes=="Egress")].rules}{"\n"}{.from..podSelector.matchLabels}\n{.to..podSelector.matchLabels}\n{"\n"}'`)
+   - Check for deny-ingress policies targeting the client pod (e.g., `kubectl get networkpolicy -n <namespace> -o jsonpath='{range.items[?(@.spec.policyTypes=="Ingress")].rules}{"\n"}{.from..podSelector.matchLabels}\n{"\n"}'`)
+
+3. EXAMINE CLIENT DNS CONFIGURATION
+   - Check the client pod’s DNS configuration with `kubectl get pod <client-pod> -o yaml` specifically looking for the `dnsConfig` field.
+   - Assess the DNS policy, especially if there's a custom DNS server specified or `dnsPolicy` set to `NamespaceLocal`, potentially overriding system-wide DNS settings (use `kubectl describe pod <client-pod>`).
+
+RECOGNIZE AND DETACH CAUSES
+- Root causes typically result from either network policies explicitly denying necessary network traffic or mis-configured DNS settings.
+- Symptoms include DNS resolution failures, inability to communicate via port-forwarding (if enabled), or pod crashes and restarts.
+
+CORRECT FINAL DIAGNOSIS
+A correct diagnosis must identify the exact resource (pod/service), precise mechanism (network policy, DNS configuration), impact scope (affected clients/services), and evidence supporting this. A safe remediation could involve:
+- Modifying network policies to permit necessary traffic using `kubectl patch networkpolicy <policy-name> --patch='{"spec":{"policyTypes":["Ingress"],"egress":[{"to": {"namespaceSelector": {"matchLabels": {}}},"ports": [{"port": 80}]}, {"policyType": "Egress","to": {"namespaceSelector": {"matchLabels": {"client-label-key": "client-label-value"}},"ports": [{"port": 53}]}}]'}`.
+- Adjusting the client pod's DNS configuration to point to system DNS servers using `kubectl edit pod <client-pod>`.
+- Review and update other DNS-related configurations like DNS policies within the namespace.
+
+REMEMBER, YOUR PRIMARY ACTION BEING TO IDENTIFY

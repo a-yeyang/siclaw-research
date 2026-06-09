@@ -1,0 +1,13 @@
+1. **Start by classifying the failure mode and scope.** From the client Pod’s logs/events, determine whether the first observable error is: **(a)** name lookup failure (`NXDOMAIN`, `SERVFAIL`, timeout), **(b)** lookup succeeds but connection fails, or **(c)** only some names fail (internal Service names vs external domains). Also record the exact source Pod/namespace, destination string, and port. This prevents mislabeling endpoint or policy problems as “DNS”.
+
+2. **Verify client-side DNS context before cluster components.** Inspect the client Pod spec and runtime DNS settings: `dnsPolicy`, `dnsConfig`, `hostNetwork`, and `/etc/resolv.conf` (`nameserver`, `search`, `ndots`). Check whether the queried short name should resolve from that namespace, or whether the app should use `<service>.<namespace>` / full FQDN. Misconstructed names, wrong namespace assumptions, or custom DNS settings are common root causes.
+
+3. **Validate the target discovery object matches the intended destination.** For internal names, inspect the Service or headless Service: namespace, type, ClusterIP/None, ports, selectors, and whether the port used by the client exists. For `ExternalName`, verify the external hostname is present and plausible. Missing object, wrong namespace/name, bad port, or malformed `ExternalName` is root cause.
+
+4. **Check the records’ backing data.** Inspect EndpointSlices/Endpoints for ready addresses and correct ports. If empty or incorrect, inspect backend Pod labels, readiness, IPs, and container ports. Empty endpoints are the cause of “DNS resolves but traffic fails”; backend readiness/label mismatch is the deeper cause.
+
+5. **Assess cluster DNS service health and path.** Inspect CoreDNS/kube-dns Pods, readiness, restarts, logs, ConfigMap, Service, and EndpointSlices. Distinguish **internal-only failure**, **external-only failure** (often upstream forwarder/config), and **cluster-wide failure** (DNS service/pod outage).
+
+6. **Finally inspect network isolation and node-level symptoms.** Review NetworkPolicies affecting client, DNS Pods, and backends for UDP/TCP 53 and app-port allow rules; note CNI/kube-proxy warning events if objects are otherwise correct.
+
+**A correct diagnosis must name:** the exact queried name and namespace context, whether failure begins at lookup or after resolution, the first broken object in the chain (client naming/DNS config, Service/ExternalName, EndpointSlice/backend readiness, DNS control plane, or NetworkPolicy), and the read-only evidence. **Safe remediation:** correct queried name/namespace or Pod DNS settings; fix Service/port/selector/ExternalName; restore backend labels/readiness; repair CoreDNS config/endpoints/upstream forwarding; or adjust NetworkPolicies.

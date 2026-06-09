@@ -1,0 +1,39 @@
+**SOP: Diagnose `network-dns` faults (service name resolution / service reachability by DNS name)**
+
+1. **Start from the failing client pod**
+   - `kubectl get pod -A -o wide | grep <client-pod>`
+   - `kubectl describe pod <client-pod> -n <ns>`
+   - Read: `Node`, `IP`, `Status`, `Ready`, `dnsPolicy`, `dnsConfig`, container restarts, and recent Events.
+   - Purpose: confirm the client is running and using normal cluster DNS settings; treat client crashlooping as a separate symptom.
+
+2. **Inspect the target Service**
+   - `kubectl get svc -A`
+   - `kubectl get svc <service> -n <ns> -o yaml`
+   - Read: `spec.selector`, `spec.ports[*].port/targetPort`, `spec.clusterIP`, `spec.type`, and for headless services whether `clusterIP: None`.
+   - Purpose: verify the service exists and is defined consistently.
+
+3. **Check whether the Service has healthy backends**
+   - `kubectl get endpoints <service> -n <ns> -o yaml`
+   - `kubectl get endpointslice -n <ns> -l kubernetes.io/service-name=<service> -o yaml`
+   - Read: endpoint addresses, `ports`, `conditions.ready`, and whether subsets are empty.
+   - Empty/missing endpoints usually indicate selector mismatch or unready backing pods: this is often the root cause, while DNS failure is only a symptom.
+
+4. **Verify backing pods match the Service selector**
+   - `kubectl get pod -n <ns> --show-labels`
+   - `kubectl describe pod <server-pod> -n <ns>`
+   - Read: pod labels, `Ready` condition, pod IP, container ports, readiness probe failures, and Events.
+   - Purpose: confirm labels satisfy the Service selector and pods are Ready.
+
+5. **Check cluster DNS health**
+   - `kubectl get pods -n kube-system -l k8s-app=kube-dns -o wide`
+   - `kubectl get svc -n kube-system kube-dns -o yaml`
+   - `kubectl logs -n kube-system -l k8s-app=kube-dns --tail=100`
+   - Read: CoreDNS pod `Ready`/restarts, kube-dns Service ClusterIP, and log errors (upstream failures, crash loops, plugin errors).
+
+6. **Check namespace DNS objects only if service discovery itself is suspect**
+   - `kubectl get svc,endpoints,endpointslice -A | grep kube-dns`
+   - Purpose: distinguish cluster-wide DNS outage from one-service misconfiguration.
+
+**Diagnosis must name:** the exact broken object and field(s): e.g. Service selector mismatch, no ready endpoints, backing pod unready, client pod custom `dnsPolicy/dnsConfig`, or CoreDNS unavailable. Clearly separate **root cause** from **downstream symptom** (“client cannot resolve/reach service”).
+
+**Safe remediation:** restore label/selector alignment, fix pod readiness/ports, remove incorrect custom DNS settings, or recover CoreDNS deployment/service; then re-check endpoints and DNS resolution.

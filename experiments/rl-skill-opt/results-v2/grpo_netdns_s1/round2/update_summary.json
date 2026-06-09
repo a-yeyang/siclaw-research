@@ -1,0 +1,28 @@
+{
+  "model": "Qwen/Qwen2.5-3B-Instruct",
+  "in_adapter": "/workspace/out/skillprop_v2/s1/round1/adapter",
+  "out_adapter": "/workspace/out/skillprop_v2/s1/round2/adapter",
+  "n_candidates": 4,
+  "n_kept_pareto": 3,
+  "n_imitated": 3,
+  "group_mean": 1.2582,
+  "group_std": 0.2778,
+  "kept_rewards": [
+    1.444,
+    1.417,
+    1.394
+  ],
+  "kept_covs": [
+    1.0,
+    1.0,
+    1.0
+  ],
+  "entropy_beta": 0.01,
+  "coverage_bonus": 0.3,
+  "epochs": 2,
+  "lr": 0.0001,
+  "final_loss": 0.004,
+  "final_ce": 0.0042,
+  "mean_entropy": 0.0501,
+  "seconds": 4.5
+}

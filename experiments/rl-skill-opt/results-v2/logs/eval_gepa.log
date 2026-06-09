@@ -1,0 +1,92 @@
+=== eval-matrix label=gepa skill=experiments/rl-skill-opt/results-v2/gepa_netdns/BEST_SKILL.txt chars=2120 sets=heldout,audit,xbrain ===
+
+--- eval set=heldout provider=gpt cases=c074,c075,c076,c077 ---
+[reward] provider=gpt cases=c074,c075,c076,c077 skill=experiments/rl-skill-opt/results-v2/eval/gepa/heldout/skill.txt skillChars=2120
+[reward] agent c075 -> completed
+[reward] agent c074 -> completed
+[reward] agent c077 -> completed
+[reward] agent c076 -> completed
+[reward] agent done in 88s | tokens in=158011 out=5390 total=475337 toolCalls=38 completed=4/4
+
+=== LLM-judge (claude-sonnet-4-6) over 4 graded / 4 cases ===
+pass(>0.65) = 100.0%   mean total = 1.000
+  localization  1.000
+  mechanism     1.000
+  scope         1.000
+  evidence      1.000
+  remediation   1.000
+
+=== keyword scorer vs LLM judge (n=4) ===
+  keyword mean total = 0.898
+  LLM     mean total = 1.000   (delta 0.102)
+  largest disagreements (id  keyword -> llm):
+    c076  0.88 -> 1.00  (+0.12)
+    c074  0.90 -> 1.00  (+0.10)
+    c077  0.90 -> 1.00  (+0.10)
+    c075  0.91 -> 1.00  (+0.09)
+
+wrote experiments/rl-skill-opt/results-v2/eval/gepa/heldout/judgments.json
+[reward] judge meanScore=1 passRate=100% graded=4/4
+[reward] composite=1.458 rubric=0.917 rewardTruthGap=0.083 mislabelRate=0 spurious=0
+{"reward":1.458,"judgeReward":1,"composite":1.458,"rubricMean":0.917,"rewardTruthGap":0.083,"mislabelRate":0,"advantage":0.575,"passRate":1,"tokensTotal":475337,"completed":4,"runDir":"experiments/rl-skill-opt/results-v2/eval/gepa/heldout"}
+  set heldout: composite=1.458 judge=1 mislabel=0 adv=0.575
+
+--- eval set=audit provider=gpt cases=ca1,ca2,ca3 ---
+[reward] provider=gpt cases=ca1,ca2,ca3 skill=experiments/rl-skill-opt/results-v2/eval/gepa/audit/skill.txt skillChars=2120
+[reward] agent ca2 -> completed
+[reward] agent ca1 -> completed
+[reward] agent ca3 -> completed
+[reward] agent done in 63s | tokens in=29663 out=4172 total=268459 toolCalls=18 completed=3/3
+
+=== LLM-judge (claude-sonnet-4-6) over 3 graded / 3 cases ===
+pass(>0.65) = 66.7%   mean total = 0.700
+  localization  0.667
+  mechanism     0.667
+  scope         0.833
+  evidence      0.667
+  remediation   0.667
+
+=== keyword scorer vs LLM judge (n=0) ===
+  keyword mean total = 0.000
+  LLM     mean total = 0.000   (delta 0.000)
+  largest disagreements (id  keyword -> llm):
+
+wrote experiments/rl-skill-opt/results-v2/eval/gepa/audit/judgments.json
+[reward] judge meanScore=0.7 passRate=67% graded=3/3
+[reward] composite=0.978 rubric=0.889 rewardTruthGap=-0.189 mislabelRate=0.333 spurious=0.333
+{"reward":0.978,"judgeReward":0.7,"composite":0.978,"rubricMean":0.889,"rewardTruthGap":-0.189,"mislabelRate":0.333,"advantage":0.267,"passRate":0.6666666666666666,"tokensTotal":268459,"completed":3,"runDir":"experiments/rl-skill-opt/results-v2/eval/gepa/audit"}
+  set audit: composite=0.978 judge=0.7 mislabel=0.333 adv=0.267
+
+--- eval set=xbrain provider=kimi cases=c074,c075,c076,c077 ---
+[reward] provider=kimi cases=c074,c075,c076,c077 skill=experiments/rl-skill-opt/results-v2/eval/gepa/xbrain/skill.txt skillChars=2120
+[reward] agent c075 -> completed
+[reward] agent c074 -> completed
+[reward] agent c076 -> completed
+[reward] agent c077 -> completed
+[reward] agent done in 110s | tokens in=57588 out=6201 total=336109 toolCalls=21 completed=4/4
+
+=== LLM-judge (claude-sonnet-4-6) over 4 graded / 4 cases ===
+pass(>0.65) = 75.0%   mean total = 0.775
+  localization  0.750
+  mechanism     0.750
+  scope         0.750
+  evidence      0.875
+  remediation   0.750
+
+=== keyword scorer vs LLM judge (n=4) ===
+  keyword mean total = 0.898
+  LLM     mean total = 0.775   (delta -0.123)
+  largest disagreements (id  keyword -> llm):
+    c077  0.90 -> 0.10  (-0.80)
+    c076  0.88 -> 1.00  (+0.12)
+    c074  0.90 -> 1.00  (+0.10)
+    c075  0.91 -> 1.00  (+0.09)
+
+wrote experiments/rl-skill-opt/results-v2/eval/gepa/xbrain/judgments.json
+[reward] judge meanScore=0.775 passRate=75% graded=4/4
+[reward] composite=0.9 rubric=0.5 rewardTruthGap=0.275 mislabelRate=0.25 spurious=0.25
+{"reward":0.9,"judgeReward":0.775,"composite":0.9,"rubricMean":0.5,"rewardTruthGap":0.275,"mislabelRate":0.25,"advantage":0.35,"passRate":0.75,"tokensTotal":336109,"completed":4,"runDir":"experiments/rl-skill-opt/results-v2/eval/gepa/xbrain"}
+  set xbrain: composite=0.9 judge=0.775 mislabel=0.25 adv=0.35
+
+=== eval-matrix done -> experiments/rl-skill-opt/results-v2/eval/gepa/summary.json
+{"label":"gepa","sets":{"heldout":1.458,"audit":0.978,"xbrain":0.9}}

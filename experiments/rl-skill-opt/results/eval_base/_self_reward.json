@@ -1,0 +1,88 @@
+{
+  "model": "Qwen/Qwen2.5-3B-Instruct",
+  "adapter": null,
+  "n": 20,
+  "self_reward_mean": 0.4469,
+  "per_case": [
+    {
+      "id": "c001",
+      "reward": 0.078
+    },
+    {
+      "id": "c004",
+      "reward": 0.281
+    },
+    {
+      "id": "c017",
+      "reward": 0.6875
+    },
+    {
+      "id": "c019",
+      "reward": 0.6475
+    },
+    {
+      "id": "c026",
+      "reward": 0.825
+    },
+    {
+      "id": "c028",
+      "reward": 0.845
+    },
+    {
+      "id": "c032",
+      "reward": 0.0
+    },
+    {
+      "id": "c035",
+      "reward": 0.0
+    },
+    {
+      "id": "c041",
+      "reward": 0.4875
+    },
+    {
+      "id": "c046",
+      "reward": 0.5108
+    },
+    {
+      "id": "c055",
+      "reward": 0.765
+    },
+    {
+      "id": "c056",
+      "reward": 0.5
+    },
+    {
+      "id": "c062",
+      "reward": 0.2085
+    },
+    {
+      "id": "c074",
+      "reward": 0.525
+    },
+    {
+      "id": "c076",
+      "reward": 0.65
+    },
+    {
+      "id": "c079",
+      "reward": 0.477
+    },
+    {
+      "id": "c080",
+      "reward": 0.405
+    },
+    {
+      "id": "c091",
+      "reward": 0.3706
+    },
+    {
+      "id": "c093",
+      "reward": 0.1445
+    },
+    {
+      "id": "c098",
+      "reward": 0.5308
+    }
+  ]
+}

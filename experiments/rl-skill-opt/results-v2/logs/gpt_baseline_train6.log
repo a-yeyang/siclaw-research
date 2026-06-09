@@ -1,0 +1,32 @@
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=(none/baseline) skillChars=0
+[reward] agent c070 -> completed
+[reward] agent c069 -> completed
+[reward] agent c068 -> completed
+[reward] agent c072 -> completed
+[reward] agent c071 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 87s | tokens in=163196 out=6397 total=503417 toolCalls=34 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 16.7%   mean total = 0.483
+  localization  0.333
+  mechanism     0.167
+  scope         0.667
+  evidence      0.750
+  remediation   0.500
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.483   (delta -0.218)
+  largest disagreements (id  keyword -> llm):
+    c071  0.92 -> 0.50  (-0.42)
+    c073  0.65 -> 1.00  (+0.35)
+    c072  0.45 -> 0.10  (-0.34)
+    c069  0.43 -> 0.10  (-0.33)
+    c068  0.93 -> 0.60  (-0.33)
+    c070  0.83 -> 0.60  (-0.23)
+
+wrote experiments/rl-skill-opt/results-v2/gpt_baseline_train6/judgments.json
+[reward] judge meanScore=0.483 passRate=17% graded=6/6
+[reward] composite=0.511 rubric=0.389 rewardTruthGap=0.094 mislabelRate=0.667 spurious=0.333
+{"reward":0.511,"judgeReward":0.483,"composite":0.511,"rubricMean":0.389,"rewardTruthGap":0.094,"mislabelRate":0.667,"advantage":null,"passRate":0.16666666666666666,"tokensTotal":503417,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/gpt_baseline_train6"}

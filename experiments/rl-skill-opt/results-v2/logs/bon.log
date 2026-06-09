@@ -1,0 +1,257 @@
+=== best-of-N  N=7 category=network-dns provider=gpt proposer=gpt-5.4 train=c068,c069,c070,c071,c072,c073 ===
+[bon] candidate 0: 2999 chars (temp 0.6)
+[bon] candidate 1: 2991 chars (temp 0.7)
+[bon] candidate 2: 2678 chars (temp 0.8)
+[bon] candidate 3: 2797 chars (temp 0.9)
+[bon] candidate 4: 2762 chars (temp 1.0)
+[bon] candidate 5: 2806 chars (temp 0.6)
+[bon] candidate 6: 3053 chars (temp 0.7)
+
+[bon] verifying candidate 0 ...
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand0/skill.txt skillChars=2999
+[reward] agent c068 -> completed
+[reward] agent c069 -> completed
+[reward] agent c070 -> completed
+[reward] agent c071 -> completed
+[reward] agent c072 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 86s | tokens in=160293 out=7398 total=491403 toolCalls=34 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 33.3%   mean total = 0.450
+  localization  0.333
+  mechanism     0.167
+  scope         0.500
+  evidence      0.750
+  remediation   0.500
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.450   (delta -0.251)
+  largest disagreements (id  keyword -> llm):
+    c068  0.93 -> 0.20  (-0.73)
+    c072  0.45 -> 0.10  (-0.34)
+    c069  0.43 -> 0.10  (-0.33)
+    c071  0.92 -> 0.60  (-0.32)
+    c070  0.83 -> 1.00  (+0.17)
+    c073  0.65 -> 0.70  (+0.05)
+
+wrote experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand0/judgments.json
+[reward] judge meanScore=0.45 passRate=33% graded=6/6
+[reward] composite=0.561 rubric=0.222 rewardTruthGap=0.228 mislabelRate=0.833 spurious=0
+{"reward":0.561,"judgeReward":0.45,"composite":0.561,"rubricMean":0.222,"rewardTruthGap":0.228,"mislabelRate":0.833,"advantage":-0.033,"passRate":0.3333333333333333,"tokensTotal":491403,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand0"}
+[bon] candidate 0: composite=0.561 judge=0.45
+
+[bon] verifying candidate 1 ...
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand1/skill.txt skillChars=2991
+[reward] agent c070 -> completed
+[reward] agent c068 -> completed
+[reward] agent c069 -> completed
+[reward] agent c072 -> completed
+[reward] agent c071 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 101s | tokens in=172448 out=8119 total=612055 toolCalls=43 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 33.3%   mean total = 0.550
+  localization  0.333
+  mechanism     0.250
+  scope         0.833
+  evidence      0.833
+  remediation   0.500
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.550   (delta -0.151)
+  largest disagreements (id  keyword -> llm):
+    c068  0.93 -> 0.50  (-0.43)
+    c071  0.92 -> 0.50  (-0.42)
+    c073  0.65 -> 1.00  (+0.35)
+    c072  0.45 -> 0.10  (-0.34)
+    c069  0.43 -> 0.30  (-0.13)
+    c070  0.83 -> 0.90  (+0.07)
+
+wrote experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand1/judgments.json
+[reward] judge meanScore=0.55 passRate=33% graded=6/6
+[reward] composite=0.494 rubric=0.389 rewardTruthGap=0.161 mislabelRate=0.667 spurious=0.5
+{"reward":0.494,"judgeReward":0.55,"composite":0.494,"rubricMean":0.389,"rewardTruthGap":0.161,"mislabelRate":0.667,"advantage":0.067,"passRate":0.3333333333333333,"tokensTotal":612055,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand1"}
+[bon] candidate 1: composite=0.494 judge=0.55
+
+[bon] verifying candidate 2 ...
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand2/skill.txt skillChars=2678
+[reward] agent c068 -> completed
+[reward] agent c069 -> completed
+[reward] agent c071 -> completed
+[reward] agent c070 -> completed
+[reward] agent c073 -> completed
+[reward] agent c072 -> completed
+[reward] agent done in 128s | tokens in=159734 out=7105 total=665015 toolCalls=42 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 50.0%   mean total = 0.550
+  localization  0.500
+  mechanism     0.167
+  scope         0.833
+  evidence      0.833
+  remediation   0.417
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.550   (delta -0.151)
+  largest disagreements (id  keyword -> llm):
+    c072  0.45 -> 1.00  (+0.55)
+    c068  0.93 -> 0.40  (-0.53)
+    c071  0.92 -> 0.40  (-0.52)
+    c069  0.43 -> 0.10  (-0.33)
+    c070  0.83 -> 0.70  (-0.13)
+    c073  0.65 -> 0.70  (+0.05)
+
+wrote experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand2/judgments.json
+[reward] judge meanScore=0.55 passRate=50% graded=6/6
+[reward] composite=0.689 rubric=0.444 rewardTruthGap=0.106 mislabelRate=0.5 spurious=0.167
+{"reward":0.689,"judgeReward":0.55,"composite":0.689,"rubricMean":0.444,"rewardTruthGap":0.106,"mislabelRate":0.5,"advantage":0.067,"passRate":0.5,"tokensTotal":665015,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand2"}
+[bon] candidate 2: composite=0.689 judge=0.55
+
+[bon] verifying candidate 3 ...
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand3/skill.txt skillChars=2797
+[reward] agent c069 -> completed
+[reward] agent c070 -> completed
+[reward] agent c068 -> completed
+[reward] agent c071 -> completed
+[reward] agent c073 -> completed
+[reward] agent c072 -> completed
+[reward] agent done in 104s | tokens in=114898 out=7875 total=698517 toolCalls=47 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 33.3%   mean total = 0.400
+  localization  0.333
+  mechanism     0.333
+  scope         0.333
+  evidence      0.667
+  remediation   0.333
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.400   (delta -0.301)
+  largest disagreements (id  keyword -> llm):
+    c068  0.93 -> 0.10  (-0.83)
+    c071  0.92 -> 0.10  (-0.82)
+    c073  0.65 -> 1.00  (+0.35)
+    c072  0.45 -> 0.10  (-0.34)
+    c069  0.43 -> 0.10  (-0.33)
+    c070  0.83 -> 1.00  (+0.17)
+
+wrote experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand3/judgments.json
+[reward] judge meanScore=0.4 passRate=33% graded=6/6
+[reward] composite=0.705 rubric=0.611 rewardTruthGap=-0.211 mislabelRate=0.167 spurious=0
+{"reward":0.705,"judgeReward":0.4,"composite":0.705,"rubricMean":0.611,"rewardTruthGap":-0.211,"mislabelRate":0.167,"advantage":-0.083,"passRate":0.3333333333333333,"tokensTotal":698517,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand3"}
+[bon] candidate 3: composite=0.705 judge=0.4
+
+[bon] verifying candidate 4 ...
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand4/skill.txt skillChars=2762
+[reward] agent c068 -> completed
+[reward] agent c069 -> completed
+[reward] agent c070 -> completed
+[reward] agent c073 -> completed
+[reward] agent c071 -> completed
+[reward] agent c072 -> completed
+[reward] agent done in 94s | tokens in=120680 out=8055 total=642527 toolCalls=53 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 66.7%   mean total = 0.700
+  localization  0.667
+  mechanism     0.667
+  scope         0.667
+  evidence      0.833
+  remediation   0.667
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.700   (delta -0.001)
+  largest disagreements (id  keyword -> llm):
+    c073  0.65 -> 1.00  (+0.35)
+    c072  0.45 -> 0.10  (-0.34)
+    c069  0.43 -> 0.10  (-0.33)
+    c070  0.83 -> 1.00  (+0.17)
+    c071  0.92 -> 1.00  (+0.08)
+    c068  0.93 -> 1.00  (+0.07)
+
+wrote experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand4/judgments.json
+[reward] judge meanScore=0.7 passRate=67% graded=6/6
+[reward] composite=1.089 rubric=0.778 rewardTruthGap=-0.078 mislabelRate=0.333 spurious=0
+{"reward":1.089,"judgeReward":0.7,"composite":1.089,"rubricMean":0.778,"rewardTruthGap":-0.078,"mislabelRate":0.333,"advantage":0.217,"passRate":0.6666666666666666,"tokensTotal":642527,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand4"}
+[bon] candidate 4: composite=1.089 judge=0.7
+
+[bon] verifying candidate 5 ...
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand5/skill.txt skillChars=2806
+[reward] agent c069 -> completed
+[reward] agent c070 -> completed
+[reward] agent c068 -> completed
+[reward] agent c071 -> completed
+[reward] agent c072 -> completed
+[reward] agent c073 -> completed
+[reward] agent done in 71s | tokens in=136178 out=6751 total=524113 toolCalls=34 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 16.7%   mean total = 0.467
+  localization  0.250
+  mechanism     0.167
+  scope         0.750
+  evidence      0.833
+  remediation   0.333
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.467   (delta -0.234)
+  largest disagreements (id  keyword -> llm):
+    c068  0.93 -> 0.40  (-0.53)
+    c071  0.92 -> 0.50  (-0.42)
+    c073  0.65 -> 1.00  (+0.35)
+    c069  0.43 -> 0.10  (-0.33)
+    c070  0.83 -> 0.50  (-0.33)
+    c072  0.45 -> 0.30  (-0.15)
+
+wrote experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand5/judgments.json
+[reward] judge meanScore=0.467 passRate=17% graded=6/6
+[reward] composite=0.494 rubric=0.222 rewardTruthGap=0.245 mislabelRate=0.833 spurious=0.167
+{"reward":0.494,"judgeReward":0.467,"composite":0.494,"rubricMean":0.222,"rewardTruthGap":0.245,"mislabelRate":0.833,"advantage":-0.016,"passRate":0.16666666666666666,"tokensTotal":524113,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand5"}
+[bon] candidate 5: composite=0.494 judge=0.467
+
+[bon] verifying candidate 6 ...
+[reward] provider=gpt cases=c068,c069,c070,c071,c072,c073 skill=experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand6/skill.txt skillChars=3053
+[reward] agent c069 -> completed
+[reward] agent c070 -> completed
+[reward] agent c068 -> completed
+[reward] agent c071 -> completed
+[reward] agent c073 -> completed
+[reward] agent c072 -> completed
+[reward] agent done in 122s | tokens in=179844 out=7837 total=871585 toolCalls=56 completed=6/6
+
+=== LLM-judge (claude-sonnet-4-6) over 6 graded / 6 cases ===
+pass(>0.65) = 50.0%   mean total = 0.567
+  localization  0.333
+  mechanism     0.417
+  scope         0.667
+  evidence      0.833
+  remediation   0.583
+
+=== keyword scorer vs LLM judge (n=6) ===
+  keyword mean total = 0.701
+  LLM     mean total = 0.567   (delta -0.134)
+  largest disagreements (id  keyword -> llm):
+    c068  0.93 -> 0.50  (-0.43)
+    c073  0.65 -> 1.00  (+0.35)
+    c072  0.45 -> 0.10  (-0.34)
+    c069  0.43 -> 0.10  (-0.33)
+    c071  0.92 -> 0.70  (-0.22)
+    c070  0.83 -> 1.00  (+0.17)
+
+wrote experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand6/judgments.json
+[reward] judge meanScore=0.567 passRate=50% graded=6/6
+[reward] composite=0.705 rubric=0.444 rewardTruthGap=0.122 mislabelRate=0.5 spurious=0.167
+{"reward":0.705,"judgeReward":0.567,"composite":0.705,"rubricMean":0.444,"rewardTruthGap":0.122,"mislabelRate":0.5,"advantage":0.084,"passRate":0.5,"tokensTotal":871585,"completed":6,"runDir":"experiments/rl-skill-opt/results-v2/bon_netdns/eval_cand6"}
+[bon] candidate 6: composite=0.705 judge=0.567
+
+=== best-of-N done. best candidate 4: composite=1.089 judge=0.7 -> BEST_SKILL.txt
+rollouts=42 proposerTokens=5920
+{"runRoot":"experiments/rl-skill-opt/results-v2/bon_netdns","bestSkill":"experiments/rl-skill-opt/results-v2/bon_netdns/BEST_SKILL.txt","bestMean":1.089,"bestJudge":0.7,"rollouts":42,"proposerTokens":5920}

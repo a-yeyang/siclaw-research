@@ -1,0 +1,33 @@
+When a client pod cannot resolve or reach a Service, investigate in layers and do not conclude from a single symptom. Distinguish “DNS name resolution failure” from “cannot reach DNS server” from “Service/backend transport failure.”
+
+1. Confirm basics first:
+- Get the client pod, Service, EndpointSlice/endpoints, and backend pods.
+- Verify pod phase/readiness, Service selector, ports/targetPorts, and that ready endpoints exist.
+- If endpoints are missing or wrong, report that layer; otherwise continue.
+
+2. Inspect the client pod’s DNS configuration before interpreting lookup failures:
+- Read `/etc/resolv.conf` in the client pod and record nameserver(s), search domains, and `ndots`.
+- Identify the intended fully qualified Service name for the client namespace.
+- Treat search-path NXDOMAIN noise as normal; focus on whether the final intended name should resolve.
+
+3. Test DNS in a way that separates resolver behavior from DNS-server reachability:
+- From the client pod, try resolving both short name and FQDN if a lookup tool exists.
+- Classify the result carefully:
+  - NXDOMAIN for the final intended name => likely wrong name/namespace or missing Service.
+  - “No servers could be reached” / timeout to nameserver => DNS path problem, not proof that the Service is bad.
+  - Successful resolution => proceed to transport checks.
+- If tools are missing, rely on `/etc/resolv.conf` plus cluster-state checks and lower confidence.
+
+4. Explicitly verify DNS service reachability and DNS-policy blockers:
+- Get CoreDNS/kube-dns Service and endpoints in the cluster.
+- List and fully inspect all NetworkPolicies in the client namespace (and relevant backend namespace if different).
+- Determine whether any policy selects the client pod and restricts egress, especially UDP/TCP 53 to DNS, or restricts backend ingress.
+- Treat DNS egress blocking as a first-class cause whenever lookup errors indicate nameserver timeout.
+
+5. Then check transport independent of DNS:
+- If possible, probe the Service VIP and backend Pod IP:port from the client pod.
+- Differentiate timeout vs refused vs success.
+
+6. Report:
+- Name the failing layer with direct evidence.
+- If DNS timed out and DNS config/policy/DNS-service reachability were not checked, do not conclude app or Service cause; report reduced confidence and the missing checks.

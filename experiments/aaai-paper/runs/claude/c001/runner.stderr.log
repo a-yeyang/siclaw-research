@@ -1,0 +1,20 @@
+(node:45834) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[pi-agent-brain] Empty response detected (attempt 1/2), retrying in 2000ms, stopReason=unknown, model=unknown, usage={}, content=[]
+[pi-agent-brain] Empty response detected (attempt 2/2), retrying in 4000ms, stopReason=unknown, model=unknown, usage={}, content=[]
+[pi-agent-brain] Empty response persisted after 2 retries, stopReason=unknown, model=unknown, usage={}
+(node:49468) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[pi-agent-brain] Empty response detected (attempt 1/2), retrying in 2000ms, stopReason=unknown, model=unknown, usage={}, content=[]
+[pi-agent-brain] Empty response detected (attempt 2/2), retrying in 4000ms, stopReason=unknown, model=unknown, usage={}, content=[]
+[pi-agent-brain] Empty response persisted after 2 retries, stopReason=unknown, model=unknown, usage={}
+(node:53067) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[pi-agent-brain] Empty response detected (attempt 1/2), retrying in 2000ms, stopReason=unknown, model=unknown, usage={}, content=[]
+[pi-agent-brain] Empty response detected (attempt 2/2), retrying in 4000ms, stopReason=unknown, model=unknown, usage={}, content=[]
+[pi-agent-brain] Empty response persisted after 2 retries, stopReason=unknown, model=unknown, usage={}
+(node:56884) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[pi-agent-brain] Empty response detected (attempt 1/2), retrying in 2000ms, stopReason=unknown, model=unknown, usage={}, content=[]
+[pi-agent-brain] Empty response detected (attempt 2/2), retrying in 4000ms, stopReason=unknown, model=unknown, usage={}, content=[]
+[pi-agent-brain] Empty response persisted after 2 retries, stopReason=unknown, model=unknown, usage={}

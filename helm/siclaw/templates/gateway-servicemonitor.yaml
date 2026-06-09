@@ -1,0 +1,28 @@
+{{- if and (eq (include "siclaw.runtime.enabled" .) "true") .Values.metrics.enabled .Values.metrics.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "siclaw.fullname" . }}-runtime
+  namespace: {{ .Values.metrics.serviceMonitor.namespace | default .Release.Namespace }}
+  labels:
+    {{- include "siclaw.labels" (dict "ctx" . "component" "runtime") | nindent 4 }}
+    {{- with .Values.metrics.serviceMonitor.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  {{- if .Values.metrics.serviceMonitor.namespaceSelector }}
+  namespaceSelector:
+    {{- toYaml .Values.metrics.serviceMonitor.namespaceSelector | nindent 4 }}
+  {{- else }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "siclaw.selectorLabels" (dict "ctx" . "component" "runtime") | nindent 6 }}
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: {{ .Values.metrics.serviceMonitor.interval | default "15s" }}
+{{- end }}

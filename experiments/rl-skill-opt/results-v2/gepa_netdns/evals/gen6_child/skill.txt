@@ -1,0 +1,34 @@
+When a client pod cannot resolve or reach a Service, investigate in layers and do not conclude until you identify the first failing layer with direct evidence.
+
+1. Confirm Kubernetes object wiring first:
+- Get the client pod, Service, EndpointSlice/endpoints, and backend pods.
+- Verify client/backend pods are Running and Ready.
+- Verify the Service selector matches backend pod labels, ports/targetPorts are correct, and endpoints are present and Ready.
+- If endpoints are missing or wrong, stop there; otherwise continue.
+
+2. Distinguish DNS-name failure from transport failure from inside the client pod:
+- Inspect `/etc/resolv.conf` first: nameserver(s), search domains, ndots, and obvious misconfiguration.
+- Test resolution of the Service short name, namespace-qualified name, and full cluster FQDN.
+- Interpret resolver output carefully: search-path `NXDOMAIN` attempts can be normal; timeout/no servers reached indicates DNS path/reachability trouble; successful resolution means move to transport checks.
+- If common tools are missing, use any available alternative, but still record the DNS config.
+
+3. If DNS fails, investigate the DNS path before blaming the Service or app:
+- Identify the cluster DNS Service/IP and, if possible, test reachability to DNS from the client pod (UDP/TCP 53 or resolver behavior against the configured nameserver).
+- Check whether the failure is likely pod-local config, DNS Service reachability, or cluster DNS health.
+- Do not diagnose “DNS issue” solely from one failed lookup without inspecting resolver configuration.
+
+4. If DNS succeeds, test connectivity to both the Service VIP and backend Pod IP:targetPort:
+- Compare outcomes: timeout, refused, success.
+- This separates Service routing problems from backend listener/app problems.
+
+5. Explicitly inspect NetworkPolicies as a first-class cause:
+- Enumerate all NetworkPolicies in the namespace.
+- Determine which select the client and which select the backend.
+- Evaluate both client egress and backend ingress, including DNS egress to cluster DNS and app-port traffic between the relevant selectors/namespaces.
+
+6. Consider remaining blockers:
+- App not listening on targetPort, wrong protocol, named-port mismatch, readiness masking, hostNetwork quirks, CNI/node-level issues, or cross-namespace naming mistakes.
+
+7. Report:
+- Name the failing layer with evidence.
+- If tools are missing or DNS-path checks were not completed, lower confidence and avoid asserting a root cause prematurely.

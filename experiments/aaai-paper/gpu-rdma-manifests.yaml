@@ -1,0 +1,607 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: siclaw-eval-gpu-rdma
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: g01-node-dmesg
+  namespace: siclaw-eval-gpu-rdma
+  labels:
+    siclaw.ai/eval-run: '20260604'
+    siclaw.ai/eval-case: g01
+data:
+  dmesg.log: |-
+    [1234567.890] NVRM: Xid (PCI:0000:3b:00): 48, pid=18234, name=python3, Ch 00000010, intr 00000000, 0000 00000000 00000000
+    [1234567.891] NVRM: GPU at PCI:0000:3b:00 has fallen off the bus.
+    [1234567.892] NVRM: GPU 0000:3b:00.0: GPU has been lost; attempting recovery...
+    [1234570.100] NVRM: Xid (PCI:0000:3b:00): 31, pid=18234, name=python3, Ch 00000010, intr 00000000 (MMU fault)
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: g01-nvidia-smi
+  namespace: siclaw-eval-gpu-rdma
+  labels:
+    siclaw.ai/eval-run: '20260604'
+    siclaw.ai/eval-case: g01
+data:
+  nvidia-smi-output.txt: |-
+    +-----------------------------------------------------------------------------------------+
+    | NVIDIA-SMI 550.127.05   Driver: 550.127.05   CUDA: 12.4                                |
+    |   GPU 0: NVIDIA H100 80GB HBM3 ... Temp: 42C  Power: 310W/700W  Util: 0%  Mem: 0MiB/81559MiB
+    |   GPU 1: NVIDIA H100 80GB HBM3 ... Temp: 45C  Power: 320W/700W  Util: 0%  Mem: 0MiB/81559MiB
+    |   GPU 2: NVIDIA H100 80GB HBM3 ... Temp: 43C  Power: 315W/700W  Util: 0%  Mem: 0MiB/81559MiB
+    |   GPU 3: NVIDIA H100 80GB HBM3 ... Temp: 89C  Power: ERR!/700W  Util: ERR!  Mem: ERR!/81559MiB  <<< FAILED
+    |   GPU 4-7: OK
+    +-----------------------------------------------------------------------------------------+
+    | ECC Errors:                                                                             |
+    |   GPU 3: Volatile Double-Bit: 3   Aggregate Single-Bit: 47   Row Remap: FAILED         |
+    |   GPU 0-2,4-7: Volatile Double-Bit: 0   Aggregate Single-Bit: 0-2                      |
+    +-----------------------------------------------------------------------------------------+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: g01-training-xid48
+  namespace: siclaw-eval-gpu-rdma
+  labels:
+    siclaw.ai/eval-run: '20260604'
+    siclaw.ai/eval-case: g01
+  annotations:
+    siclaw.ai/crash-reason: 'CUDA error: an illegal memory access was encountered (Xid 48 → GPU 3 DBE)'
+    siclaw.ai/last-log: |-
+      RuntimeError: CUDA error: an illegal memory access was encountered
+      CUDA kernel errors might be asynchronously reported at some other API call
+spec:
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  nodeSelector:
+    scitix.ai/gpu-type: h20nvlink141
+  tolerations: []
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - exit 134
+      resources:
+        requests:
+          nvidia.com/gpu: '4'
+          cpu: '80'
+          memory: 512Gi
+        limits:
+          nvidia.com/gpu: '4'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: g02-nvidia-topo
+  namespace: siclaw-eval-gpu-rdma
+  labels:
+    siclaw.ai/eval-run: '20260604'
+    siclaw.ai/eval-case: g02
+data:
+  nvidia-smi-topo.txt: |2-
+            GPU0  GPU1  GPU2  GPU3  GPU4  GPU5  GPU6  GPU7
+    GPU0     X    NV18  NV18  NV18  NV18  NV18  NV18  NV18
+    GPU1    NV18   X    NV18  NV18  NV18  NV18  NV18  NV18
+    GPU2    NV18  NV18   X    PIX   NV18  NV18  NV18  NV18   <<< DEGRADED: GPU2-GPU3 fell to PCIe
+    GPU3    NV18  NV18  PIX    X    NV18  NV18  NV18  NV18   <<< DEGRADED: GPU3-GPU2 fell to PCIe
+    GPU4    NV18  NV18  NV18  NV18   X    NV18  NV18  NV18
+    GPU5    NV18  NV18  NV18  NV18  NV18   X    NV18  NV18
+    GPU6    NV18  NV18  NV18  NV18  NV18  NV18   X    NV18
+    GPU7    NV18  NV18  NV18  NV18  NV18  NV18  NV18   X
+  nvlink-errors.txt: |-
+    GPU 2 → GPU 3 (Link 3): CRC Errors: 14832, Replay Errors: 2491, Recovery Count: 87
+    GPU 3 → GPU 2 (Link 3): CRC Errors: 14710, Replay Errors: 2388, Recovery Count: 85
+    All other links: CRC Errors: 0, Replay Errors: 0
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: g02-nccl-log
+  namespace: siclaw-eval-gpu-rdma
+  labels:
+    siclaw.ai/eval-run: '20260604'
+    siclaw.ai/eval-case: g02
+data:
+  nccl-debug.log: |-
+    fake-node-105:18234:18234 [2] NCCL WARN NET/IB : GPU 2 → GPU 3 NVLink path unavailable, falling back to PCIe
+    fake-node-105:18234:18234 [2] NCCL INFO Ring 0: GPU 2 → GPU 3 path: PIX (was NV18)
+    fake-node-105:18234:18234 [2] NCCL WARN allReduce bandwidth dropped: 380 GB/s → 52 GB/s on ring 0
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: g02-nvlink-slow
+  namespace: siclaw-eval-gpu-rdma
+  labels:
+    siclaw.ai/eval-run: '20260604'
+    siclaw.ai/eval-case: g02
+  annotations:
+    siclaw.ai/status: running-degraded
+    siclaw.ai/symptom: Training throughput dropped ~40%. Iteration time 2.3s→3.8s. No crash.
+spec:
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  nodeSelector:
+    scitix.ai/gpu-type: h20nvlink141
+  tolerations: []
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - echo running-degraded; sleep 3600
+      resources:
+        requests:
+          nvidia.com/gpu: '8'
+          cpu: '160'
+          memory: 1Ti
+        limits:
+          nvidia.com/gpu: '8'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: g03-nvidia-smi
+  namespace: siclaw-eval-gpu-rdma
+  labels:
+    siclaw.ai/eval-run: '20260604'
+    siclaw.ai/eval-case: g03
+data:
+  nvidia-smi-query.txt: |-
+    GPU 0: 42C, 310W/700W, Util 95%, Mem 71234/81559 MiB, Throttle: None
+    GPU 1: 45C, 320W/700W, Util 94%, Mem 71234/81559 MiB, Throttle: None
+    GPU 2: 43C, 315W/700W, Util 95%, Mem 71234/81559 MiB, Throttle: None
+    GPU 3: 44C, 312W/700W, Util 94%, Mem 71234/81559 MiB, Throttle: None
+    GPU 4: 46C, 325W/700W, Util 95%, Mem 71234/81559 MiB, Throttle: None
+    GPU 5: 48C, 330W/700W, Util 94%, Mem 71234/81559 MiB, Throttle: None
+    GPU 6: 103C, 250W/700W, Util 12%, Mem 71234/81559 MiB, Throttle: HW Thermal Slowdown Active  <<< OVERHEATING
+    GPU 7: 55C, 340W/700W, Util 95%, Mem 71234/81559 MiB, Throttle: None
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: g03-thermal-oom
+  namespace: siclaw-eval-gpu-rdma
+  labels:
+    siclaw.ai/eval-run: '20260604'
+    siclaw.ai/eval-case: g03
+  annotations:
+    siclaw.ai/crash-reason: 'RuntimeError: CUDA out of memory. Tried to allocate 2.00 GiB. GPU 6 has 79.14 GiB capacity with only 1.82 GiB free.'
+    siclaw.ai/exit-code: '1'
+spec:
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  nodeSelector:
+    scitix.ai/gpu-type: h20nvlink141
+  tolerations: []
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - exit 1
+      resources:
+        requests:
+          nvidia.com/gpu: '8'
+          cpu: '160'
+          memory: 1Ti
+        limits:
+          nvidia.com/gpu: '8'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: g04-ibstat
+  namespace: siclaw-eval-gpu-rdma
+  labels:
+    siclaw.ai/eval-run: '20260604'
+    siclaw.ai/eval-case: g04
+data:
+  ibstat.txt: |-
+    CA 'mlx5_0'
+      Port 1:
+        State: Polling    <<< NOT Active — link trying to re-establish
+        Physical state: LinkUp/Polling (flapping)
+        Rate: 200 Gb/sec (4X HDR)
+        Link layer: InfiniBand
+        SM lid: 0   (no subnet manager reachable during flap)
+      Port 2:
+        State: Active
+        Physical state: LinkUp
+        Rate: 200 Gb/sec (4X HDR)
+  dmesg-rdma.txt: |-
+    [1234500.100] mlx5_core 0000:3b:00.0: Port 1: Link Up
+    [1234502.340] mlx5_core 0000:3b:00.0: Port 1: Link Down
+    [1234504.890] mlx5_core 0000:3b:00.0: Port 1: Link Up
+    [1234505.120] mlx5_core 0000:3b:00.0: Port 1: Link Down
+    [1234508.670] mlx5_core 0000:3b:00.0: Port 1: Link Up
+    [1234509.010] mlx5_core 0000:3b:00.0: Port 1: Link Down
+    ... (43 state transitions in last 10 minutes)
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: g04-nccl-log
+  namespace: siclaw-eval-gpu-rdma
+  labels:
+    siclaw.ai/eval-run: '20260604'
+    siclaw.ai/eval-case: g04
+data:
+  nccl-error.log: |-
+    fake-node-105:21001:21001 [0] NCCL INFO RDMA send to fake-node-106 via mlx5_0:1 failed: IBV_WC_RETRY_EXC_ERR
+    fake-node-105:21001:21001 [0] NCCL WARN allReduce timeout after 300000ms on ring 0
+    fake-node-105:21001:21001 [0] NCCL WARN Watchdog timeout: rank 0 is stalled at ncclAllReduce
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: g04-rdma-flap
+  namespace: siclaw-eval-gpu-rdma
+  labels:
+    siclaw.ai/eval-run: '20260604'
+    siclaw.ai/eval-case: g04
+  annotations:
+    siclaw.ai/crash-reason: 'NCCL timeout: allReduce watchdog expired after 300s'
+    siclaw.ai/topology: '2-node distributed training: fake-node-105 (rank 0-7), fake-node-106 (rank 8-15)'
+spec:
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  nodeSelector:
+    scitix.ai/gpu-type: h20nvlink141
+  tolerations: []
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - echo 'NCCL allReduce timeout'; sleep 3600
+      resources:
+        requests:
+          nvidia.com/gpu: '8'
+          rdma/hca_shared_devices_all: '1'
+          cpu: '160'
+          memory: 1Ti
+        limits:
+          nvidia.com/gpu: '8'
+          rdma/hca_shared_devices_all: '1'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: g05-rdma-counters
+  namespace: siclaw-eval-gpu-rdma
+  labels:
+    siclaw.ai/eval-run: '20260604'
+    siclaw.ai/eval-case: g05
+data:
+  ethtool-stats.txt: |-
+    NIC Statistics (mlx5_0, fake-node-105):
+      rx_pfc_pause: 1247832    <<< 1.2M PFC pause frames received (abnormal; normal < 100)
+      tx_pfc_pause: 0
+      rx_bytes: 23410000000    (23 GB/s — expected 180+ GB/s)
+      tx_bytes: 22890000000
+      rx_ecn_marked_pkts: 8923410    <<< heavy ECN marking indicates congestion
+
+    NIC Statistics (mlx5_0, fake-node-110) [SUSPECTED SOURCE]:
+      tx_bytes: 198000000000   (198 GB/s — saturating link)
+      tx_pfc_pause: 0          (not receiving pause — it IS the source)
+      rx_pfc_pause: 4012       (minimal — downstream isn't pushing back to it)
+  perftest-result.txt: |-
+    ib_write_bw test (fake-node-105 → fake-node-106):
+      Expected: 180 Gb/s (HDR200)
+      Measured: 23.4 Gb/s (87% degradation)
+      Retransmissions: 14,329 (normal: 0-10)
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: g05-pfc-storm
+  namespace: siclaw-eval-gpu-rdma
+  labels:
+    siclaw.ai/eval-run: '20260604'
+    siclaw.ai/eval-case: g05
+  annotations:
+    siclaw.ai/symptom: 'RDMA throughput dropped 87%: 180→23 GB/s. PFC pause frames 1.2M/sec.'
+    siclaw.ai/suspected-source: fake-node-110 running unoptimized all-to-all communication
+spec:
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  nodeSelector:
+    scitix.ai/gpu-type: h20nvlink141
+  tolerations: []
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - echo 'running slow due to PFC storm'; sleep 3600
+      resources:
+        requests:
+          nvidia.com/gpu: '8'
+          rdma/hca_shared_devices_all: '1'
+          cpu: '160'
+          memory: 1Ti
+        limits:
+          nvidia.com/gpu: '8'
+          rdma/hca_shared_devices_all: '1'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: g06-gpu-health
+  namespace: siclaw-eval-gpu-rdma
+  labels:
+    siclaw.ai/eval-run: '20260604'
+    siclaw.ai/eval-case: g06
+data:
+  nvidia-smi-ecc.txt: |-
+    GPU 5 ECC Error Summary:
+      Volatile Uncorrectable: 3 (since last reboot)
+      Aggregate Uncorrectable: 12 (lifetime)
+      Aggregate Correctable: 847 (lifetime)
+      Row Remap Status: PENDING (reboot required to attempt remap)
+      Row Remap Availability: 0 of 512 (EXHAUSTED)
+      Retired Pages: 24 (double-bit), 3 (single-bit pending)
+
+    GPU 0-4,6-7: Aggregate Uncorrectable: 0, Row Remap: Available (512/512 free)
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: g06-ecc-exhausted
+  namespace: siclaw-eval-gpu-rdma
+  labels:
+    siclaw.ai/eval-run: '20260604'
+    siclaw.ai/eval-case: g06
+  annotations:
+    siclaw.ai/crash-reason: 'CUDA error: uncorrectable ECC error encountered (GPU 5)'
+    siclaw.ai/restart-count: '4'
+    siclaw.ai/note: Same error on every restart. Not workload-specific.
+spec:
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  nodeSelector:
+    scitix.ai/gpu-type: h20nvlink141
+  tolerations: []
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - exit 1
+      resources:
+        requests:
+          nvidia.com/gpu: '8'
+          cpu: '160'
+          memory: 1Ti
+        limits:
+          nvidia.com/gpu: '8'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: g07-gpu-clocks
+  namespace: siclaw-eval-gpu-rdma
+  labels:
+    siclaw.ai/eval-run: '20260604'
+    siclaw.ai/eval-case: g07
+data:
+  nvidia-smi-clocks.txt: |-
+    GPU Clock Frequencies (fake-node-105):
+      GPU 0: SM 1980 MHz, Mem 2619 MHz (normal)
+      GPU 1: SM 1980 MHz, Mem 2619 MHz (normal)
+      GPU 2: SM 1980 MHz, Mem 2619 MHz (normal)
+      GPU 3: SM 1980 MHz, Mem 2619 MHz (normal)
+      GPU 4: SM 1980 MHz, Mem 2619 MHz (normal)
+      GPU 5: SM 1980 MHz, Mem 2619 MHz (normal)
+      GPU 6: SM 1980 MHz, Mem 2619 MHz (normal)
+      GPU 7: SM 1200 MHz, Mem 2619 MHz  <<< DEGRADED (expected 1980 MHz)
+
+    GPU Clock Frequencies (fake-node-106):
+      GPU 0-7: SM 1980 MHz, Mem 2619 MHz (all normal)
+  nccl-straggler.log: |-
+    Rank 7 (fake-node-105:GPU7): allReduce latency 287ms (p50: 23ms, p99: 42ms for other ranks)
+    Rank 7 consistently slowest across 847 allReduce calls (100% straggler)
+    NCCL WARN: Watchdog timeout at allReduce #12847, rank 7 stalled
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: g07-clock-mismatch
+  namespace: siclaw-eval-gpu-rdma
+  labels:
+    siclaw.ai/eval-run: '20260604'
+    siclaw.ai/eval-case: g07
+  annotations:
+    siclaw.ai/symptom: Intermittent NCCL timeout every 15-20 min. Rank 7 always the straggler.
+spec:
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  nodeSelector:
+    scitix.ai/gpu-type: h20nvlink141
+  tolerations: []
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - echo 'intermittent NCCL timeout'; sleep 3600
+      resources:
+        requests:
+          nvidia.com/gpu: '8'
+          rdma/hca_shared_devices_all: '1'
+          cpu: '160'
+          memory: 1Ti
+        limits:
+          nvidia.com/gpu: '8'
+          rdma/hca_shared_devices_all: '1'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: g08-rdma-diag
+  namespace: siclaw-eval-gpu-rdma
+  labels:
+    siclaw.ai/eval-run: '20260604'
+    siclaw.ai/eval-case: g08
+data:
+  rdma-resource.txt: |-
+    RDMA Resource State (fake-node-105, mlx5_0):
+      QP 0x1a2b: state=RTS (Ready-To-Send), type=RC, remote=fake-node-106:mlx5_0  [OK]
+      QP 0x1a2c: state=ERR, type=RC, remote=fake-node-106:mlx5_0   <<< ERROR STATE
+      QP 0x1a2d: state=RTS, type=RC, remote=fake-node-107:mlx5_0  [OK]
+
+    Last Error on QP 0x1a2c:
+      Work Completion Status: IBV_WC_RETRY_EXC_ERR (transport retry exceeded)
+      Timestamp: 2026-06-04T12:34:56Z
+      Affected operation: RDMA_WRITE, remote_addr=0x7f8a00000000, length=4194304
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: g08-qp-error
+  namespace: siclaw-eval-gpu-rdma
+  labels:
+    siclaw.ai/eval-run: '20260604'
+    siclaw.ai/eval-case: g08
+  annotations:
+    siclaw.ai/symptom: Zero training throughput for 10 minutes. No crash, no timeout yet.
+    siclaw.ai/rdma-error: 'QP 0x1a2c in ERROR state: IBV_WC_RETRY_EXC_ERR'
+spec:
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  nodeSelector:
+    scitix.ai/gpu-type: h20nvlink141
+  tolerations: []
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - echo 'hung waiting for RDMA'; sleep 3600
+      resources:
+        requests:
+          nvidia.com/gpu: '8'
+          rdma/hca_shared_devices_all: '1'
+          cpu: '160'
+          memory: 1Ti
+        limits:
+          nvidia.com/gpu: '8'
+          rdma/hca_shared_devices_all: '1'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: g09-multi-telemetry
+  namespace: siclaw-eval-gpu-rdma
+  labels:
+    siclaw.ai/eval-run: '20260604'
+    siclaw.ai/eval-case: g09
+data:
+  nvidia-smi-ecc.txt: |-
+    GPU 4: Volatile Correctable ECC: 847, Volatile Uncorrectable: 2, Row Remap: Available (508/512)
+    GPU 0-3,5-7: Volatile Correctable: 0-3, Volatile Uncorrectable: 0
+  rdma-stats.txt: |-
+    mlx5_0 (fake-node-105):
+      rx_pfc_pause: 342891 (elevated)
+      rx_bytes: 89 GB/s (expected 180+ GB/s)
+      symbol_errors: 127 (cable degradation indicator)
+  crash-history.txt: |-
+    Crash 1 (12:10): CUDA error illegal memory access (GPU 4)
+    Crash 2 (12:25): NCCL timeout allReduce 300s
+    Crash 3 (12:42): CUDA error ECC uncorrectable (GPU 4)
+    Crash 4 (13:01): NCCL timeout allReduce 300s
+    Crash 5 (13:15): CUDA error illegal memory access (GPU 4)
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: g09-compound
+  namespace: siclaw-eval-gpu-rdma
+  labels:
+    siclaw.ai/eval-run: '20260604'
+    siclaw.ai/eval-case: g09
+  annotations:
+    siclaw.ai/crash-count: '5'
+    siclaw.ai/crash-history: 'Alternating: CUDA error (GPU 4) / NCCL timeout'
+spec:
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  nodeSelector:
+    scitix.ai/gpu-type: h20nvlink141
+  tolerations: []
+  containers:
+    - name: trainer
+      image: busybox:1.36
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - '-c'
+        - exit 1
+      resources:
+        requests:
+          nvidia.com/gpu: '8'
+          rdma/hca_shared_devices_all: '1'
+          cpu: '160'
+          memory: 1Ti
+        limits:
+          nvidia.com/gpu: '8'
+          rdma/hca_shared_devices_all: '1'
+---
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: g10-gang-drain
+  namespace: siclaw-eval-gpu-rdma
+  labels:
+    siclaw.ai/eval-run: '20260604'
+    siclaw.ai/eval-case: g10
+spec:
+  schedulerName: volcano
+  queue: default
+  minAvailable: 2
+  maxRetry: 0
+  tasks:
+    - replicas: 2
+      name: worker
+      template:
+        spec:
+          restartPolicy: Never
+          nodeSelector:
+            scitix.ai/gpu-type: h20nvlink141
+          containers:
+            - name: worker
+              image: busybox:1.36
+              imagePullPolicy: IfNotPresent
+              command:
+                - sh
+                - '-c'
+                - echo worker; sleep 3600
+              resources:
+                requests:
+                  nvidia.com/gpu: '8'
+                  cpu: 20m
+                  memory: 32Mi
+                limits:
+                  nvidia.com/gpu: '8'

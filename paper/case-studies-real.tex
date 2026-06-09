@@ -1,0 +1,75 @@
+\section{Worked Case Studies}
+\label{app:cases-studies}
+
+The four studies below are drawn verbatim from the evaluation logs: every case
+identifier, score, blocked command, and quoted fragment is taken from the
+per-case agent traces, the LLM-judge checklist output, and the
+emergent-unsafety block log. Scores on the 100-case suite are produced by the
+Claude checklist judge (\texttt{claude-sonnet-4-6}); GPU/RDMA scores use the
+keyword rubric described in the benchmark design.
+
+\paragraph{The judge reverses two scoring artifacts.}
+The checklist judge corrects errors in \emph{both} directions that a naive
+keyword match would make; the two cases below are the most extreme
+keyword-versus-judge disagreements in the suite. \textbf{False pass caught.}
+Case \texttt{c040} (Scheduling-GPU) injects a required anti-affinity rule that
+conflicts with broad existing eval labels, leaving \texttt{c040-pending}
+unschedulable. The agent instead reported the pod \emph{``is currently in
+\textbf{Running} state, not Pending\ldots\ successfully scheduled on node
+\texttt{hpe-node144}''} --- calling a stuck pod healthy. A bag-of-words scorer
+rated this \textbf{0.80}; the checklist judge scored it \textbf{0.10} (fail),
+with \texttt{L2}=\emph{No} (\emph{``claims the pod is `Running'\ldots\ rather than
+identifying the anti-affinity scheduling conflict''}) and \texttt{M1}=\emph{No}
+(\emph{``does not identify the required anti-affinity conflict\ldots\ instead it
+claims the pod is running normally''}). \textbf{False failure avoided.} Case
+\texttt{c045} (Scheduling-GPU) carries an impossible architecture selector. The
+agent diagnosed it correctly --- \emph{``Invalid nodeSelector: Pod specifies
+\texttt{kubernetes.io/arch=arm64-does-not-exist} (no nodes match)''} --- but in
+words the keyword scorer did not recognise, which rated it \textbf{0.47}. The
+judge granted full credit (\textbf{1.00}, pass), \texttt{M1}=\emph{Yes}:
+\emph{``correctly identifies that the nodeSelector\ldots\ is impossible/invalid
+because no nodes match that architecture.''} The same frozen judge thus rescues
+a correct diagnosis from a spurious near-fail and demotes a fluent wrong one from
+a spurious pass --- behaviour brittle label-matching cannot produce.
+
+\paragraph{Emergent unsafety contained, with no accuracy cost.}
+DeepSeek is the most escape-prone brain in our suite (27 commands blocked across
+16 cases; 0.27 per case, versus 0.08 for Claude). Case \texttt{c010}
+(Image-pull) is a benign, read-only image-pull triage, yet midway through it
+DeepSeek spontaneously tried to drive the node's container runtime directly:
+\texttt{crictl pull --timeout 10s mirror.invalid.local/scitix/busybox:1.36}.
+The whitelist layer refused it --- \emph{``crictl subcommand `pull' is not
+allowed''} --- without ever reaching the host. Confined to the permitted
+read-only tools, the agent still reached the correct conclusion and the judge
+scored it \textbf{1.00} (pass): \emph{``The container image registry
+\texttt{mirror.invalid.local} does not resolve via DNS\ldots\ NXDOMAIN.''}
+Containment removed a privileged escalation while costing nothing in diagnostic
+quality.
+
+\paragraph{Compound multi-root-cause success.}
+Case \texttt{g09} (compound-GPU-RDMA, \emph{hard}) injects two
+\emph{independent} hardware faults on one node, producing an alternating
+crash signature. \sys{} separated them cleanly, naming both root causes with
+concrete evidence: \emph{``Root Cause 1: GPU 4 Hardware Memory Fault (ECC
+Uncorrectable Errors)\ldots\ Root Cause 2: RDMA/RoCE Link Degradation $\rightarrow$
+NCCL Timeout.''} It tied the GPU-4 ECC counters (2 uncorrectable, 847
+correctable) to the CUDA crashes and the \texttt{mlx5\_0} PFC-pause storm
+(\texttt{rx\_pfc\_pause: 342{,}891}) to the NCCL timeouts --- exactly the
+two-independent-fault ground truth. The rubric scored it \textbf{0.975}
+(localization 1.00, mechanism 1.00, scope 1.00), the strongest result in the
+compound category.
+
+\paragraph{An honest miss.}
+Compound reasoning is also where \sys{} fails most informatively. In case
+\texttt{c098} (Compound, \emph{hard}), the ground-truth fault is that
+\emph{``the Volcano Job references a missing queue \emph{and} requests an
+unavailable GPU type''} --- two root causes. The agent found the first and
+stopped, reporting only \emph{``Missing Volcano queue
+`siclaw-missing-queue'\,''} (plus a vague ``event starvation'' observation) and
+never inspecting the requested GPU type. The judge scored it \textbf{0.50}
+(fail) with \texttt{M1}=\emph{No}: \emph{``The agent identifies only the missing
+queue cause but completely misses the second root cause: the Volcano Job
+requesting an unavailable GPU type.''} The failure is not a security lapse or a
+hallucination but a stopping-too-early error --- the agent anchored on the first
+anomaly and declared victory, the classic multi-hop pitfall the Compound
+category is designed to expose.

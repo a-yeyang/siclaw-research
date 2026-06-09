@@ -1,0 +1,34 @@
+**SOP: Diagnose `network-dns` faults in Kubernetes (read-only)**
+
+1. **Start from the failing endpoint pair**
+   - Identify the **client Pod**, target **Service**, target **namespace**, and expected target **port/protocol**.
+   - Confirm the symptom inside the client Pod if possible from prior evidence/logs: distinguish **DNS resolution failure** (`NXDOMAIN`, timeout, no such host) from **connectivity failure after resolution** (connection refused, timeout).
+
+2. **Inspect Service correctness**
+   - `kubectl get svc,endpoints,endpointslices -n <ns>`
+   - Verify the Service exists, has the expected **ClusterIP/headless setting**, ports, and selector.
+   - Check whether **Endpoints/EndpointSlices contain ready backend IPs and correct ports**.
+   - If Service exists but has **no endpoints**, treat this as likely selector/readiness mismatch, not DNS.
+
+3. **Inspect backend Pods**
+   - `kubectl get pods -n <ns> -o wide --show-labels`
+   - Confirm backend Pods are **Running/Ready**, labels match the Service selector, Pod IPs match EndpointSlices, and the application is listening on the expected port (from Pod spec/logs if available).
+
+4. **Inspect DNS path**
+   - Check client Pod `dnsPolicy`, `dnsConfig`, and `/etc/resolv.conf` settings via Pod spec.
+   - Inspect CoreDNS/kube-dns health:
+     - `kubectl -n kube-system get deploy,po,svc ep -l k8s-app in (kube-dns)`
+     - Verify DNS Pods are Running/Ready, Service has endpoints, and no widespread restarts/errors are indicated.
+   - If only cross-namespace or short-name lookups fail, verify the **queried name format** versus namespace search domains.
+
+5. **Inspect network enforcement**
+   - `kubectl get networkpolicy -A`
+   - Determine whether any NetworkPolicy could block **client egress to DNS (UDP/TCP 53)**, **client egress to Service/backends**, or **backend ingress**.
+
+6. **Separate root cause from downstream symptoms**
+   - Root cause is the **first broken control-plane/data-plane dependency**: e.g., wrong Service selector, no ready endpoints, misconfigured DNS policy, unhealthy CoreDNS, or blocking NetworkPolicy.
+   - Symptoms are subsequent failures: failed name resolution, connection timeout, app errors.
+
+**A correct final diagnosis must name:** the exact broken object(s) and field(s) (Service selector/port, EndpointSlice absence, Pod labels/readiness, DNS policy/config, CoreDNS health, NetworkPolicy rule), the affected traffic path (client → DNS or client → Service/backend), and the evidence proving it.
+
+**Safe remediation:** restore selector/labels or readiness so endpoints populate; fix Service port/targetPort; correct Pod DNS policy/config or use proper FQDN; recover CoreDNS deployment/service; or adjust NetworkPolicy to allow required DNS and service traffic.

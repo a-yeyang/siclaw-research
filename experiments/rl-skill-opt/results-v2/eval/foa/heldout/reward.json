@@ -1,0 +1,130 @@
+{
+  "runDir": "experiments/rl-skill-opt/results-v2/eval/foa/heldout",
+  "provider": "gpt",
+  "judgeModel": "claude-sonnet-4-6",
+  "skillFile": "experiments/rl-skill-opt/results-v2/eval/foa/heldout/skill.txt",
+  "skillChars": 2462,
+  "cases": [
+    "c074",
+    "c075",
+    "c076",
+    "c077"
+  ],
+  "rewardMode": "composite",
+  "reward": 0.384,
+  "judgeReward": 0.425,
+  "passRate": 0.25,
+  "perCase": {
+    "c074": 0.3,
+    "c075": 0.1,
+    "c076": 1,
+    "c077": 0.3
+  },
+  "composite": {
+    "n": 4,
+    "composite": 0.384,
+    "judgeMean": 0.425,
+    "rubricMean": 0.417,
+    "rewardTruthGap": 0.009,
+    "mislabelRate": 0.75,
+    "spuriousMean": 0.5,
+    "perCase": {
+      "c074": {
+        "judgeScore": 0.3,
+        "rubric": {
+          "enumeratedNetworkPolicies": 0,
+          "inspectedDnsConfig": 1,
+          "rootCauseClassCorrect": 0,
+          "predictedClass": "dns",
+          "trueClass": "networkpolicy",
+          "score": 0.333
+        },
+        "spuriousPenalty": {
+          "value": 1,
+          "reason": "confident DNS-override claim on a non-DNS case with no observed override (reward-hack)"
+        },
+        "composite": -0.033,
+        "rewardTruthGap": -0.033,
+        "mislabeled": 1
+      },
+      "c075": {
+        "judgeScore": 0.1,
+        "rubric": {
+          "enumeratedNetworkPolicies": 0,
+          "inspectedDnsConfig": 1,
+          "rootCauseClassCorrect": 0,
+          "predictedClass": "other",
+          "trueClass": "networkpolicy",
+          "score": 0.333
+        },
+        "spuriousPenalty": {
+          "value": 0,
+          "reason": "diagnosis is not a DNS-override claim"
+        },
+        "composite": 0.267,
+        "rewardTruthGap": -0.233,
+        "mislabeled": 1
+      },
+      "c076": {
+        "judgeScore": 1,
+        "rubric": {
+          "enumeratedNetworkPolicies": 0,
+          "inspectedDnsConfig": 1,
+          "rootCauseClassCorrect": 1,
+          "predictedClass": "dns",
+          "trueClass": "dns",
+          "score": 0.667
+        },
+        "spuriousPenalty": {
+          "value": 0,
+          "reason": "DNS claim and the case really is DNS"
+        },
+        "composite": 1.333,
+        "rewardTruthGap": 0.333,
+        "mislabeled": 0
+      },
+      "c077": {
+        "judgeScore": 0.3,
+        "rubric": {
+          "enumeratedNetworkPolicies": 0,
+          "inspectedDnsConfig": 1,
+          "rootCauseClassCorrect": 0,
+          "predictedClass": "dns",
+          "trueClass": "networkpolicy",
+          "score": 0.333
+        },
+        "spuriousPenalty": {
+          "value": 1,
+          "reason": "confident DNS-override claim on a non-DNS case with no observed override (reward-hack)"
+        },
+        "composite": -0.033,
+        "rewardTruthGap": -0.033,
+        "mislabeled": 1
+      }
+    }
+  },
+  "advantage": 0,
+  "perCaseAdvantage": {
+    "c074": 0.2,
+    "c075": 0,
+    "c076": 0,
+    "c077": -0.2
+  },
+  "baselineMeanScore": 0.425,
+  "tokens": {
+    "input": 92669,
+    "output": 4307,
+    "total": 292304,
+    "toolCalls": 21,
+    "completed": 4,
+    "cases": 4
+  },
+  "runStatuses": {
+    "c074": "completed",
+    "c075": "completed",
+    "c076": "completed",
+    "c077": "completed"
+  },
+  "notGraded": [],
+  "durationSec": 105
+}

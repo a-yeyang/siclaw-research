@@ -1,0 +1,46 @@
+SKILL: Diagnosing DNS resolution and pod-to-service connectivity failures
+
+WHEN TO APPLY
+A client pod cannot resolve or reach a Service even though the backing
+server pod exists and looks Running. The client may be CrashLooping or
+restarting because its application exits after each failed connection — treat
+those restarts as a SYMPTOM, not the root cause. Connectivity and DNS issues
+in Kubernetes are often caused by misconfiguration at multiple layers, and you
+must positively rule each in or out before concluding:
+
+  (A) NetworkPolicy blocking egress from the client
+  (B) NetworkPolicy blocking ingress to the server
+  (C) Client-side DNS override (custom nameserver / dnsConfig / dnsPolicy)
+  (D) Inadequate DNS cache
+  (E) ConfigMap containing DNS configuration overrides
+  (F) Persistent DNS caching issues within the client (e.g., DNSSEC, resolver limits)
+
+PROCEDURE (do these before blaming other potential issues like CNI, nodes, firewalls, or "one-shot containers")
+
+1. ENUMERATE NETWORKPOLICIES IN THE NAMESPACE FIRST.
+   - Run `kubectl get networkpolicy -n <ns>` then `kubectl describe networkpolicy -n <ns> [policy_name]`.
+     Pay attention to the podSelector and policyTypes, especially look for any
+     rules affecting egress ("Egress") and ingress ("Ingress").
+     A policy listing `Egress` with an absent rule denies ALL egress from the client,
+     which includes DNS packets (UDP/TCP 53) — check if the client pod has any such NetworkPolicies.
+     Similarly, a policy listing `Ingress` that does not admit the client will block any ingress to the server.
+   - Ensure the selected policies have appropriate podSelector labels matching both the client and server pods.
+     Use `kubectl get pod <client>/<server> --show-labels` to confirm this.
+
+2. TELL DNS CACHE STATUS AND CONFIGURATION
+   - Check server availability using `kubectl exec <server_pod> -- cat /etc/resolv.conf` and `systemctl status systemd-resolved` if using systemd.
+   - If DNS caching is enabled, look into the DNS caching configuration in `/etc/containers/resolve.conf.d/`, `/etc/docker/daemon.json`, or any related ConfigMap.
+   - Review any `dnsPolicy` setting for the Pod, Service, or Namespace.
+
+3. CHECK CUSTOM NAMESERVERS AND DNSCONFIG
+   - Look at the Pod's DNS configurations in `kubectl describe pod <client_pod>` or its ConfigMap.
+   - Confirm if the custom name servers set in `dnsConfig.nameservers` are correct and reachable.
+
+4. REVIEW ANY CONFIGMAPS OR ENV VARS THAT MIGHT OVERRIDE DEFAULT DNS BEHAVIOR
+   - Inspect ConfigMaps and Environment Variables (`export`ed environment variables) with DNS resolution commands running inside the Pod.
+   - Examples to check include `export DOCKER_HOST=tcp://<dns_server>:53`, `docker exec -it <client_pod> sh`.
+
+5. IF PROBLEM PERSISTS, RECONSIDER AND DOCUMENT ALL FINDINGS.
+   - List the confirmed NetworkPolicies that affect the client, servers, or both.
+   - List any DNS-specific configurations found during the review (cache settings, custom nameservers, configMaps).
+   - Document why

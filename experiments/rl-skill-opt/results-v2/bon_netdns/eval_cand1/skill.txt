@@ -1,0 +1,35 @@
+**SOP: Diagnose `network-dns` faults (service name cannot be resolved and/or reached)**
+
+1. **Start from the failing client and target Service**
+   - Inspect the client Pod status, node, namespace, restart history, and recent logs/events.
+   - Inspect the target Service: type, `clusterIP`, ports, selector, and endpoints/endpointslices.
+   - **Distinguish root cause early:** if the Service has **no endpoints**, DNS may still resolve but traffic cannot reach a backend. That is an **endpoint/backend selection problem**, not DNS.
+
+2. **Separate DNS resolution failure from post-resolution connectivity**
+   - From client logs/events or existing probes, determine whether failure is:
+     - **Name resolution failure** (`NXDOMAIN`, timeout, “no such host”) → continue DNS-focused checks.
+     - **Connection failure after resolution** (connection refused/timeout to Service IP) → likely Service port mapping, backend listener, or network policy, not DNS itself.
+
+3. **Validate the Service’s DNS identity**
+   - Confirm the queried name matches the Service name and namespace; check whether client and Service are in different namespaces.
+   - Verify the FQDN form (`<svc>.<ns>.svc`) would be valid.
+   - **Distinguish:** wrong namespace/search-path assumptions cause `NXDOMAIN` even when Service and DNS are healthy.
+
+4. **Inspect cluster DNS components**
+   - Check CoreDNS/kube-dns Pods, readiness, restarts, logs, Service, and endpoints.
+   - Check for widespread impact: other Services resolving normally vs many names failing.
+   - **Distinguish:**  
+     - DNS Pods down/unready or DNS Service/endpoints broken → **cluster DNS infrastructure failure**.  
+     - Only one Service name fails while DNS otherwise works → **Service naming/namespace issue** or missing Service object.
+
+5. **Inspect client DNS configuration**
+   - Review client Pod `dnsPolicy`, `dnsConfig`, `/etc/resolv.conf` settings as exposed in Pod spec/status, and whether hostNetwork is used.
+   - **Distinguish:** misconfigured nameserver/search domains in the client Pod indicate a **client DNS config fault**, not CoreDNS failure.
+
+6. **Check network barriers to DNS**
+   - Inspect NetworkPolicies affecting the client namespace and DNS namespace for UDP/TCP 53 egress/ingress.
+   - **Distinguish:** DNS timeouts with healthy CoreDNS often indicate **NetworkPolicy/CNI path blocking DNS**, whereas `NXDOMAIN` indicates the query reached DNS and the name was not found.
+
+**Diagnosis must name:** the failing client, queried Service/FQDN, whether failure is resolution vs connectivity, and the specific root cause category: missing/wrong Service name/namespace, Service without endpoints, cluster DNS infrastructure failure, client DNS config fault, or NetworkPolicy/CNI blocking DNS.
+
+**Safe remediation:** restore the correct Service name/namespace usage, fix Service selectors/endpoints, recover CoreDNS/kube-dns deployment/service, correct Pod DNS settings, or allow DNS traffic (UDP/TCP 53) via NetworkPolicy.

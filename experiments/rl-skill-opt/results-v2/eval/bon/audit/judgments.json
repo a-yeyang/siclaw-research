@@ -1,0 +1,302 @@
+[
+  {
+    "caseId": "ca1",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis explicitly names 'NetworkPolicy/ca1-deny-egress' as the blocker and references pod/ca1-client, pod/ca1-server, and service/ca1-server-svc, matching the ground-truth target resources.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis correctly identifies ca1-deny-egress as the primary fault origin and explicitly states the service and backend are healthy, not blaming them as the root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis explains that NetworkPolicy ca1-deny-egress selects app=ca1-client and blocks all egress including DNS (UDP/TCP 53) to kube-dns, which matches the ground-truth mechanism of policyTypes:[Egress] with no egress rules denying all egress.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis specifies that the policy selects 'app=ca1-client', blocks egress to DNS on UDP/TCP 53, and notes the client uses ClusterFirst dnsPolicy with no custom dnsConfig — concrete details matching the actual configuration.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis scopes impact to pod/ca1-client's egress traffic, specifically the DNS path and access to ca1-server-svc, consistent with the ground-truth scope of traffic involving the client/server pods.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis does not over-state (e.g., does not claim cluster-wide impact) nor under-state (correctly identifies both DNS and service access are affected for ca1-client).",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The diagnosis cites concrete observed evidence: nslookup timeout output from ca1-client, dnsPolicy: ClusterFirst with no custom dnsConfig, service ClusterIP and port, endpoints with ready backend IP, pod/ca1-server Running/Ready status, and the existence of NetworkPolicy/ca1-deny-egress.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "All cited evidence is consistent: DNS timeout aligns with egress-blocked DNS, healthy service/backend confirms the fault is client-side egress, and the NetworkPolicy matching app=ca1-client directly explains the block.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation recommends reviewing NetworkPolicy/ca1-deny-egress and adding an egress rule allowing DNS (UDP/TCP 53) to kube-dns, plus allowing egress to the server on the application port — directly addressing the root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation is appropriately scoped to modifying the specific NetworkPolicy rather than deleting it or making cluster-wide changes, and it correctly identifies both DNS and application-port egress as needing allowance.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 35242,
+    "toolCallCount": 6,
+    "judgeModel": "claude-sonnet-4-6"
+  },
+  {
+    "caseId": "ca2",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": false,
+    "totalScore": 0.2,
+    "dimensions": {
+      "localization": {
+        "score": 0
+      },
+      "mechanism": {
+        "score": 0
+      },
+      "scope": {
+        "score": 0.5
+      },
+      "evidence": {
+        "score": 0.5
+      },
+      "remediation": {
+        "score": 0
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The agent identifies the primary fault as client-side DNS misinterpretation or incorrect usage, not the NetworkPolicy ca2-deny-ingress. The ground truth localization is networkpolicy/ca2-deny-ingress, which the agent never mentions.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The agent names the client pod's DNS behavior and the service/endpoints as the focus, treating healthy resources (service, endpoints, server pod) as the investigation center, while the actual fault origin (NetworkPolicy) is never identified.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The ground truth mechanism is a NetworkPolicy with no ingress rules blocking all traffic to the server. The agent's mechanism is that the client misinterprets intermediate NXDOMAIN responses from DNS search domain traversal — a completely different and incorrect explanation.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The agent never mentions the NetworkPolicy ca2-deny-ingress, its policyTypes:[Ingress] with empty ingress rules, or the app=ca2-server selector. No concrete mutated detail matching the ground truth is provided.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The agent scopes the issue to 'client's DNS judgment/usage method' rather than all ingress traffic to the server pod being blocked, which is the correct scope per ground truth.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The agent does limit impact to this client-server pair, so it doesn't wildly overstate blast radius, though it understates by missing the network-level block affecting all ingress to ca2-server.",
+        "confidence": "Medium"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The agent cites concrete observed data: ClusterIP 172.17.72.193, endpoint 172.16.36.247:8080, pod status Running 1/1, DNS server 172.17.0.10, resolv.conf contents, and nslookup results.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "No",
+        "evidence": "The evidence cited (healthy endpoints, successful DNS resolution) is consistent with the agent's stated cause (DNS misinterpretation) but contradicts the actual root cause (NetworkPolicy blocking ingress). The evidence actually points away from the agent's conclusion since DNS resolves fine, yet connectivity still fails — which should have prompted investigation of network policies.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The agent recommends using correct service address/FQDN and fixing DNS check logic in the client application. These actions would not fix the actual problem (a NetworkPolicy blocking all ingress to the server). The real fix would be to modify or delete the ca2-deny-ingress NetworkPolicy.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The recommended remediation (fix client DNS logic, use FQDN) is misdirected and would not resolve the connectivity issue caused by the NetworkPolicy. It is not destructive but is entirely ineffective for the real fault.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 32243,
+    "toolCallCount": 5,
+    "judgeModel": "claude-sonnet-4-6"
+  },
+  {
+    "caseId": "ca3",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "Diagnosis explicitly identifies 'Service ca3-server-svc' as the fault resource, matching ground truth localization of service/ca3-server-svc.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis correctly identifies the Service selector mismatch as the primary fault, not DNS or NetworkPolicy or the client pod itself.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Diagnosis states 'Service selector与ca3-server Pod标签不匹配' (selector app=ca3-srv vs pod label app=ca3-server), causing zero endpoints — exactly the ground truth mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "Diagnosis provides the concrete detail: selector is 'app=ca3-srv' but the pod has a different label, and endpoints/ca3-server-svc shows '<none>'.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Diagnosis states impact is limited to 'ca3-client -> ca3-server-svc -> backend pod' traffic path, consistent with ground truth scope of traffic involving these specific pods.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "Diagnosis neither overstates (e.g., cluster-wide) nor understates the impact; correctly scopes it to this service's traffic path within the namespace.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "Cites concrete observed evidence: nslookup output showing successful DNS resolution to 172.17.193.186, kubectl get endpoints showing '<none>', and service selector 'app=ca3-srv' from describe output.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "All cited evidence is consistent: DNS resolves (not a DNS fault), endpoints are empty (selector mismatch), pod is Running but not selected — all support the root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Recommends making 'ca3-server-svc.spec.selector' match the actual pod labels, which directly addresses the selector mismatch root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "Remediation is appropriately scoped — fix the selector or pod label to align them, with verification step to confirm endpoints appear. No destructive actions suggested.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 22795,
+    "toolCallCount": 5,
+    "judgeModel": "claude-sonnet-4-6"
+  }
+]

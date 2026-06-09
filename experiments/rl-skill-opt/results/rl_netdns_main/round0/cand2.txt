@@ -1,0 +1,39 @@
+Investigate network issues with DNS resolution failures:
+
+1. Check if the DNS service is running and healthy:
+   - `kubectl get svc kube-dns -n kube-system`
+
+2. Ensure the DNS service is correctly configured to resolve local services:
+   - `kubectl get svc -n <namespace> | grep "<service>-svc"`
+
+3. Verify DNS records are properly set up in the cluster:
+   - `kubectl get svc -n <namespace> | grep "<service>"`
+
+4. Investigate DNS configuration in client pods:
+   - `kubectl describe pod/<client-pod-name>`
+
+5. Inspect DNS resolution within client pods using `nslookup` or `dig` commands directly from the client pod (must be done via proxy as direct access is restricted).
+
+Separate the root cause from downstream symptoms:
+
+- Confirm the DNS resolution issue by attempting DNS resolution through external tools or manually running `nslookup` or `dig`.
+- If the DNS service is healthy but DNS resolution still fails, check the pod's environment variables for DNS configurations (e.g., `KUBERNETES_SERVICE_HOST`, `KUBE_DNS_IP`).
+- Look for any DNS-related annotations in the pods:
+  - `kubectl get po <client-pod-name> -o yaml | grep dns`
+- Check if there are any PodDisruptionBudgets or limits affecting DNS resolution in the namespace.
+
+Correct Diagnosis Format:
+
+- Faulty Resource Type and Name
+- Specific Mechanism (e.g., incorrect DNS configuration)
+- Scope (e.g., specific client pod(s))
+- Supporting Evidence (e.g., unhealthy DNS service, incorrect DNS settings in pod, missing or misconfigured DNS configuration in deployment annotations)
+- Remediation Actions
+
+Example Correct Diagnosis:
+
+- Faulty Resource Type and Name: DNS configuration in <client-pod-name>
+- Specific Mechanism: Incorrect `KUBERNETES_SERVICE_HOST` or `KUBE_DNS_IP` setting
+- Scope: Client pod <client-pod-name>
+- Supporting Evidence: DNS service is healthy, pod has wrong DNS settings, no DNS annotations found
+- Remediation Actions: Update `KUBERNETES_SERVICE_HOST` or `KUBE_DNS_IP` in the pod's environment, ensure correct DNS annotations in the deployment.

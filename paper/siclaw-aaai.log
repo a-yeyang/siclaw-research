@@ -1,0 +1,1019 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.3.22)  9 JUN 2026 12:43
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**siclaw-aaai.tex
+(./siclaw-aaai.tex
+LaTeX2e <2025-11-01>
+L3 programming layer <2026-01-19>
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2025/01/22 v1.4n Standard LaTeX file (size option)
+)
+\c@part=\count275
+\c@section=\count276
+\c@subsection=\count277
+\c@subsubsection=\count278
+\c@paragraph=\count279
+\c@subparagraph=\count280
+\c@figure=\count281
+\c@table=\count282
+\abovecaptionskip=\skip49
+\belowcaptionskip=\skip50
+\bibindent=\dimen148
+)
+(./aaai25.sty
+Package: aaai25 2025/05/08 AAAI 2025 Submission format
+
+Conference Style for AAAI for LaTeX 2e -- version for submission
+\titlebox=\skip51
+) (/Users/yye/project/texlive/2026/texmf-dist/tex/latex/psnfss/times.sty
+Package: times 2020/03/25 PSNFSS-v9.3 (SPQR) 
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/psnfss/helvet.sty
+Package: helvet 2020/03/25 PSNFSS-v9.3 (WaS) 
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
+\KV@toks@=\toks17
+))
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/psnfss/courier.sty
+Package: courier 2020/03/25 PSNFSS-v9.3 (WaS) 
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/url/url.sty
+\Urlmuskip=\muskip17
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2024/12/31 v1.2e Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2024/08/06 v1.4g Standard LaTeX Graphics (DPC,SPQR)
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2023/12/02 v1.11 sin cos tan (DPC)
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 106.
+ (/Users/yye/project/texlive/2026/texmf-dist/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2025/09/29 v1.2d Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen149
+\Gin@req@width=\dimen150
+) (/Users/yye/project/texlive/2026/texmf-dist/tex/latex/natbib/natbib.sty
+Package: natbib 2010/09/13 8.31b (PWD, AO)
+\bibhang=\skip52
+\bibsep=\skip53
+LaTeX Info: Redefining \cite on input line 694.
+\c@NAT@ctr=\count283
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2023/08/05 v3.6o Customizing captions (AR)
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
+\caption@tempdima=\dimen151
+\captionmargin=\dimen152
+\caption@leftmargin=\dimen153
+\caption@rightmargin=\dimen154
+\caption@width=\dimen155
+\caption@indent=\dimen156
+\caption@parindent=\dimen157
+\caption@hangindent=\dimen158
+Package caption Info: Standard document class detected.
+)
+\c@caption@flags=\count284
+\c@continuedfloat=\count285
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2025/07/09 v2.17z AMS math features
+\@mathmargin=\skip54
+
+For additional information on amsmath, use the `?' option.
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2024/11/17 v2.01 AMS text
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks18
+\ex@=\dimen159
+))
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen160
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 2022/04/08 v2.04 operator names
+)
+\inf@bad=\count286
+LaTeX Info: Redefining \frac on input line 233.
+\uproot@=\count287
+\leftroot@=\count288
+LaTeX Info: Redefining \overline on input line 398.
+LaTeX Info: Redefining \colon on input line 409.
+\classnum@=\count289
+\DOTSCASE@=\count290
+LaTeX Info: Redefining \ldots on input line 495.
+LaTeX Info: Redefining \dots on input line 498.
+LaTeX Info: Redefining \cdots on input line 619.
+\Mathstrutbox@=\box53
+\strutbox@=\box54
+LaTeX Info: Redefining \big on input line 721.
+LaTeX Info: Redefining \Big on input line 722.
+LaTeX Info: Redefining \bigg on input line 723.
+LaTeX Info: Redefining \Bigg on input line 724.
+\big@size=\dimen161
+LaTeX Font Info:    Redeclaring font encoding OML on input line 742.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 743.
+\macc@depth=\count291
+LaTeX Info: Redefining \bmod on input line 904.
+LaTeX Info: Redefining \pmod on input line 909.
+LaTeX Info: Redefining \smash on input line 939.
+LaTeX Info: Redefining \relbar on input line 969.
+LaTeX Info: Redefining \Relbar on input line 970.
+\c@MaxMatrixCols=\count292
+\dotsspace@=\muskip18
+\c@parentequation=\count293
+\dspbrk@lvl=\count294
+\tag@help=\toks19
+\row@=\count295
+\column@=\count296
+\maxfields@=\count297
+\andhelp@=\toks20
+\eqnshift@=\dimen162
+\alignsep@=\dimen163
+\tagshift@=\dimen164
+\tagwidth@=\dimen165
+\totwidth@=\dimen166
+\lineht@=\dimen167
+\@envbody=\toks21
+\multlinegap=\skip55
+\multlinetaggap=\skip56
+\mathdisplay@stack=\toks22
+LaTeX Info: Redefining \[ on input line 2950.
+LaTeX Info: Redefining \] on input line 2951.
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+))
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/booktabs/booktabs.sty
+Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
+\heavyrulewidth=\dimen168
+\lightrulewidth=\dimen169
+\cmidrulewidth=\dimen170
+\belowrulesep=\dimen171
+\belowbottomsep=\dimen172
+\aboverulesep=\dimen173
+\abovetopsep=\dimen174
+\cmidrulesep=\dimen175
+\cmidrulekern=\dimen176
+\defaultaddspace=\dimen177
+\@cmidla=\count298
+\@cmidlb=\count299
+\@aboverulesep=\dimen178
+\@belowrulesep=\dimen179
+\@thisruleclass=\count300
+\@lastruleclass=\count301
+\@thisrulewidth=\dimen180
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/multirow/multirow.sty
+Package: multirow 2024/11/12 v2.9 Span multiple rows of a table
+\multirow@colwidth=\skip57
+\multirow@cntb=\count302
+\multirow@dima=\skip58
+\bigstrutjot=\dimen181
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/algorithms/algorithm.sty
+Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating enviro
+nment
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count303
+\float@exts=\toks23
+\float@box=\box55
+\@float@everytoks=\toks24
+\@floatcapt=\box56
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2024/03/16 v1.1e Standard LaTeX ifthen package (DPC)
+)
+\@float@every@algorithm=\toks25
+\c@algorithm=\count304
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/algorithms/algorithmic.st
+y
+Package: algorithmic 2009/08/24 v0.1 Document Style `algorithmic'
+\c@ALC@unique=\count305
+\c@ALC@line=\count306
+\c@ALC@rem=\count307
+\c@ALC@depth=\count308
+\ALC@tlm=\skip59
+\algorithmicindent=\skip60
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/pgf/frontendlayer/tikz.st
+y (/Users/yye/project/texlive/2026/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/utilities/pgfutil-c
+ommon.tex
+\pgfutil@everybye=\toks26
+\pgfutil@tempdima=\dimen182
+\pgfutil@tempdimb=\dimen183
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/utilities/pgfutil-l
+atex.def
+\pgfutil@abb=\box57
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/utilities/pgfrcs.co
+de.tex
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/pgf.revision.tex)
+Package: pgfrcs 2025-08-29 v3.1.11a (3.1.11a)
+))
+Package: pgf 2025-08-29 v3.1.11a (3.1.11a)
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.st
+y
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.st
+y
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/systemlayer/pgfsys.
+code.tex
+Package: pgfsys 2025-08-29 v3.1.11a (3.1.11a)
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/utilities/pgfkeys.c
+ode.tex
+\pgfkeys@pathtoks=\toks27
+\pgfkeys@temptoks=\toks28
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/utilities/pgfkeysli
+braryfiltered.code.tex
+\pgfkeys@tmptoks=\toks29
+))
+\pgf@x=\dimen184
+\pgf@y=\dimen185
+\pgf@xa=\dimen186
+\pgf@ya=\dimen187
+\pgf@xb=\dimen188
+\pgf@yb=\dimen189
+\pgf@xc=\dimen190
+\pgf@yc=\dimen191
+\pgf@xd=\dimen192
+\pgf@yd=\dimen193
+\w@pgf@writea=\write3
+\r@pgf@reada=\read2
+\c@pgf@counta=\count309
+\c@pgf@countb=\count310
+\c@pgf@countc=\count311
+\c@pgf@countd=\count312
+\t@pgf@toka=\toks30
+\t@pgf@tokb=\toks31
+\t@pgf@tokc=\toks32
+\pgf@sys@id@count=\count313
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg
+File: pgf.cfg 2025-08-29 v3.1.11a (3.1.11a)
+)
+Driver file for pgf: pgfsys-pdftex.def
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-
+pdftex.def
+File: pgfsys-pdftex.def 2025-08-29 v3.1.11a (3.1.11a)
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-
+common-pdf.def
+File: pgfsys-common-pdf.def 2025-08-29 v3.1.11a (3.1.11a)
+)))
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/systemlayer/pgfsyss
+oftpath.code.tex
+File: pgfsyssoftpath.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfsyssoftpath@smallbuffer@items=\count314
+\pgfsyssoftpath@bigbuffer@items=\count315
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/systemlayer/pgfsysp
+rotocol.code.tex
+File: pgfsysprotocol.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+))
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2024/09/29 v3.02 LaTeX color extensions (UK)
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 274.
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/graphics/mathcolor.ltx)
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1349.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1353.
+Package xcolor Info: Model `RGB' extended on input line 1365.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1367.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1368.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1370.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1371.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1372.
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.
+code.tex
+Package: pgfcore 2025-08-29 v3.1.11a (3.1.11a)
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/math/pgfmath.code.t
+ex
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/math/pgfmathutil.co
+de.tex)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/math/pgfmathparser.
+code.tex
+\pgfmath@dimen=\dimen194
+\pgfmath@count=\count316
+\pgfmath@box=\box58
+\pgfmath@toks=\toks33
+\pgfmath@stack@operand=\toks34
+\pgfmath@stack@operation=\toks35
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/math/pgfmathfunctio
+ns.code.tex)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/math/pgfmathfunctio
+ns.basic.code.tex)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/math/pgfmathfunctio
+ns.trigonometric.code.tex)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/math/pgfmathfunctio
+ns.random.code.tex)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/math/pgfmathfunctio
+ns.comparison.code.tex)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/math/pgfmathfunctio
+ns.base.code.tex)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/math/pgfmathfunctio
+ns.round.code.tex)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/math/pgfmathfunctio
+ns.misc.code.tex)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/math/pgfmathfunctio
+ns.integerarithmetics.code.tex)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/math/pgfmathcalc.co
+de.tex)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/math/pgfmathfloat.c
+ode.tex
+\c@pgfmathroundto@lastzeros=\count317
+))
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/math/pgfint.code.te
+x)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/basiclayer/pgfcorep
+oints.code.tex
+File: pgfcorepoints.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@picminx=\dimen195
+\pgf@picmaxx=\dimen196
+\pgf@picminy=\dimen197
+\pgf@picmaxy=\dimen198
+\pgf@pathminx=\dimen199
+\pgf@pathmaxx=\dimen256
+\pgf@pathminy=\dimen257
+\pgf@pathmaxy=\dimen258
+\pgf@xx=\dimen259
+\pgf@xy=\dimen260
+\pgf@yx=\dimen261
+\pgf@yy=\dimen262
+\pgf@zx=\dimen263
+\pgf@zy=\dimen264
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/basiclayer/pgfcorep
+athconstruct.code.tex
+File: pgfcorepathconstruct.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@path@lastx=\dimen265
+\pgf@path@lasty=\dimen266
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/basiclayer/pgfcorep
+athusage.code.tex
+File: pgfcorepathusage.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@shorten@end@additional=\dimen267
+\pgf@shorten@start@additional=\dimen268
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/basiclayer/pgfcores
+copes.code.tex
+File: pgfcorescopes.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfpic=\box59
+\pgf@hbox=\box60
+\pgf@layerbox@main=\box61
+\pgf@picture@serial@count=\count318
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreg
+raphicstate.code.tex
+File: pgfcoregraphicstate.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgflinewidth=\dimen269
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/basiclayer/pgfcoret
+ransformations.code.tex
+File: pgfcoretransformations.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@pt@x=\dimen270
+\pgf@pt@y=\dimen271
+\pgf@pt@temp=\dimen272
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreq
+uick.code.tex
+File: pgfcorequick.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreo
+bjects.code.tex
+File: pgfcoreobjects.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/basiclayer/pgfcorep
+athprocessing.code.tex
+File: pgfcorepathprocessing.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/basiclayer/pgfcorea
+rrows.code.tex
+File: pgfcorearrows.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfarrowsep=\dimen273
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/basiclayer/pgfcores
+hade.code.tex
+File: pgfcoreshade.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@max=\dimen274
+\pgf@sys@shading@range@num=\count319
+\pgf@shadingcount=\count320
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/basiclayer/pgfcorei
+mage.code.tex
+File: pgfcoreimage.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/basiclayer/pgfcoree
+xternal.code.tex
+File: pgfcoreexternal.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfexternal@startupbox=\box62
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/basiclayer/pgfcorel
+ayers.code.tex
+File: pgfcorelayers.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/basiclayer/pgfcoret
+ransparency.code.tex
+File: pgfcoretransparency.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/basiclayer/pgfcorep
+atterns.code.tex
+File: pgfcorepatterns.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/basiclayer/pgfcorer
+df.code.tex
+File: pgfcorerdf.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)))
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/modules/pgfmodulesh
+apes.code.tex
+File: pgfmoduleshapes.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfnodeparttextbox=\box63
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/modules/pgfmodulepl
+ot.code.tex
+File: pgfmoduleplot.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/pgf/compatibility/pgfcomp
+-version-0-65.sty
+Package: pgfcomp-version-0-65 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@nodesepstart=\dimen275
+\pgf@nodesepend=\dimen276
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/pgf/compatibility/pgfcomp
+-version-1-18.sty
+Package: pgfcomp-version-1-18 2025-08-29 v3.1.11a (3.1.11a)
+))
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/pgf/utilities/pgffor.sty
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/utilities/pgfkeys.c
+ode.tex))
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/pgf/math/pgfmath.sty
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/math/pgfmath.code.t
+ex))
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/utilities/pgffor.co
+de.tex
+Package: pgffor 2025-08-29 v3.1.11a (3.1.11a)
+\pgffor@iter=\dimen277
+\pgffor@skip=\dimen278
+\pgffor@stack=\toks36
+\pgffor@toks=\toks37
+))
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/frontendlayer/tikz/
+tikz.code.tex
+Package: tikz 2025-08-29 v3.1.11a (3.1.11a)
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/libraries/pgflibrar
+yplothandlers.code.tex
+File: pgflibraryplothandlers.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@plot@mark@count=\count321
+\pgfplotmarksize=\dimen279
+)
+\tikz@lastx=\dimen280
+\tikz@lasty=\dimen281
+\tikz@lastxsaved=\dimen282
+\tikz@lastysaved=\dimen283
+\tikz@lastmovetox=\dimen284
+\tikz@lastmovetoy=\dimen285
+\tikzleveldistance=\dimen286
+\tikzsiblingdistance=\dimen287
+\tikz@figbox=\box64
+\tikz@figbox@bg=\box65
+\tikz@tempbox=\box66
+\tikz@tempbox@bg=\box67
+\tikztreelevel=\count322
+\tikznumberofchildren=\count323
+\tikznumberofcurrentchild=\count324
+\tikz@fig@count=\count325
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/modules/pgfmodulema
+trix.code.tex
+File: pgfmodulematrix.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfmatrixcurrentrow=\count326
+\pgfmatrixcurrentcolumn=\count327
+\pgf@matrix@numberofcolumns=\count328
+)
+\tikz@expandcount=\count329
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/frontendlayer/tikz/
+libraries/tikzlibrarytopaths.code.tex
+File: tikzlibrarytopaths.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)))
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/frontendlayer/tikz/
+libraries/tikzlibrarypositioning.code.tex
+File: tikzlibrarypositioning.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/libraries/pgflibrar
+yarrows.meta.code.tex
+File: pgflibraryarrows.meta.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfarrowinset=\dimen288
+\pgfarrowlength=\dimen289
+\pgfarrowwidth=\dimen290
+\pgfarrowlinewidth=\dimen291
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/frontendlayer/tikz/
+libraries/tikzlibraryfit.code.tex
+File: tikzlibraryfit.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/frontendlayer/tikz/
+libraries/tikzlibrarybackgrounds.code.tex
+File: tikzlibrarybackgrounds.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgf@layerbox@background=\box68
+\pgf@layerboxsaved@background=\box69
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/frontendlayer/tikz/
+libraries/tikzlibrarycalc.code.tex
+File: tikzlibrarycalc.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/frontendlayer/tikz/
+libraries/tikzlibraryshapes.geometric.code.tex
+File: tikzlibraryshapes.geometric.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/generic/pgf/libraries/shapes/pg
+flibraryshapes.geometric.code.tex
+File: pgflibraryshapes.geometric.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+))
+LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 5
+6.
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/psnfss/ot1ptm.fd
+File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/l3backend/l3backend-pdfte
+x.def
+File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count330
+) (./siclaw-aaai.aux)
+\openout1 = `siclaw-aaai.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count331
+\scratchdimen=\dimen292
+\scratchbox=\box70
+\nofMPsegments=\count332
+\nofMParguments=\count333
+\everyMPshowfont=\toks38
+\MPscratchCnt=\count334
+\MPscratchDim=\dimen293
+\MPnumerator=\count335
+\makeMPintoPDFobject=\count336
+\everyMPtoPDFconversion=\toks39
+)
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-bas
+e.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+85.
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/latexconfig/epstopdf-sys.
+cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: float package is loaded.
+Package caption Info: End \AtBeginDocument code.
+\c@eqfn=\count337
+\titlearea=\box71
+\actualheight=\skip61
+LaTeX Font Info:    Trying to load font information for U+msa on input line 64.
+
+ (/Users/yye/project/texlive/2026/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 64.
+
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+Underfull \hbox (badness 3792) in paragraph at lines 80--82
+[]\OT1/ptm/m/n/10 Recent sys-tems show en-cour-ag-ing \OT1/ptm/m/it/10 ca-pa-bi
+l-ity\OT1/ptm/m/n/10 . Stra-
+ []
+
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 8
+4.
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/psnfss/ot1pcr.fd
+File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
+)
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 8
+4.
+
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/psnfss/ts1ptm.fd
+File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
+)
+Underfull \hbox (badness 1577) in paragraph at lines 83--86
+\OT1/ptm/m/it/10 no ad-ver-sary\OT1/ptm/m/n/10 , the agent spon-ta-neously gen-
+er-ates com-
+ []
+
+
+Underfull \hbox (badness 1142) in paragraph at lines 83--86
+\OT1/ptm/m/n/10 work egress (\OT1/pcr/m/n/10 wget\OT1/ptm/m/n/10 /\OT1/pcr/m/n/
+10 nc\OT1/ptm/m/n/10 ), and clus-ter writes (\OT1/pcr/m/n/10 kubectl
+ []
+
+[1{/Users/yye/project/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map
+}{/Users/yye/project/texlive/2026/texmf-dist/fonts/enc/dvips/base/8r.enc}
+
+
+
+]
+[2]
+Underfull \hbox (badness 2368) in paragraph at lines 156--158
+\OT1/ptm/m/n/10 et al. 2024) bench-marks risky code ex-e-cu-tion, Sand-
+ []
+
+
+Underfull \hbox (badness 2556) in paragraph at lines 156--158
+\OT1/ptm/m/n/10 mea-sures con-tainer break-out, and Saber (Bhatt et al.
+ []
+
+
+Underfull \hbox (badness 3375) in paragraph at lines 156--158
+\OT1/ptm/m/n/10 2026) probes operational-safety fail-ures in-clud-ing be-
+ []
+
+
+Underfull \hbox (badness 3068) in paragraph at lines 156--158
+\OT1/ptm/m/n/10 art to our emergent-unsafety find-ing. Indirect-prompt-
+ []
+
+
+Underfull \hbox (badness 1142) in paragraph at lines 176--177
+ \OT1/ptm/b/n/10 Se-cu-rity Goals. \OT1/ptm/m/n/10 We en-force three se-cu-rity
+ prop-er-ties:
+ []
+
+
+Underfull \hbox (badness 1917) in paragraph at lines 176--177
+\OT1/ptm/m/n/10 den-tial files even if com-mand val-i-da-tion is by-passed;
+ []
+
+<figures/overview.pdf, id=23, 400.55647pt x 214.04106pt>
+File: figures/overview.pdf Graphic file (type pdf)
+<use figures/overview.pdf>
+Package pdftex.def Info: figures/overview.pdf  used on input line 188.
+(pdftex.def)             Requested size: 404.71353pt x 216.27446pt.
+LaTeX Font Info:    Trying to load font information for OT1+phv on input line 2
+59.
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/psnfss/ot1phv.fd
+File: ot1phv.fd 2020/03/25 scalable font definitions for OT1/phv.
+)
+LaTeX Font Info:    Font shape `OT1/phv/m/it' in size <7> not available
+(Font)              Font shape `OT1/phv/m/sl' tried instead on input line 259.
+
+Underfull \hbox (badness 1168) in paragraph at lines 275--278
+\OT1/ptm/m/n/10 pro-cess, and \OT1/pcr/m/n/10 sandbox \OT1/ptm/m/n/10 (UID 1001
+, group: \OT1/pcr/m/n/10 sandbox\OT1/ptm/m/n/10 )
+ []
+
+
+Underfull \hbox (badness 1231) in paragraph at lines 280--281
+ \OT1/ptm/b/n/10 Tran-si-tive Priv-i-lege via set-gid. \OT1/pcr/m/n/10 kubectl 
+\OT1/ptm/m/n/10 must read
+ []
+
+
+Underfull \hbox (badness 7064) in paragraph at lines 280--281
+\OT1/pcr/m/n/10 kubecred \OT1/ptm/m/n/10 group (\OT1/pcr/m/n/10 -rwxr-sr-x root
+:kubecred\OT1/ptm/m/n/10 )
+ []
+
+
+Underfull \hbox (badness 1038) in paragraph at lines 280--281
+\OT1/ptm/m/n/10 non-access-controlled std-out while cre-den-tials stay pro-
+ []
+
+
+Underfull \hbox (badness 2173) in paragraph at lines 280--281
+\OT1/ptm/m/n/10 and mTLS certs/API keys (\OT1/pcr/m/n/10 0600\OT1/ptm/m/n/10 ) 
+are un-read-able by
+ []
+
+LaTeX Font Info:    Trying to load font information for TS1+pcr on input line 2
+85.
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/psnfss/ts1pcr.fd
+File: ts1pcr.fd 2001/06/04 font definitions for TS1/pcr.
+)
+Underfull \hbox (badness 1092) in paragraph at lines 284--292
+\OT1/ptm/m/n/10 ery LLM-generated com-mand passes through six in-de-
+ []
+
+
+Underfull \hbox (badness 1168) in paragraph at lines 284--292
+\OT1/ptm/m/n/10 block \TS1/pcr/m/n/10 $\OT1/pcr/m/n/10 ()\OT1/ptm/m/n/10 , back
+-ticks, \OT1/pcr/m/n/10 <()\OT1/ptm/m/n/10 /\OT1/pcr/m/n/10 >()\OT1/ptm/m/n/10 
+, redi-rec-tions, and em-
+ []
+
+
+Underfull \hbox (badness 2865) in paragraph at lines 284--292
+\OT1/pcr/m/n/10 logs\OT1/ptm/m/n/10 , ...); \OT1/ptm/m/it/10 (5) flag re-stric-
+tions\OT1/ptm/m/n/10 ---apply per-command
+ []
+
+
+Underfull \hbox (badness 4181) in paragraph at lines 284--292
+\OT1/ptm/m/n/10 rules (\OT1/pcr/m/n/10 pipeOnly\OT1/ptm/m/n/10 , \OT1/pcr/m/n/1
+0 noFilePaths\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 blockedFlags\OT1/ptm/m/n/10 ,
+ []
+
+
+Underfull \hbox (badness 1783) in paragraph at lines 294--295
+ \OT1/ptm/b/n/10 Context-Policy De-cou-pling. \OT1/ptm/m/n/10 A key de-sign in-
+no-va-tion
+ []
+
+[3]
+Underfull \hbox (badness 2922) in paragraph at lines 298--299
+\OT1/ptm/m/n/10 con-text if not in-ter-cepted. Three lay-ers ad-dress this:
+ []
+
+
+Underfull \hbox (badness 1688) in paragraph at lines 298--299
+\OT1/ptm/m/n/10 terns (JWT \OT1/pcr/m/n/10 eyJ...\OT1/ptm/m/n/10 , PEM \OT1/pcr
+/m/n/10 -----BEGIN\OT1/ptm/m/n/10 , con-nec-tion
+ []
+
+LaTeX Font Info:    Trying to load font information for OMS+pcr on input line 3
+04.
+(/Users/yye/project/texlive/2026/texmf-dist/tex/latex/psnfss/omspcr.fd
+File: omspcr.fd 
+)
+LaTeX Font Info:    Font shape `OMS/pcr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 304.
+
+Underfull \hbox (badness 2261) in paragraph at lines 302--305
+\OT1/ptm/b/n/10 6 (En-vi-ron-ment san-i-ti-za-tion) \OT1/ptm/m/n/10 runs \OT1/p
+cr/m/n/10 sanitizeEnv()
+ []
+
+
+Underfull \hbox (badness 2884) in paragraph at lines 302--305
+\OT1/ptm/m/n/10 be-fore spawn-ing child pro-cesses, strip-ping API keys,
+ []
+
+
+Underfull \hbox (badness 1968) in paragraph at lines 302--305
+\OT1/ptm/m/n/10 to-kens, and sen-si-tive vari-ables to pre-vent leak-age via
+ []
+
+
+Underfull \hbox (badness 4132) in paragraph at lines 313--319
+\OT1/ptm/m/n/10 LLM agents ex-hibit sys-tem-atic out-put unreliability---
+ []
+
+
+Underfull \hbox (badness 1430) in paragraph at lines 313--319
+\OT1/ptm/m/n/10 cy-cle stages. \OT1/ptm/m/it/10 In-put guards \OT1/ptm/m/n/10 t
+rans-form the mes-sage his-
+ []
+
+
+Underfull \hbox (badness 1052) in paragraph at lines 313--319
+\OT1/ptm/m/n/10 ery \OT1/pcr/m/n/10 toolCall \OT1/ptm/m/n/10 has a match-ing \O
+T1/pcr/m/n/10 toolResult \OT1/ptm/m/n/10 (in-sert-
+ []
+
+
+Underfull \hbox (badness 1701) in paragraph at lines 313--319
+\OT1/ptm/m/n/10 sult over 50% of the win-dow, com-pact old-est re-sults
+ []
+
+
+Underfull \hbox (badness 2269) in paragraph at lines 313--319
+\OT1/ptm/m/n/10 past 75%, and raise a pre-emp-tive over-flow sig-nal at
+ []
+
+[4 <./figures/overview.pdf>]
+Underfull \hbox (badness 2119) in paragraph at lines 343--344
+\OT1/ptm/m/n/10 Each Agent-Box main-tains a pri-vate mem-ory database
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 343--344
+\OT1/ptm/m/n/10 (SQLite with FTS5 and sqlite-vec) hold-ing struc-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 343--344
+\OT1/ptm/m/n/10 tured in-ves-ti-ga-tion records over a full life-cy-cle
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 343--344
+\OT1/ptm/m/n/10 (cre-ate$\OMS/cmsy/m/n/10 !$\OT1/ptm/m/n/10 update$\OMS/cmsy/m/
+n/10 !$\OT1/ptm/m/n/10 resolve$\OMS/cmsy/m/n/10 !$\OT1/ptm/m/n/10 reference). S
+earch
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 343--344
+\OT1/ptm/m/n/10 blends vec-tor sim-i-lar-ity and key-word match-ing,
+ []
+
+
+Underfull \hbox (badness 7326) in paragraph at lines 343--344
+\OT1/ptm/m/n/10 ($\OML/cmm/m/it/10 w[][]\OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1
+/cmr/m/n/10 70$\OT1/ptm/m/n/10 , $\OML/cmm/m/it/10 w[][]\OT1/cmr/m/n/10 0\OML/c
+mm/m/it/10 :\OT1/cmr/m/n/10 30$\OT1/ptm/m/n/10 , tem-po-ral de-cay), reranked v
+ia
+ []
+
+
+Underfull \hbox (badness 2376) in paragraph at lines 343--344
+\OT1/ptm/m/n/10 heading-chunked ($\OMS/cmsy/m/n/10 ^^X$\OT1/ptm/m/n/10 400 to-k
+ens), em-bed-ded, and dual-
+ []
+
+
+Underfull \hbox (badness 2521) in paragraph at lines 363--366
+ \OT1/ptm/b/n/10 Scor-ing \OT1/ptm/m/n/10 Fol-low-ing SR-E-Gym's check-list met
+hod-ol-ogy,
+ []
+
+
+Underfull \hbox (badness 1033) in paragraph at lines 363--366
+\OT1/ptm/m/n/10 each di-ag-no-sis is scored 0--1 across five dimensions---
+ []
+
+[5]
+Underfull \hbox (badness 3838) in paragraph at lines 389--390
+[]\OT1/ptm/m/n/10 The ac-cu-racy gap lives in \OT1/ptm/m/it/10 cat-e-gories\OT1
+/ptm/m/n/10 , not di-men-
+ []
+
+
+Underfull \hbox (badness 1622) in paragraph at lines 389--390
+\OT1/ptm/m/n/10 troller (71.9%)---are weak-est \OT1/ptm/m/it/10 con-sis-tently 
+\OT1/ptm/m/n/10 across brains
+ []
+
+
+Underfull \hbox (badness 1127) in paragraph at lines 389--390
+\OT1/ptm/m/n/10 non-monotonic---nominally ``medium'' net-work/controller
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 397--398
+\OT1/ptm/m/n/10 (\OT1/pcr/m/n/10 validateCommand\OT1/ptm/m/n/10 , \OT1/pcr/m/n/
+10 validateShellOperators\OT1/ptm/m/n/10 ,
+ []
+
+
+Underfull \hbox (badness 1442) in paragraph at lines 411--412
+\OT1/ptm/b/n/10 sandbox-escape com-mands\OT1/ptm/m/n/10 ---\OT1/ptm/b/n/10 0.12
+ per case \OT1/ptm/m/n/10 (Ta-ble 3[]).
+ []
+
+
+Overfull \hbox (1.23053pt too wide) in paragraph at lines 418--430
+ [][] 
+ []
+
+[6]
+Underfull \hbox (badness 2512) in paragraph at lines 435--436
+\OT1/ptm/m/n/10 ag-no-sis? Ex-am-in-ing ev-ery failed case for a security-
+ []
+
+(./siclaw-aaai.bbl
+Underfull \hbox (badness 1112) in paragraph at lines 5--9
+[]\OT1/ptm/m/n/10 Bhatt, M.; et al. 2026.  Saber: Bench-mark-ing Op-er-a-
+ []
+
+[7]
+Underfull \hbox (badness 4492) in paragraph at lines 121--125
+[]\OT1/ptm/m/n/10 Thota, S. 2025.  KubeIn-tel-lect: A Mod-u-lar LLM-
+ []
+
+[8]) [9
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 504--505
+ \OT1/ptm/b/n/10 Com-pu-ta-tional ex-per-i-ments. \OT1/ptm/m/n/10 (1) Hy-per-pa
+-ram-e-ter
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 504--505
+\OT1/ptm/m/n/10 ap-pendix, Model and In-fras-truc-ture Con-fig-u-ra-tion).
+ []
+
+
+Underfull \hbox (badness 1622) in paragraph at lines 504--505
+\OT1/ptm/m/n/10 Agree-ment). (9) Num-ber of runs per re-sult: \OT1/ptm/b/n/10 y
+es \OT1/ptm/m/n/10 (one
+ []
+
+
+Underfull \hbox (badness 3668) in paragraph at lines 504--505
+\OT1/ptm/m/n/10 downs and inter-judge $\OML/cmm/m/it/10 ^^T$\OT1/ptm/m/n/10 ; n
+o con-fi-dence intervals---a
+ []
+
+
+Underfull \hbox (badness 2042) in paragraph at lines 504--505
+\OT1/ptm/m/n/10 stated lim-i-ta-tion). (11) Statistical-significance tests: \OT
+1/ptm/b/n/10 no
+ []
+
+[10
+
+] (./siclaw-aaai.aux)
+ ***********
+LaTeX2e <2025-11-01>
+L3 programming layer <2026-01-19>
+ ***********
+ ) 
+Here is how much of TeX's memory you used:
+ 16923 strings out of 467525
+ 342119 string characters out of 5418982
+ 739453 words of memory out of 5000000
+ 45496 multiletter control sequences out of 15000+600000
+ 670622 words of font info for 115 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 84i,11n,104p,1347b,1046s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</Users/yye/project/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cm
+bx10.pfb></Users/yye/project/texlive/2026/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmmi10.pfb></Users/yye/project/texlive/2026/texmf-dist/fonts/type1/public/
+amsfonts/cm/cmmi7.pfb></Users/yye/project/texlive/2026/texmf-dist/fonts/type1/p
+ublic/amsfonts/cm/cmr10.pfb></Users/yye/project/texlive/2026/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmr7.pfb></Users/yye/project/texlive/2026/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmsy10.pfb></Users/yye/project/texlive/2026/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></Users/yye/project/texlive/2026/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></Users/yye/project/texlive
+/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></Users/yye/project/t
+exlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></Users/yye/pro
+ject/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></U
+sers/yye/project/texlive/2026/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></U
+sers/yye/project/texlive/2026/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></
+Users/yye/project/texlive/2026/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb><
+/Users/yye/project/texlive/2026/texmf-dist/fonts/type1/urw/helvetic/uhvro8a.pfb
+></Users/yye/project/texlive/2026/texmf-dist/fonts/type1/urw/times/utmb8a.pfb><
+/Users/yye/project/texlive/2026/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></U
+sers/yye/project/texlive/2026/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on siclaw-aaai.pdf (10 pages, 303121 bytes).
+PDF statistics:
+ 281 PDF objects out of 1000 (max. 8388607)
+ 99 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 500000)
+ 18 words of extra memory for PDF output out of 10000 (max. 10000000)
+

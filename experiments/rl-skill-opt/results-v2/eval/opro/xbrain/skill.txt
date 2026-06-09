@@ -1,0 +1,15 @@
+1. **Triage by failure domain and blast radius.** Record: source Pod/namespace/node, destination as the application used it (short Service name, FQDN, or external hostname), destination port, and the first observed error from logs/events. Classify into: **(a)** internal Service-name lookup failure, **(b)** external-name lookup failure, **(c)** lookup succeeds but connect fails, or **(d)** intermittent / node-specific. This prevents calling every service-reachability issue “DNS”.
+
+2. **Confirm the client Pod’s DNS wiring and naming assumptions.** Read the Pod spec for `dnsPolicy`, `dnsConfig`, `hostNetwork`, and inspect `/etc/resolv.conf` (`nameserver`, `search`, `options ndots`). Verify whether the queried short name is valid from that namespace or whether `<svc>.<ns>` / full cluster FQDN was required. Wrong namespace, malformed name, or custom DNS settings are root causes before any cluster DNS component.
+
+3. **Check the DNS server path used by the Pod.** Inspect the `kube-dns`/CoreDNS Service (`ClusterIP`, ports 53/UDP+TCP), its EndpointSlices, and whether the client Pod’s nameserver points to that Service IP. If nameserver IP and DNS Service/endpoints do not line up, identify whether the break is Pod DNS config, DNS Service, or DNS endpoints.
+
+4. **Validate the target discovery object.** For internal targets, inspect the Service/headless Service in the intended namespace: existence, type, ClusterIP/None, ports, selectors. For `ExternalName`, verify the external hostname. Wrong object, namespace, or port is the root cause; later failures are symptoms.
+
+5. **Check backing endpoints and backend readiness.** Inspect EndpointSlices/Endpoints for ready addresses and correct ports. If empty/wrong, inspect backend Pod labels, readiness conditions, Pod IPs, and container ports/events. Empty endpoints explain “resolves but cannot connect”; label/readiness mismatch is the deeper cause.
+
+6. **Evaluate cluster DNS health and scope.** Inspect CoreDNS/kube-dns Pods, readiness, restarts, logs, ConfigMap, and warning events. Distinguish **cluster-wide/internal** failures from **external-only** forwarding failures.
+
+7. **Only if all above are correct, inspect isolation/path controls.** Review NetworkPolicies for client, DNS Pods, and backends for UDP/TCP 53 and application-port rules; note node/CNI/kube-proxy warning events, especially for node-local/intermittent patterns.
+
+**A correct diagnosis must name:** the exact queried name and namespace context, whether failure starts at lookup or after resolution, the blast radius (single Pod/service, namespace, node, or cluster-wide), and the **first broken object in the chain**: client DNS config/name construction, DNS Service path, Service/ExternalName spec, EndpointSlice/backend readiness, DNS control plane, or NetworkPolicy/CNI. Include read-only evidence and a safe remediation direction matching that object.

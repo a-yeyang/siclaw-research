@@ -1,0 +1,2002 @@
+[
+  {
+    "caseId": "c001",
+    "status": "completed",
+    "category": "image-pull",
+    "difficulty": "easy",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis explicitly identifies 'Single pod c001-image (namespace siclaw-eval-yye-20260602)' as the affected resource.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis does not name any unrelated or healthy resource as the primary fault origin; it focuses solely on pod/c001-image.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis states the root cause as 'The image registry.invalid/scitix/missing-trainer:v404 references a non-existent/invalid registry hostname' and explains DNS resolution failure, matching the ground truth of invalid registry host/tag.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis includes the concrete image reference 'registry.invalid/scitix/missing-trainer:v404' and notes the tag 'v404' as an indicator of intentional non-existence.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis states 'Impact/scope: Single pod c001-image ... No other pods are affected.'",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis does not over-state or under-state the impact; it correctly limits scope to the single pod.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The diagnosis cites containerd logs showing 'dial tcp: lookup registry.invalid on 10.208.12.100:53: no such host' and references the pod manifest.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The cited DNS resolution failure is directly consistent with the identified root cause of an invalid registry hostname.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation 'Replace the image reference with a valid one' directly addresses the invalid image cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation is safe and appropriately scoped, suggesting a valid image replacement and noting an alternative for local testing.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 21912,
+    "toolCallCount": 8,
+    "judgeModel": "deepseek-ai/DeepSeek-V4-Flash"
+  },
+  {
+    "caseId": "c002",
+    "status": "completed",
+    "category": "image-pull",
+    "difficulty": "easy",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis explicitly identifies 'pod/c002-image' as the affected resource, matching the ground-truth localization.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis does not name any unrelated or healthy resource as the primary fault origin; it focuses solely on pod/c002-image.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis states the root cause is that the image 'docker.io/library/siclaw-does-not-exist:v1' does not exist on Docker Hub, which matches the ground-truth mechanism 'image repository does not exist'.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis includes the concrete image name 'siclaw-does-not-exist:v1' and explains that the repository does not exist, providing the specific detail.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis states 'Single pod c002-image only — no other resources are affected', consistent with the ground-truth scope of a single pod.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis does not over-state or under-state the impact; it correctly limits the scope to the single pod.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The diagnosis cites containerd logs with the exact error message, pod events, and the image name as observed evidence.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The cited evidence (containerd error 'repository does not exist') is directly consistent with the identified root cause of a non-existent image repository.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation recommends correcting the image name to a valid one, which would directly fix the non-existent repository issue.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation is safe (update image name, add secrets if needed) and appropriately scoped to the single pod, without destructive actions.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 22319,
+    "toolCallCount": 8,
+    "judgeModel": "deepseek-ai/DeepSeek-V4-Flash"
+  },
+  {
+    "caseId": "c011",
+    "status": "completed",
+    "category": "crashloop",
+    "difficulty": "easy",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis identifies pod/c011-crash as the faulty resource.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis does not name any other resource as the primary fault origin.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis explains that the root cause is the missing MODEL_PATH environment variable, which matches the ground truth.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis includes the concrete detail that the MODEL_PATH env var is absent, and that the pod spec defines no environment variables.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis states the scope is a single container crash loop, consistent with the ground truth.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis does not overstate or understate the impact; it correctly describes the pod never reaching Ready and consuming resources.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The diagnosis cites concrete evidence: pod status, container command, exit code 42, describe output showing no env vars, and timestamps.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The cited evidence (exit code 42, no env vars, immediate termination) is consistent with the missing MODEL_PATH root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation suggests adding the MODEL_PATH environment variable, which would directly fix the missing env var issue.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation is safe (read-only suggestion) and appropriately scoped to adding the env var, matching the real fault.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 12804,
+    "toolCallCount": 8,
+    "judgeModel": "deepseek-ai/DeepSeek-V4-Flash"
+  },
+  {
+    "caseId": "c012",
+    "status": "completed",
+    "category": "crashloop",
+    "difficulty": "easy",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis identifies pod/c012-crash as the affected resource, matching the ground truth.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis does not name any other resource as the primary fault origin.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis explains that CUDA_VISIBLE_DEVICES is mis-set (unset) for the workload, which matches the ground truth mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis includes the concrete detail that the environment variable CUDA_VISIBLE_DEVICES is missing (unset) in the pod spec.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis states that only this pod is affected and it is a single container crash loop, consistent with the ground truth scope.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis does not overstate or understate the impact; it correctly notes the pod never becomes Ready and has been in CrashLoopBackOff for 15 hours.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The diagnosis cites concrete evidence: pod spec command, empty env, empty resources, container logs showing 'cuda devices masked', exit code 43, and restart count.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The cited evidence (empty env, logs, exit code) is consistent with the root cause that CUDA_VISIBLE_DEVICES is unset.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation suggests setting CUDA_VISIBLE_DEVICES=all or requesting a GPU resource, which would address the missing environment variable.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation is safe and appropriately scoped; it offers minimal and appropriate fixes without destructive over-reach.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 30551,
+    "toolCallCount": 11,
+    "judgeModel": "deepseek-ai/DeepSeek-V4-Flash"
+  },
+  {
+    "caseId": "c021",
+    "status": "completed",
+    "category": "config",
+    "difficulty": "easy",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis identifies pod/c021-config as the affected resource, matching the ground truth localization.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis correctly identifies the missing ConfigMap as the primary fault origin and does not name any unrelated or downstream resource.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis explains that the ConfigMap 'missing-model-config' does not exist, causing the container to be stuck in CreateContainerConfigError, which matches the ground truth mechanism of a missing ConfigMap key.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis includes the concrete detail that the ConfigMap 'missing-model-config' is missing and that the key 'bucket' is referenced, matching the ground truth.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis states that only this single pod (c021-config) is affected, consistent with the ground truth scope of a single pod configuration dependency.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis does not overstate or understate the impact; it correctly limits the scope to the single pod.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The diagnosis cites concrete evidence: pod status 'CreateContainerConfigError', container state message 'configmap \"missing-model-config\" not found', and events confirming the image is present.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The cited evidence (error message, pod YAML, container status) is consistent with the identified root cause of a missing ConfigMap.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation suggests creating the missing ConfigMap, which would directly address the root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation is safe (creating a ConfigMap) and appropriately scoped; it does not suggest destructive actions beyond what is needed.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 27781,
+    "toolCallCount": 5,
+    "judgeModel": "deepseek-ai/DeepSeek-V4-Flash"
+  },
+  {
+    "caseId": "c022",
+    "status": "completed",
+    "category": "config",
+    "difficulty": "easy",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis identifies pod/c022-config as the affected resource.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis does not name any unrelated or downstream resource as the primary fault origin.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis states the root cause is a missing Secret (missing-registry-secret) referenced by the pod, which matches the ground truth mechanism of a missing secret key token.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis includes the concrete detail that the secret 'missing-registry-secret' is missing and that the environment variable REGISTRY_TOKEN depends on it via secretKeyRef.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis states 'Single pod c022-config' is affected, consistent with the ground truth scope of a single pod configuration dependency.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis does not overstate or understate the impact; it correctly limits the scope to the single pod.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The diagnosis cites pod status 'CreateContainerConfigError', container state 'Waiting' with reason 'CreateContainerConfigError', and the specific error message 'secret \"missing-registry-secret\" not found'.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The cited evidence (pod events, describe output, secret not found) is consistent with the identified root cause of a missing secret.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation suggests creating the missing secret, which would directly address the root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation is safe (creating a secret) and appropriately scoped; it does not suggest destructive actions beyond the necessary fix.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 12955,
+    "toolCallCount": 7,
+    "judgeModel": "deepseek-ai/DeepSeek-V4-Flash"
+  },
+  {
+    "caseId": "c031",
+    "status": "completed",
+    "category": "scheduling-gpu",
+    "difficulty": "easy",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis identifies pod 'c031-pending' as the affected resource, matching the ground-truth localization.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis correctly identifies the pod as the primary fault origin and does not name any unrelated or healthy resource.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis explains that the pod is unscheduled because its nodeSelector asks for an unavailable GPU type 'h100-pcie-80gb', which matches the ground-truth mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis includes the concrete detail that the nodeSelector specifies 'scitix.ai/gpu-type: h100-pcie-80gb' while the actual GPU nodes have 'scitix.ai/gpu-type=h100nvlink80'.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis states 'Single pod' in namespace 'siclaw-eval-yye-20260602' and 'No other resources affected', consistent with the ground-truth scope of a single workload scheduling constraint.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis does not over-state or under-state the impact; it correctly limits the scope to the single pod.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The diagnosis cites pod events ('FailedScheduling'), pod spec (nodeSelector), and real GPU node labels as observed evidence.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The cited evidence (pod events, nodeSelector YAML, node labels) is consistent with the identified root cause of a node selector mismatch.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The recommended fix to correct the nodeSelector to 'scitix.ai/gpu-type: h100nvlink80' or remove it would address the root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation is safe and appropriately scoped; it suggests a targeted change to the pod's nodeSelector without destructive over-reach.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 75502,
+    "toolCallCount": 25,
+    "judgeModel": "deepseek-ai/DeepSeek-V4-Flash"
+  },
+  {
+    "caseId": "c040",
+    "status": "completed",
+    "category": "scheduling-gpu",
+    "difficulty": "easy",
+    "passed": false,
+    "totalScore": 0,
+    "dimensions": {
+      "localization": {
+        "score": 0
+      },
+      "mechanism": {
+        "score": 0
+      },
+      "scope": {
+        "score": 0
+      },
+      "evidence": {
+        "score": 0
+      },
+      "remediation": {
+        "score": 0
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The diagnosis states the pod is in Running state and does not identify the pod as the target resource for a Pending/unscheduled fault.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The diagnosis incorrectly claims the pod is Running and healthy, failing to identify the actual fault origin (the pod being Pending).",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The diagnosis does not mention anti-affinity conflicts or existing eval labels; instead it claims the pod is running and attributes restarts to container exit behavior.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "No concrete detail about anti-affinity rules or conflicting labels is provided.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The diagnosis states the pod is operational and the scope is limited to container restart behavior, not the scheduling constraint affecting a single workload.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The diagnosis understates the impact by claiming the pod is running, whereas the actual impact is that the pod is Pending and unscheduled.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "No",
+        "evidence": "The diagnosis cites pod status and events that indicate a Running state, but this evidence is not relevant to the actual Pending state.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "No",
+        "evidence": "The cited evidence (Running status, normal events) contradicts the actual root cause (Pending state due to anti-affinity).",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The remediation suggests changing the container command to keep it running, which does not address anti-affinity scheduling conflicts.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The remediation is not safe or appropriate for the actual fault; it would not fix the Pending state and could introduce unnecessary changes.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 26903,
+    "toolCallCount": 1,
+    "judgeModel": "deepseek-ai/DeepSeek-V4-Flash"
+  },
+  {
+    "caseId": "c046",
+    "status": "completed",
+    "category": "storage",
+    "difficulty": "easy",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis identifies PVC c046-data and pod c046-storage as the affected resources, matching the ground truth target resources.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis correctly identifies PVC c046-data as the primary fault origin (references non-existent StorageClass), not an unrelated or downstream resource.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis states that PVC references non-existent StorageClass 'missing-storageclass', which is the same root-cause mechanism as the ground truth.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis includes the concrete detail that the PVC's spec.storageClassName is 'missing-storageclass' and that no such StorageClass exists.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis states that pod c046-storage cannot start due to unbound PVC, which matches the ground truth scope of a single pod blocked by an unbound PVC.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis does not overstate or understate the impact; it correctly limits the blast radius to the pod being blocked.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The diagnosis cites concrete evidence: PVC spec.storageClassName is 'missing-storageclass' and kubectl get storageclass returns empty.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The cited evidence (PVC referencing a non-existent StorageClass) is consistent with the identified root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation suggests creating the missing StorageClass or updating the PVC to use an existing one, which would address the root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation is safe and appropriately scoped; it does not suggest destructive actions and matches the real fault.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 25995,
+    "toolCallCount": 2,
+    "judgeModel": "deepseek-ai/DeepSeek-V4-Flash"
+  },
+  {
+    "caseId": "c047",
+    "status": "completed",
+    "category": "storage",
+    "difficulty": "easy",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis identifies PVC c047-data and pod c047-storage, matching the ground-truth target resources.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis correctly identifies the PVC as the primary fault origin, not an unrelated resource.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis states the PVC references a non-existent StorageClass 'gpu-local-ssd-missing', which matches the ground-truth mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis includes the concrete detail of the missing StorageClass name 'gpu-local-ssd-missing'.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis states the scope affects pod c047-storage and prevents PVC binding and pod startup, consistent with the ground-truth scope of a single pod blocked by unbound PVC.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis does not over-state or under-state the impact; it correctly limits the scope to the affected pod and PVC.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The diagnosis cites PVC status 'Pending' with 'ProvisioningFailed' events and 'kubectl get storageclass' output as observed evidence.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The cited evidence (PVC events and StorageClass query) is consistent with the identified root cause of a missing StorageClass.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation suggests creating the missing StorageClass or updating the PVC to use an existing one, which would address the root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation is safe and appropriately scoped; it does not suggest destructive actions and matches the real fault.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 34329,
+    "toolCallCount": 3,
+    "judgeModel": "deepseek-ai/DeepSeek-V4-Flash"
+  },
+  {
+    "caseId": "c056",
+    "status": "completed",
+    "category": "service-readiness",
+    "difficulty": "medium",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis identifies deployment/c056-app (via pod c056-app-5b6f4b457c-dqfh6) and service/c056-svc, matching the ground-truth target resources.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis correctly points to the readiness probe misconfiguration in the deployment as the primary fault origin, not an unrelated resource.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis states 'readiness probe points to a missing health endpoint' (HTTP 404 on /missing-healthz), which matches the ground-truth mechanism of a missing health endpoint causing endpoints not ready.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis includes the concrete detail: the readiness probe path is incorrect (points to /missing-healthz instead of a valid endpoint like /index.html).",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis states 'Service cannot route traffic to backend' and 'Pod Not Ready', consistent with the ground-truth scope of one service path in the eval namespace.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis does not overstate or understate; it correctly limits impact to the service's inability to route traffic due to the pod not being ready.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The diagnosis cites observed evidence: 'HTTP 404 on /missing-healthz', 'Pod IP 172.16.36.194 running busybox httpd', and '100% of probe failures match 404 pattern'.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The cited evidence (HTTP 404 on the probe path) is consistent with the root cause of a missing health endpoint.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation 'Update readinessProbe path to /index.html' directly addresses the incorrect probe path, which would fix the readiness failure.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation is safe and appropriately scoped; it only changes the probe path to a valid endpoint without destructive actions.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 37544,
+    "toolCallCount": 3,
+    "judgeModel": "deepseek-ai/DeepSeek-V4-Flash"
+  },
+  {
+    "caseId": "c057",
+    "status": "completed",
+    "category": "service-readiness",
+    "difficulty": "medium",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis identifies both deployment/c057-app and service/c057-svc as the target resources, matching the ground truth.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis correctly identifies the service and deployment as the primary fault origin, not any unrelated or downstream resource.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis explains the selector mismatch between service and pod labels, which is the same underlying mechanism as the ground truth (empty endpoints due to mismatched selector).",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis includes the concrete detail: service selector 'app=c057-app-typo' vs deployment label 'app=c057-app', which is the specific mutated detail.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis states 'one service path in the eval namespace' implicitly by focusing on service c057-svc and its clients, consistent with the ground truth scope.",
+        "confidence": "Medium"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis does not overstate or understate; it correctly says the service is unreachable to clients relying on it, without claiming broader impact.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The diagnosis cites observed evidence: deployment label selector, service selector, and that no endpoints exist (kubectl get endpoints would show <none>).",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The cited evidence (deployment label app=c057-app, service selector app=c057-app-typo, no endpoints) is consistent with the root cause of selector mismatch.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation updates the service selector to 'app=c057-app' to match the deployment labels, which would fix the mismatch and restore endpoints.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation is safe and appropriately scoped: it only changes the selector to the correct value, no destructive over-reach.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 62309,
+    "toolCallCount": 4,
+    "judgeModel": "deepseek-ai/DeepSeek-V4-Flash"
+  },
+  {
+    "caseId": "c069",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": false,
+    "totalScore": 0.1,
+    "dimensions": {
+      "localization": {
+        "score": 0
+      },
+      "mechanism": {
+        "score": 0
+      },
+      "scope": {
+        "score": 0
+      },
+      "evidence": {
+        "score": 0.5
+      },
+      "remediation": {
+        "score": 0
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The diagnosis identifies DNS configuration (search domains) as the root cause, not the NetworkPolicy that actually blocks ingress. The target resources mentioned (client pod, server pod, service) are correct but the primary fault origin is misidentified.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The diagnosis points to DNS search domain configuration as the primary fault origin, which is unrelated to the actual NetworkPolicy blocking ingress. The healthy DNS resolution via FQDN is used as evidence, but the real issue is network policy, not DNS.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The ground truth mechanism is NetworkPolicy denying ingress from client to server. The diagnosis claims DNS resolution failure due to missing search domain, which is a different mechanism entirely.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The diagnosis does not mention NetworkPolicy, ingress rules, or any concrete detail about the actual mechanism. It only provides a vague DNS configuration issue.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The ground truth scope is traffic between the specific client and server pods. The diagnosis states 'Affects all services in the namespace', which is broader than the actual scope.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The diagnosis overstates the impact to all services in the namespace, while the actual issue is limited to traffic between the specific client and server pods.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The diagnosis cites specific observed evidence: nslookup returning NXDOMAIN, FQDN resolving correctly, and /etc/resolv.conf content.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "No",
+        "evidence": "The cited evidence (DNS resolution) is consistent with a DNS issue, but the actual root cause is NetworkPolicy blocking ingress. The evidence does not support the real mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The remediation (using FQDNs or configuring search domains) would not fix a NetworkPolicy blocking ingress. It addresses a DNS issue, not the actual problem.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The remediation is safe but inappropriate for the actual fault. It does not address the NetworkPolicy that is blocking traffic.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 113764,
+    "toolCallCount": 8,
+    "judgeModel": "deepseek-ai/DeepSeek-V4-Flash"
+  },
+  {
+    "caseId": "c072",
+    "status": "completed",
+    "category": "network-dns",
+    "difficulty": "medium",
+    "passed": false,
+    "totalScore": 0,
+    "dimensions": {
+      "localization": {
+        "score": 0
+      },
+      "mechanism": {
+        "score": 0
+      },
+      "scope": {
+        "score": 0
+      },
+      "evidence": {
+        "score": 0
+      },
+      "remediation": {
+        "score": 0
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The diagnosis focuses on DNS resolution issues (ndots, search domains) and does not mention the server pod, client pod, or service as the fault origin.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The diagnosis does not identify any primary fault origin; it speculates about DNS resolver behavior without pointing to a specific resource.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The ground truth mechanism is a NetworkPolicy denying ingress; the diagnosis discusses DNS configuration (ndots, search domains) which is unrelated.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "No concrete mutated detail (e.g., NetworkPolicy selector, ingress rule) is provided; the diagnosis only speculates about DNS resolver behavior.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The diagnosis does not define any blast radius or scope; it only discusses DNS resolution for the client pod.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The diagnosis does not state any impact scope, so it neither overstates nor understates correctly.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "No",
+        "evidence": "The diagnosis references nslookup output and resolv.conf but does not cite concrete observed evidence from the cluster (e.g., pod events, describe output, logs).",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "No",
+        "evidence": "The cited evidence (nslookup behavior) is not consistent with the root cause (NetworkPolicy); DNS resolution works with FQDN, which contradicts a DNS issue.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "No remediation is provided; the diagnosis ends with speculation about DNS resolver behavior.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "No remediation is given, so it cannot be assessed for safety or appropriateness.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 93833,
+    "toolCallCount": 8,
+    "judgeModel": "deepseek-ai/DeepSeek-V4-Flash"
+  },
+  {
+    "caseId": "c079",
+    "status": "completed",
+    "category": "controller",
+    "difficulty": "medium",
+    "passed": false,
+    "totalScore": 0.4,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 0
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 0
+      },
+      "remediation": {
+        "score": 0
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis repeatedly mentions 'deployment/c079-deploy' as the object under investigation, e.g., 'the deployment's YAML for the readiness probe configuration' and 'the deployment's rollout status'.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis does not name any unrelated or downstream resource as the primary fault origin; it focuses on the deployment and its pods.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The ground truth mechanism is that the readiness probe targets port 9090 instead of 8080. The diagnosis speculates about various possibilities (e.g., 'readiness probe is set to a path that doesn't exist or a port that's not open') but never identifies the specific wrong port (9090 vs 8080).",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The diagnosis does not include the concrete mutated detail (port 9090 instead of 8080). It only offers vague guesses like 'probe is misconfigured' or 'application is not listening on the expected port' without specifying the actual port mismatch.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis consistently discusses the impact on the deployment and its pods, e.g., 'the deployment's rollout status... the new pods are not becoming ready', which matches the ground-truth scope of the controller object and its owned resources.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis does not overstate or understate the impact; it correctly notes that the deployment is not progressing and pods are not ready, without claiming broader cluster impact.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "No",
+        "evidence": "The diagnosis does not cite any concrete observed evidence from the cluster (e.g., pod events, describe output, logs, YAML fields). It repeatedly states 'I can't access the cluster_info' and relies on speculation.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "No",
+        "evidence": "Since no concrete evidence is cited, there is no evidence to be consistent with the root cause. The diagnosis is based on hypothetical scenarios.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The diagnosis does not provide any explicit remediation recommendation. It ends with speculation about the service configuration and does not suggest a fix.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "No remediation is provided, so it cannot be assessed as safe or appropriately scoped.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 77063,
+    "toolCallCount": 6,
+    "judgeModel": "deepseek-ai/DeepSeek-V4-Flash"
+  },
+  {
+    "caseId": "c080",
+    "status": "completed",
+    "category": "controller",
+    "difficulty": "medium",
+    "passed": false,
+    "totalScore": 0.1,
+    "dimensions": {
+      "localization": {
+        "score": 0
+      },
+      "mechanism": {
+        "score": 0
+      },
+      "scope": {
+        "score": 0
+      },
+      "evidence": {
+        "score": 0.5
+      },
+      "remediation": {
+        "score": 0
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The diagnosis identifies a missing Service as the root cause, but the ground truth localization is deployment/c080-deploy and horizontalpodautoscaler/c080-hpa. The agent does not mention the HPA or the deployment as the primary fault origin.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The diagnosis names a missing Service as the PRIMARY fault origin, which is not the actual root cause per ground truth (HPA cannot compute CPU utilization due to missing CPU request). The Service is unrelated to the real mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The ground truth mechanism is that HPA cannot compute CPU utilization because the target container has no CPU request. The agent instead claims the HPA has no metrics due to missing Service, which is a different mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The diagnosis does not include the concrete detail of missing CPU request in the container; it only mentions missing Service, which is not the actual mutated detail.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The ground truth scope is the controller object and its owned resources (deployment and HPA). The agent's scope is a missing Service, which is not part of the actual affected resources.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The diagnosis overstates the impact by claiming no traffic can reach the workload and understates the real issue (HPA not scaling due to missing CPU request).",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The agent cites concrete observed evidence: 'kubectl get services -n siclaw-eval-yye-20260602 -l app=c080-deploy returned no resources' and the pod exists and is Running.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "No",
+        "evidence": "The cited evidence (missing Service) is not consistent with the actual root cause (missing CPU request). The evidence is irrelevant to the real fault.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The recommended remediation (creating a Service) does not address the actual root cause (missing CPU request). It would not fix the HPA's inability to compute CPU utilization.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The remediation is not safe or appropriately scoped because it introduces a new resource (Service) that is not needed and does not fix the real fault. It could also cause unintended exposure.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 55038,
+    "toolCallCount": 4,
+    "judgeModel": "deepseek-ai/DeepSeek-V4-Flash"
+  },
+  {
+    "caseId": "c086",
+    "status": "completed",
+    "category": "volcano-gpu",
+    "difficulty": "hard",
+    "passed": false,
+    "totalScore": 0.1,
+    "dimensions": {
+      "localization": {
+        "score": 0
+      },
+      "mechanism": {
+        "score": 0
+      },
+      "scope": {
+        "score": 0
+      },
+      "evidence": {
+        "score": 0.5
+      },
+      "remediation": {
+        "score": 0
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The diagnosis identifies taints on nodes as the root cause, not the PodGroup minMember mismatch. The ground truth localization is podgroup/c086-pg and pod/c086-vcpod, but the diagnosis focuses on node taints and pod tolerations, not the PodGroup configuration.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The diagnosis names node taints as the primary fault origin, which is unrelated to the actual issue (PodGroup minMember=2 with only one pod). The ground truth indicates the PodGroup itself is the fault origin.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The ground truth mechanism is 'Volcano PodGroup has minMember=2 but only one grouped pod exists'. The diagnosis instead claims taints prevent scheduling, which is a different mechanism. The diagnosis does not mention the minMember mismatch.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The diagnosis does not include the concrete detail that minMember=2 but only one pod exists. It provides taint details but these are not the actual mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The ground truth scope is 'Volcano podgroup / grouped pod'. The diagnosis states 'Blocks 100% of Volcano jobs requiring these nodes' and 'Cluster-wide taint policy conflict', which overstates the scope beyond the single PodGroup.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The diagnosis overstates impact by claiming 'Blocks 100% of Volcano jobs requiring these nodes' and 'Cluster-wide taint policy conflict', while the actual issue is limited to this specific PodGroup.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The diagnosis cites concrete evidence: pod tolerations, node taints, and PodGroup MinMember. It references specific node names and taint keys.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "No",
+        "evidence": "The cited evidence (node taints, pod tolerations) is inconsistent with the actual root cause (minMember mismatch). The evidence would be relevant if taints were the issue, but they are not.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The recommended remediation (adding tolerations) does not address the actual root cause (minMember=2 with only one pod). Adding tolerations would not fix the PodGroup requirement.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The remediation is not safe or appropriate because it targets a non-existent taint issue)Skip adding tolerations could allow scheduling on unintended nodes and does not fix the real problem.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 118740,
+    "toolCallCount": 10,
+    "judgeModel": "deepseek-ai/DeepSeek-V4-Flash"
+  },
+  {
+    "caseId": "c087",
+    "status": "completed",
+    "category": "volcano-gpu",
+    "difficulty": "hard",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis identifies podgroup/c087-pg and pod/c087-vcpod as the affected resources, matching the ground truth target resources.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis correctly identifies the PodGroup as the primary fault origin, not an unrelated or healthy resource.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis states that the PodGroup references a nonexistent queue, which is the exact mechanism in the ground truth.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis includes the concrete detail: the queue name 'siclaw-missing-queue' is not present in the list of available queues (default, root).",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis states the scope affects a single PodGroup/pod (c087-pg/c087-vcpod), consistent with the ground truth scope.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis does not overstate or understate the impact; it correctly notes it likely prevents all pods in this PodGroup from scheduling.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The diagnosis cites concrete evidence: PodGroup spec.queue field, kubectl get queues output showing only default and root, and no scheduling events.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The cited evidence (queue mismatch, no events) is consistent with the root cause of a nonexistent queue.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation recommends updating the PodGroup spec.queue to an existing queue, which directly addresses the root cause.",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation is safe and appropriately scoped: updating the queue name and verifying resources, without destructive actions.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 56454,
+    "toolCallCount": 6,
+    "judgeModel": "deepseek-ai/DeepSeek-V4-Flash"
+  },
+  {
+    "caseId": "c094",
+    "status": "completed",
+    "category": "compound",
+    "difficulty": "hard",
+    "passed": true,
+    "totalScore": 1,
+    "dimensions": {
+      "localization": {
+        "score": 1
+      },
+      "mechanism": {
+        "score": 1
+      },
+      "scope": {
+        "score": 1
+      },
+      "evidence": {
+        "score": 1
+      },
+      "remediation": {
+        "score": 1
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis identifies deployment/c094-compound-app and service/c094-compound-svc as target resources.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis does not name any unrelated or healthy resource as the primary fault origin.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis explains the service selector mismatch and the readiness probe pointing to a missing path, which matches the ground truth mechanism.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "Yes",
+        "evidence": "The diagnosis includes the concrete selector typo 'app=c094-compound-app-typo' and the missing path '/missing'.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis states the scope as multi-resource compound failure affecting both deployment and service, consistent with ground truth.",
+        "confidence": "High"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis does not overstate or understate the impact; it correctly notes the deployment is in Progressing: False and service has zero endpoints.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The diagnosis cites concrete evidence: deployment spec, pod events, service endpoints, and node resources.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The cited evidence is consistent with the identified root causes (e.g., selector mismatch confirmed by empty endpoints).",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation to update the deployment image addresses the non-GPU image issue, and the other root causes (probe, selector) are also addressed in the full answer (though truncated here).",
+        "confidence": "Medium"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "Yes",
+        "evidence": "The remediation is safe and appropriately scoped; updating the image is a standard fix.",
+        "confidence": "Medium"
+      }
+    ],
+    "durationMs": 53039,
+    "toolCallCount": 4,
+    "judgeModel": "deepseek-ai/DeepSeek-V4-Flash"
+  },
+  {
+    "caseId": "c097",
+    "status": "completed",
+    "category": "compound",
+    "difficulty": "hard",
+    "passed": false,
+    "totalScore": 0.3,
+    "dimensions": {
+      "localization": {
+        "score": 0.5
+      },
+      "mechanism": {
+        "score": 0
+      },
+      "scope": {
+        "score": 0.5
+      },
+      "evidence": {
+        "score": 0.5
+      },
+      "remediation": {
+        "score": 0
+      }
+    },
+    "checklist": [
+      {
+        "id": "L1",
+        "dim": "localization",
+        "answer": "Yes",
+        "evidence": "The diagnosis identifies pod 'c097-compound-client' and networkpolicy 'c097-compound-deny-egress', matching the ground-truth target resources.",
+        "confidence": "High"
+      },
+      {
+        "id": "L2",
+        "dim": "localization",
+        "answer": "No",
+        "evidence": "The diagnosis incorrectly claims the pod is scheduled on a CPU node with no GPU resources, which is not part of the ground truth and introduces an unrelated primary fault origin.",
+        "confidence": "High"
+      },
+      {
+        "id": "M1",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The ground-truth mechanism is invalid DNS config and a NetworkPolicy denying all egress. The diagnosis mentions the NetworkPolicy but adds an incorrect CPU node scheduling cause and omits the invalid DNS config.",
+        "confidence": "High"
+      },
+      {
+        "id": "M2",
+        "dim": "mechanism",
+        "answer": "No",
+        "evidence": "The diagnosis does not include the concrete detail of invalid DNS config; instead it provides a vague and incorrect CPU node scheduling claim.",
+        "confidence": "High"
+      },
+      {
+        "id": "S1",
+        "dim": "scope",
+        "answer": "Yes",
+        "evidence": "The diagnosis describes a multi-resource compound failure involving the pod and network policy, consistent with the ground-truth scope.",
+        "confidence": "Medium"
+      },
+      {
+        "id": "S2",
+        "dim": "scope",
+        "answer": "No",
+        "evidence": "The diagnosis overstates impact by including GPU resource unavailability, which is not part of the ground truth, and understates the DNS misconfiguration.",
+        "confidence": "High"
+      },
+      {
+        "id": "E1",
+        "dim": "evidence",
+        "answer": "Yes",
+        "evidence": "The diagnosis cites 'kubectl describe node', 'kubectl describe pod', and 'kubectl describe networkpolicy' as evidence.",
+        "confidence": "High"
+      },
+      {
+        "id": "E2",
+        "dim": "evidence",
+        "answer": "No",
+        "evidence": "The cited evidence about CPU node and GPU resources is inconsistent with the ground truth; the pod restart count evidence is irrelevant to the actual root causes.",
+        "confidence": "High"
+      },
+      {
+        "id": "R1",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The recommended remediation (adding GPU node selectors) does not address the actual root causes (invalid DNS config and egress denial).",
+        "confidence": "High"
+      },
+      {
+        "id": "R2",
+        "dim": "remediation",
+        "answer": "No",
+        "evidence": "The remediation is not safe or appropriately scoped; it suggests a change that is unnecessary and does not fix the real faults.",
+        "confidence": "High"
+      }
+    ],
+    "durationMs": 73626,
+    "toolCallCount": 4,
+    "judgeModel": "deepseek-ai/DeepSeek-V4-Flash"
+  }
+]

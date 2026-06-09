@@ -1,0 +1,19 @@
+1. **Confirm the symptom from the client side.** Identify the failing client Pod, namespace, target Service DNS name, and whether the failure is **name resolution** (NXDOMAIN/timeout), **service VIP connectivity** (can resolve but cannot connect), or **application-level refusal**. Record exact error messages/events from the client Pod and recent logs.
+
+2. **Inspect the target Service.** Get the Service type, ClusterIP, ports, targetPorts, selector, and namespace. Verify the client is using the correct fully qualified DNS name for cross-namespace access. If the Service is headless, note that behavior separately.
+
+3. **Check Service-to-Pod backing.** Inspect the corresponding Endpoints/EndpointSlices. Determine whether the Service has ready endpoints. If endpoints are empty or missing, treat this as a likely upstream cause and continue to identify why.
+
+4. **Inspect the server workload and readiness.** Find Pods matching the Service selector. Verify they exist, are Running, have the expected labels, expose the intended container port, and are Ready. Review readiness probe failures, restart history, and relevant events. Distinguish “server not ready / selector mismatch” from DNS problems.
+
+5. **Verify DNS objects and search path assumptions.** Confirm the Service and namespace exist, and that the queried name matches Kubernetes DNS conventions. Inspect the client Pod’s `/etc/resolv.conf` settings via Pod spec fields (`dnsPolicy`, `dnsConfig`) and note custom nameservers/search domains/options that could break cluster DNS.
+
+6. **Check cluster DNS health.** Inspect CoreDNS/kube-dns Pods, readiness, restarts, logs, Service, and EndpointSlices in the system namespace. Look for crash loops, upstream forwarding errors, timeouts, or no ready DNS endpoints.
+
+7. **Check network policy impact.** Inspect NetworkPolicies affecting client, server, and DNS Pods/services. Determine whether egress from client to DNS or Service VIP/endpoints, or ingress to server Pods, is denied.
+
+8. **Check broader networking signals.** Inspect CNI-related Pod/node events, kube-proxy status (or service-routing equivalent), and node readiness for evidence that service routing or Pod networking is degraded cluster-wide or on the affected nodes.
+
+9. **Diagnosis must name the root cause, not just the symptom.** State whether the failure is due to: incorrect Service name/namespace usage, Service selector mismatch, no ready endpoints, server Pod readiness/port issue, CoreDNS outage/misconfiguration, client DNS config override, NetworkPolicy denial, or cluster networking/service-routing failure. Also state the observed symptom path (resolution failure vs resolved-but-unreachable).
+
+10. **Safe remediation.** Recommend the minimal corrective action matching the root cause: fix Service selector/port or client DNS name, restore server readiness, repair CoreDNS configuration/availability, remove incorrect Pod DNS overrides, or adjust NetworkPolicies/service-routing components. Avoid data-plane changes until the exact failing layer is identified.
